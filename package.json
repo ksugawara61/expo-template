@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --watchAll",
+    "text": "jest",
+    "test:watch": "jest --watchAll",
     "lint": "biome ci . ",
     "fmt": "biome format . --write"
   },
