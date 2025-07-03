@@ -5,6 +5,7 @@
       "**/app/**",
       "**/components/**",
       "**/constants/**",
+      "**/src/**",
       "!**/android/**",
       "!**/ios/**",
       "!**/node_modules/**",
