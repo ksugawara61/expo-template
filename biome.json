@@ -3,8 +3,6 @@
   "files": {
     "includes": [
       "**/app/**",
-      "**/components/**",
-      "**/constants/**",
       "**/src/**",
       "!**/android/**",
       "!**/ios/**",
