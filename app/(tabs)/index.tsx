@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { Input } from "@/src/ui/Input";
+import { Input } from "@/ui/Input";
 
 export default function WindScreen() {
   return (
