@@ -123,6 +123,10 @@ export default [
               importNames: ["fireEvent"],
               message: "Please use userEvent instead of fireEvent",
             },
+            {
+              name: "swr",
+              message: "Please use @/libs/swr instead of swr.",
+            },
           ],
         },
       ],

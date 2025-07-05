@@ -5,7 +5,7 @@ import {
   waitForElementToBeRemoved,
 } from "@testing-library/react-native";
 import type React from "react";
-import { type Middleware, SWRConfig } from "swr";
+import { type Middleware, SWRConfig } from "../swr";
 import { suspenseLoadingTestId, TestProvider } from "./TestProvider";
 
 export * from "@testing-library/react-native";
