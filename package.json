@@ -44,6 +44,7 @@
     "@babel/core": "^7.25.2",
     "@biomejs/biome": "^2.0.6",
     "@storybook/addon-a11y": "^9.0.15",
+    "@storybook/addon-docs": "^9.0.15",
     "@storybook/react-native-web-vite": "^9.0.15",
     "@testing-library/react-native": "^13.2.0",
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.5.0",
