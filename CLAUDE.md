@@ -110,8 +110,121 @@ vrt/                   # VRTの結果・設定
 - **型定義**: `type` を使用（`interface` ではなく）
 - **children型**: `FC<PropsWithChildren<Type>>` を使用（`ReactNode` の直接指定は避ける）
 - **スタイリング**: NativeWind で直接 className を記述（cn() 関数は不使用）
+  - `className={`base-classes ${variant} ${size} ${conditional ? "class" : ""} ${className || ""}`}` パターンを使用
+  - テンプレートリテラルで動的にクラスを組み合わせ
 - **Storybook**: 各コンポーネントに複数のストーリーを用意
 - **エクスポート**: `src/components/index.ts` で統一管理
+
+#### コンポーネント実装ガイド
+
+##### 基本構造
+
+```typescript
+import type { FC, PropsWithChildren } from "react";
+import { View, Text } from "react-native";
+
+// children を使わないコンポーネントの場合
+export type ComponentProps = {
+  variant?: "default" | "secondary";
+  className?: string;
+};
+
+export const Component: FC<ComponentProps> = ({ variant = "default", className }) => {
+  return (
+    <View className={`base-classes ${variants[variant]} ${className || ""}`}>
+      {/* content */}
+    </View>
+  );
+};
+
+// children を使うコンポーネントの場合
+export type ContainerProps = {
+  variant?: "default" | "secondary";
+  className?: string;
+};
+
+export const Container: FC<PropsWithChildren<ContainerProps>> = ({ 
+  children, 
+  variant = "default", 
+  className 
+}) => {
+  return (
+    <View className={`base-classes ${variants[variant]} ${className || ""}`}>
+      {children}
+    </View>
+  );
+};
+```
+
+##### Storybookストーリー構造
+
+```typescript
+import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
+import { View } from "react-native";
+import { Component } from "./Component";
+
+const meta = {
+  component: Component,
+  decorators: [
+    (Story) => (
+      <View style={{ flex: 1, alignItems: "flex-start", padding: 20 }}>
+        <Story />
+      </View>
+    ),
+  ],
+  tags: ["autodocs"],
+} satisfies Meta<typeof Component>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+
+export const Variant: Story = {
+  args: {
+    variant: "secondary",
+  },
+};
+```
+
+##### バリエーションパターン実装
+
+```typescript
+const variants = {
+  default: "bg-slate-900 text-slate-50",
+  secondary: "bg-slate-100 text-slate-900",
+  destructive: "bg-red-500 text-white",
+};
+
+const sizes = {
+  default: "h-10 px-4 py-2",
+  sm: "h-8 px-3 py-1",
+  lg: "h-12 px-8 py-3",
+};
+
+// 使用例
+className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
+```
+
+#### コンポーネント追加手順
+
+1. **コンポーネントファイル作成**: `src/components/ComponentName.tsx`
+2. **型定義**: `type` で Props を定義（children使用時は `FC<PropsWithChildren<Type>>`）
+3. **バリエーション定義**: オブジェクトでバリエーション用のクラス群を定義
+4. **スタイリング**: テンプレートリテラルで NativeWind クラスを組み合わせ
+5. **Storybookストーリー作成**: `src/components/ComponentName.stories.tsx`
+6. **エクスポート追加**: `src/components/index.ts` に追加
+7. **フォーマット確認**: `pnpm fmt && pnpm lint` で確認
+
+#### 参考実装
+
+既存コンポーネントの実装パターンを参考にする場合：
+
+- **ActivityIndicator**: children不要、条件付きレンダリング
+- **Button**: children不要、複数バリエーション、ローディング状態
+- **Card**: 複数子コンポーネント、階層構造
+- **Badge**: children必要、シンプルなバリエーション
 
 ### VRTワークフロー
 
