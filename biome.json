@@ -2,6 +2,8 @@
   "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "files": {
     "includes": [
+      "**/.mcp.json",
+      "**/.textlintrc.json",
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
