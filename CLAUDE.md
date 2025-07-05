@@ -167,19 +167,13 @@ export const Container: FC<PropsWithChildren<ContainerProps>> = ({
 
 ```typescript
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
-import { View } from "react-native";
 import { Component } from "./Component";
 
 const meta = {
   component: Component,
   decorators: [
-    (Story) => (
-      <View style={{ flex: 1, alignItems: "flex-start", padding: 20 }}>
-        <Story />
-      </View>
-    ),
+    (Story) => <Story />,
   ],
-  tags: ["autodocs"],
 } satisfies Meta<typeof Component>;
 
 export default meta;

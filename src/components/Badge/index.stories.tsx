@@ -1,17 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
-import { View } from "react-native";
 import { Badge } from "./index";
 
 const meta = {
   component: Badge,
-  decorators: [
-    (Story) => (
-      <View style={{ flex: 1, alignItems: "flex-start", padding: 20 }}>
-        <Story />
-      </View>
-    ),
-  ],
-  tags: ["autodocs"],
+  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof Badge>;
 
 export default meta;

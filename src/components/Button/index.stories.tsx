@@ -1,17 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
-import { View } from "react-native";
 import { Button } from "./index";
 
 const meta = {
   component: Button,
-  decorators: [
-    (Story) => (
-      <View style={{ flex: 1, alignItems: "flex-start", padding: 20 }}>
-        <Story />
-      </View>
-    ),
-  ],
-  tags: ["autodocs"],
+  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof Button>;
 
 export default meta;

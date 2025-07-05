@@ -12,14 +12,7 @@ import {
 
 const meta = {
   component: Card,
-  decorators: [
-    (Story) => (
-      <View style={{ flex: 1, alignItems: "flex-start", padding: 20 }}>
-        <Story />
-      </View>
-    ),
-  ],
-  tags: ["autodocs"],
+  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof Card>;
 
 export default meta;

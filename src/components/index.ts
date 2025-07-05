@@ -20,3 +20,22 @@ export {
   CardHeader,
   CardTitle,
 } from "./Card";
+export type { CheckboxProps } from "./Checkbox";
+export { Checkbox } from "./Checkbox";
+export type { DividerProps } from "./Divider";
+export { Divider } from "./Divider";
+export type { FABProps } from "./FAB";
+export { FAB } from "./FAB";
+export type { HelperTextProps } from "./HelperText";
+export { HelperText } from "./HelperText";
+export type {
+  SegmentedButtonOption,
+  SegmentedButtonsProps,
+} from "./SegmentedButtons";
+export { SegmentedButtons } from "./SegmentedButtons";
+export type { SwitchProps } from "./Switch";
+export { Switch } from "./Switch";
+export type { TextProps } from "./Text";
+export { Text } from "./Text";
+export type { TextInputProps } from "./TextInput";
+export { TextInput, TextInputIcon } from "./TextInput";
