@@ -56,6 +56,13 @@ src/                   # 共通コンポーネント・ユーティリティ
     Input.tsx          # 入力フィールドコンポーネント
     Input.stories.tsx  # Storybookストーリー
     Input.test.tsx     # テストファイル
+  components/          # コンポーネントカタログ
+    ActivityIndicator.tsx     # ローディングインジケーター
+    Button.tsx               # ボタンコンポーネント
+    Card.tsx                 # カードレイアウト
+    Badge.tsx                # バッジコンポーネント
+    *.stories.tsx            # Storybookストーリー
+    index.ts                 # エクスポート設定
 assets/                # 画像・フォントなどのリソース
 vrt/                   # VRTの結果・設定
 ```
@@ -87,6 +94,24 @@ vrt/                   # VRTの結果・設定
 
 - `@/*` -> `./src/*` のパスエイリアスが設定済み
 - コンポーネントのインポート時は `@/ui/Input` のような形式を使用
+- コンポーネントカタログは `@/components` からインポート
+
+### コンポーネントカタログ
+
+`src/components` にReact Native Paper風のコンポーネントを実装済み：
+
+- **ActivityIndicator** - ローディングインジケーター（サイズ・色・表示状態をカスタマイズ可能）
+- **Button** - ボタンコンポーネント（default, destructive, outline, secondary, ghost バリエーション）
+- **Card** - カードレイアウト（Header, Content, Footer で構成）
+- **Badge** - バッジコンポーネント（default, secondary, destructive, outline バリエーション）
+
+#### コンポーネント設計原則
+
+- **型定義**: `type` を使用（`interface` ではなく）
+- **children型**: `FC<PropsWithChildren<Type>>` を使用（`ReactNode` の直接指定は避ける）
+- **スタイリング**: NativeWind で直接 className を記述（cn() 関数は不使用）
+- **Storybook**: 各コンポーネントに複数のストーリーを用意
+- **エクスポート**: `src/components/index.ts` で統一管理
 
 ### VRTワークフロー
 

@@ -1,7 +1,7 @@
 import type { FC } from "react";
-import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
-export interface ButtonProps {
+export type ButtonProps = {
   title: string;
   onPress?: () => void;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost";
@@ -10,7 +10,7 @@ export interface ButtonProps {
   loading?: boolean;
   className?: string;
   titleClassName?: string;
-}
+};
 
 const buttonVariants = {
   default: "bg-slate-900 active:bg-slate-900/90",

@@ -1,13 +1,13 @@
 import type { FC } from "react";
 import { ActivityIndicator as RNActivityIndicator, View } from "react-native";
 
-export interface ActivityIndicatorProps {
+export type ActivityIndicatorProps = {
   animating?: boolean;
   color?: string;
   size?: "small" | "large" | number;
   hidesWhenStopped?: boolean;
   className?: string;
-}
+};
 
 export const ActivityIndicator: FC<ActivityIndicatorProps> = ({
   animating = true,

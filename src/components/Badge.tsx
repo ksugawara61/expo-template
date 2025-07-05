@@ -1,11 +1,10 @@
-import type { FC, ReactNode } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { Text, View } from "react-native";
 
-export interface BadgeProps {
-  children: ReactNode;
+export type BadgeProps = {
   variant?: "default" | "secondary" | "destructive" | "outline";
   className?: string;
-}
+};
 
 const badgeVariants = {
   default: "bg-slate-900 text-slate-50",
@@ -14,7 +13,7 @@ const badgeVariants = {
   outline: "border border-slate-200 bg-transparent text-slate-900",
 };
 
-export const Badge: FC<BadgeProps> = ({
+export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
   children,
   variant = "default",
   className,

@@ -1,37 +1,34 @@
-import type { FC, ReactNode } from "react";
-import { View, Text } from "react-native";
+import type { FC, PropsWithChildren } from "react";
+import { Text, View } from "react-native";
 
-export interface CardProps {
-  children: ReactNode;
+export type CardProps = {
   className?: string;
-}
+};
 
-export interface CardHeaderProps {
-  children: ReactNode;
+export type CardHeaderProps = {
   className?: string;
-}
+};
 
-export interface CardTitleProps {
-  children: ReactNode;
+export type CardTitleProps = {
   className?: string;
-}
+};
 
-export interface CardDescriptionProps {
-  children: ReactNode;
+export type CardDescriptionProps = {
   className?: string;
-}
+};
 
-export interface CardContentProps {
-  children: ReactNode;
+export type CardContentProps = {
   className?: string;
-}
+};
 
-export interface CardFooterProps {
-  children: ReactNode;
+export type CardFooterProps = {
   className?: string;
-}
+};
 
-export const Card: FC<CardProps> = ({ children, className }) => {
+export const Card: FC<PropsWithChildren<CardProps>> = ({
+  children,
+  className,
+}) => {
   return (
     <View
       className={`rounded-lg border border-slate-200 bg-white shadow-sm ${className || ""}`}
@@ -41,7 +38,10 @@ export const Card: FC<CardProps> = ({ children, className }) => {
   );
 };
 
-export const CardHeader: FC<CardHeaderProps> = ({ children, className }) => {
+export const CardHeader: FC<PropsWithChildren<CardHeaderProps>> = ({
+  children,
+  className,
+}) => {
   return (
     <View className={`flex flex-col space-y-1.5 p-6 ${className || ""}`}>
       {children}
@@ -49,7 +49,10 @@ export const CardHeader: FC<CardHeaderProps> = ({ children, className }) => {
   );
 };
 
-export const CardTitle: FC<CardTitleProps> = ({ children, className }) => {
+export const CardTitle: FC<PropsWithChildren<CardTitleProps>> = ({
+  children,
+  className,
+}) => {
   return (
     <Text
       className={`text-lg font-semibold leading-none tracking-tight ${className || ""}`}
@@ -59,7 +62,7 @@ export const CardTitle: FC<CardTitleProps> = ({ children, className }) => {
   );
 };
 
-export const CardDescription: FC<CardDescriptionProps> = ({
+export const CardDescription: FC<PropsWithChildren<CardDescriptionProps>> = ({
   children,
   className,
 }) => {
@@ -70,11 +73,17 @@ export const CardDescription: FC<CardDescriptionProps> = ({
   );
 };
 
-export const CardContent: FC<CardContentProps> = ({ children, className }) => {
+export const CardContent: FC<PropsWithChildren<CardContentProps>> = ({
+  children,
+  className,
+}) => {
   return <View className={`p-6 pt-0 ${className || ""}`}>{children}</View>;
 };
 
-export const CardFooter: FC<CardFooterProps> = ({ children, className }) => {
+export const CardFooter: FC<PropsWithChildren<CardFooterProps>> = ({
+  children,
+  className,
+}) => {
   return (
     <View className={`flex flex-row items-center p-6 pt-0 ${className || ""}`}>
       {children}
