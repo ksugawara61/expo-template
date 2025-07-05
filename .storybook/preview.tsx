@@ -53,6 +53,7 @@ const preview: Preview = {
   initialGlobals: {
     viewport: { value: "mobile2", isRotated: false },
   },
+  tags: ["autodocs"],
 };
 
 export default preview;
