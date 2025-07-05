@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
 import { View } from "react-native";
-import { Button } from "./Button";
+import { Button } from "./index";
 
 const meta = {
   component: Button,

@@ -57,11 +57,18 @@ src/                   # 共通コンポーネント・ユーティリティ
     Input.stories.tsx  # Storybookストーリー
     Input.test.tsx     # テストファイル
   components/          # コンポーネントカタログ
-    ActivityIndicator.tsx     # ローディングインジケーター
-    Button.tsx               # ボタンコンポーネント
-    Card.tsx                 # カードレイアウト
-    Badge.tsx                # バッジコンポーネント
-    *.stories.tsx            # Storybookストーリー
+    ActivityIndicator/       # ローディングインジケーター
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Button/                  # ボタンコンポーネント
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Card/                    # カードレイアウト
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Badge/                   # バッジコンポーネント
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
     index.ts                 # エクスポート設定
 assets/                # 画像・フォントなどのリソース
 vrt/                   # VRTの結果・設定
@@ -209,13 +216,14 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 
 #### コンポーネント追加手順
 
-1. **コンポーネントファイル作成**: `src/components/ComponentName.tsx`
-2. **型定義**: `type` で Props を定義（children使用時は `FC<PropsWithChildren<Type>>`）
-3. **バリエーション定義**: オブジェクトでバリエーション用のクラス群を定義
-4. **スタイリング**: テンプレートリテラルで NativeWind クラスを組み合わせ
-5. **Storybookストーリー作成**: `src/components/ComponentName.stories.tsx`
-6. **エクスポート追加**: `src/components/index.ts` に追加
-7. **フォーマット確認**: `pnpm fmt && pnpm lint` で確認
+1. **ディレクトリ作成**: `src/components/ComponentName/` ディレクトリを作成
+2. **コンポーネントファイル作成**: `src/components/ComponentName/index.tsx`
+3. **型定義**: `type` で Props を定義（children使用時は `FC<PropsWithChildren<Type>>`）
+4. **バリエーション定義**: オブジェクトでバリエーション用のクラス群を定義
+5. **スタイリング**: テンプレートリテラルで NativeWind クラスを組み合わせ
+6. **Storybookストーリー作成**: `src/components/ComponentName/index.stories.tsx`
+7. **エクスポート追加**: `src/components/index.ts` に追加
+8. **フォーマット確認**: `pnpm fmt && pnpm lint` で確認
 
 #### 参考実装
 
