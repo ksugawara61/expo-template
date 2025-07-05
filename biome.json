@@ -4,6 +4,7 @@
     "includes": [
       "**/.mcp.json",
       "**/.textlintrc.json",
+      "**/eslint.config.mjs",
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
