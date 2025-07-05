@@ -85,3 +85,9 @@ updates:
           - "nativewind"
           - "prettier-plugin-tailwindcss"
           - "tailwindcss"
+      textlint:
+        applies-to: version-updates
+        patterns:
+          - "textlint"
+          - "textlint-*"
+          - "@textlint/*"
