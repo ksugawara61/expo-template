@@ -13,7 +13,8 @@
     "fmt": "biome format . --write",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "expo:fix": "expo install --fix"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
