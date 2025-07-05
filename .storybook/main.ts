@@ -3,8 +3,8 @@ import type { StorybookConfig } from "@storybook/react-native-web-vite";
 const config: StorybookConfig = {
   stories: [
     {
-      directory: "../src/ui",
-      titlePrefix: "UI",
+      directory: "../src/components",
+      titlePrefix: "Components",
       files: "**/*.stories.?(ts|tsx|js|jsx)",
     },
     {
