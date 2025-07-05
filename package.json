@@ -11,6 +11,7 @@
     "test:watch": "jest --watchAll",
     "lint": "biome ci . ",
     "fmt": "biome format . --write",
+    "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
