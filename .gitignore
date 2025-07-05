@@ -38,3 +38,13 @@ yarn-error.*
 
 *storybook.log
 storybook-static
+
+# VRT
+vrt/public/*
+!vrt/public/report
+vrt/public/report/actual/*
+!vrt/public/report/actual/.gitkeep
+vrt/public/report/diff/*
+!vrt/public/report/diff/.gitkeep
+vrt/public/report/reg.json
+vrt/public/report/index.html

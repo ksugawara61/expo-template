@@ -14,6 +14,10 @@
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
+    "storybook:capture": "pnpx storycap http://localhost:6006 --serverCmd \"pnpm storybook dev -p 6006 --ci\" --outDir ./vrt/public/report/actual/ --disableCssAnimation --serverTimeout 300000 --captureTimeout 10000 --flat",
+    "vrt": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -E",
+    "vrt:report": "pnpm vrt; open ./vrt/public/report/index.html",
+    "vrt:approve": "pnpm storybook:e2e && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
     "expo:fix": "expo install --fix"
   },
   "dependencies": {
@@ -48,7 +52,9 @@
     "jest": "^29.2.1",
     "jest-expo": "~53.0.9",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "reg-cli": "^0.18.10",
     "storybook": "^9.0.15",
+    "storycap": "^5.0.1",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.8.3"
   },
