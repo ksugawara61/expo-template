@@ -1,0 +1,87 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: friday
+      time: "08:00"
+      timezone: Asia/Tokyo
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      time: "08:00"
+      timezone: Asia/Tokyo
+    ignore:
+      # fix_expo_version.yml でバージョンの修正をしているため対象外にする
+      # expo のメジャーバージョンアップ時には手動で修正する
+      - dependency-name: "expo"
+      - dependency-name: "expo-font"
+      - dependency-name: "expo-apple-authentication"
+      - dependency-name: "expo-auth-session"
+      - dependency-name: "expo-build-properties"
+      - dependency-name: "expo-constants"
+      - dependency-name: "expo-crypto"
+      - dependency-name: "expo-image"
+      - dependency-name: "expo-linking"
+      - dependency-name: "expo-localization"
+      - dependency-name: "expo-router"
+      - dependency-name: "expo-status-bar"
+      - dependency-name: "expo-system-ui"
+      - dependency-name: "expo-sqlite"
+      - dependency-name: "react-native"
+      - dependency-name: "react-native-gesture-handler"
+      - dependency-name: "react-native-get-random-values"
+      - dependency-name: "react-native-pager-view"
+      - dependency-name: "react-native-reanimated"
+      - dependency-name: "react-native-safe-area-context"
+      - dependency-name: "react-native-screens"
+      - dependency-name: "react-native-webview"
+      - dependency-name: "@react-native-async-storage/async-storage"
+      - dependency-name: "@react-native-community/*"
+      - dependency-name: "@types/react"
+      - dependency-name: "jest-expo"
+      - dependency-name: "typescript"
+    groups:
+      storybook:
+        applies-to: version-updates
+        patterns:
+          - "@storybook/*"
+          - "storybook"
+      react-native-firebase:
+        applies-to: version-updates
+        patterns:
+          - "@react-native-firebase/*"
+      babel:
+        applies-to: version-updates
+        patterns:
+          - "@babel/*"
+          - "babel-*"
+      drizzle:
+        applies-to: version-updates
+        patterns:
+          - "drizzle-*"
+      better-sqlite3:
+        applies-to: version-updates
+        patterns:
+          - "better-sqlite3"
+          - "@types/better-sqlite3"
+      eslint:
+        applies-to: version-updates
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@typescript-eslint/*"
+      nativewind:
+        applies-to: version-updates
+        patterns:
+          - "nativewind"
+          - "prettier-plugin-tailwindcss"
+          - "tailwindcss"
