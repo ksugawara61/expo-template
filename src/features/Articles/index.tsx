@@ -8,8 +8,7 @@ import {
   CardTitle,
   Text,
 } from "@/components";
-import { createQiitaApiClient } from "@/libs/openapi/client";
-import { useSWRSuspense } from "@/libs/swr";
+import { useContainer } from "./useContainer";
 
 type Item = {
   id: string;
@@ -25,10 +24,7 @@ type Item = {
 };
 
 export const Articles: FC = () => {
-  const { data } = useSWRSuspense("/items", async () => {
-    const response = await createQiitaApiClient().GET("/items", {});
-    return response.data;
-  });
+  const { data } = useContainer();
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card className="mx-4 my-2">
