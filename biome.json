@@ -8,6 +8,7 @@
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
+      "!**/src/libs/openapi/schemas/**",
       "!**/android/**",
       "!**/ios/**",
       "!**/node_modules/**",
