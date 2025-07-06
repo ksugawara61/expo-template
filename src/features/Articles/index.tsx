@@ -1,5 +1,13 @@
 import type { FC } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Text,
+} from "@/components";
 import { createQiitaApiClient } from "@/libs/openapi/client";
 import { useSWRSuspense } from "@/libs/swr";
 
@@ -23,23 +31,26 @@ export const Articles: FC = () => {
   });
 
   const renderItem = ({ item }: { item: Item }) => (
-    <View className="p-4 border-b border-gray-200">
-      <Text className="text-lg font-bold text-gray-900 mb-2">{item.title}</Text>
-      <Text className="text-sm text-gray-600 mb-2">by {item.user.name}</Text>
-      <View className="flex-row flex-wrap mb-2">
-        {item.tags.map((tag) => (
-          <Text
-            key={tag.name}
-            className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2 mb-1"
-          >
-            {tag.name}
-          </Text>
-        ))}
-      </View>
-      <Text className="text-xs text-gray-500">
-        {new Date(item.created_at).toLocaleDateString()}
-      </Text>
-    </View>
+    <Card className="mx-4 my-2">
+      <CardHeader>
+        <CardTitle>{item.title}</CardTitle>
+        <Text variant="bodySmall" className="text-slate-600">
+          by {item.user.name}
+        </Text>
+      </CardHeader>
+      <CardContent>
+        <View className="flex-row flex-wrap mb-2">
+          {item.tags.map((tag) => (
+            <Badge key={tag.name} variant="secondary" className="mr-2 mb-1">
+              {tag.name}
+            </Badge>
+          ))}
+        </View>
+        <Text variant="bodySmall" className="text-slate-500">
+          {new Date(item.created_at).toLocaleDateString()}
+        </Text>
+      </CardContent>
+    </Card>
   );
 
   return (

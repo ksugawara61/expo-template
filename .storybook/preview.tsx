@@ -1,9 +1,12 @@
 import "../global.css";
 
 import type { Preview } from "@storybook/react-native-web-vite";
+import { initialize, mswLoader } from "msw-storybook-addon";
 import { View } from "react-native";
 import { MINIMAL_VIEWPORTS } from "storybook/viewport";
 import { withScreenshot } from "storycap";
+
+initialize();
 
 export const decorators = [
   (Story) => (
@@ -53,6 +56,7 @@ const preview: Preview = {
   initialGlobals: {
     viewport: { value: "mobile2", isRotated: false },
   },
+  loaders: [mswLoader],
   tags: ["autodocs"],
 };
 
