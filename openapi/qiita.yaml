@@ -3,12 +3,6 @@ info:
   title: Qiita API
   description: API for Qiita and Qiita Team
   version: 2.0.0
-  contact:
-    name: Qiita Support
-    url: https://qiita.com/api/v2
-  license:
-    name: Qiita Terms of Service
-    url: https://qiita.com/terms
 
 servers:
   - url: https://qiita.com/api/v2

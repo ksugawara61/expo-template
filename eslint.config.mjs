@@ -115,11 +115,6 @@ export default [
             },
             {
               name: "@/libs/test/testing-library",
-              importNames: ["render"],
-              message: "Please use renderSuspense instead of render",
-            },
-            {
-              name: "@/libs/test/testing-library",
               importNames: ["fireEvent"],
               message: "Please use userEvent instead of fireEvent",
             },
