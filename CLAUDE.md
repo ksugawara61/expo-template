@@ -235,6 +235,52 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 3. 意図した変更であれば `pnpm vrt:approve` で承認
 4. `./vrt/public/report/index.html` でレポートを確認可能
 
+### Features実装ルール
+
+`src/features/` 以下の実装では、直接的なスタイリングを避け、必ず `@/components` のコンポーネントを組み合わせて実装する。
+
+#### 基本原則
+
+1. **直接スタイリング禁止**: `className` で直接TailwindCSSクラスを記述しない
+2. **コンポーネント活用**: `@/components` から適切なコンポーネントを選択・組み合わせて使用
+3. **構造化**: 意味のある構造（Card、Header、Content等）を意識した実装
+
+#### 実装例
+
+```typescript
+// ❌ 避けるべき実装（直接スタイリング）
+<View className="p-4 border-b border-gray-200">
+  <Text className="text-lg font-bold text-gray-900 mb-2">{title}</Text>
+  <Text className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+    {tag}
+  </Text>
+</View>
+
+// ✅ 推奨される実装（コンポーネント活用）
+<Card className="mx-4 my-2">
+  <CardHeader>
+    <CardTitle>{title}</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <Badge variant="secondary">{tag}</Badge>
+  </CardContent>
+</Card>
+```
+
+#### 利用可能なコンポーネント
+
+- **レイアウト**: Card, CardHeader, CardTitle, CardContent, CardFooter
+- **テキスト**: Text（variant指定でタイポグラフィ統一）
+- **インタラクション**: Button, FAB, Checkbox, Switch
+- **表示**: Badge, ActivityIndicator, Divider
+- **入力**: TextInput, SegmentedButtons
+
+#### Featuresでの責務
+
+- **ビジネスロジック**: API呼び出し、状態管理、データ変換
+- **レイアウト構成**: コンポーネントの組み合わせによる画面構築
+- **機能実装**: ユーザーインタラクション、ナビゲーション
+
 ### textlint設定
 
 - 日本語技術文書向けのプリセット設定
