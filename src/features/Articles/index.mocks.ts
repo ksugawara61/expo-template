@@ -1,4 +1,4 @@
-import { openApiMockClient } from "@/libs/test/server";
+import { openApiMockClient } from "@/libs/test/client";
 
 const mockData = [
   {
@@ -89,10 +89,10 @@ const mockData = [
   },
 ];
 
-const Success = openApiMockClient.get("/items", ({ response }) => {
+const success = openApiMockClient.get("/items", ({ response }) => {
   return response(200).json(mockData);
 });
 
 export const handlers = {
-  Success,
+  Success: [success],
 };
