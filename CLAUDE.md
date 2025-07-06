@@ -50,14 +50,15 @@ app/                    # Expo Routerのルートディレクトリ
   (tabs)/              # タブレイアウト
     _layout.tsx        # タブレイアウトの設定
     index.tsx          # ホーム画面
-  _layout.tsx          # ルートレイアウト
+  +html.tsx           # カスタムHTMLラッパー
+  +not-found.tsx      # 404エラーページ
+  _layout.tsx         # ルートレイアウト
 src/                   # 共通コンポーネント・ユーティリティ
-  ui/                  # UIコンポーネント
-    Input.tsx          # 入力フィールドコンポーネント
-    Input.stories.tsx  # Storybookストーリー
-    Input.test.tsx     # テストファイル
   components/          # コンポーネントカタログ
     ActivityIndicator/       # ローディングインジケーター
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Badge/                   # バッジコンポーネント
       index.tsx              # コンポーネント本体
       index.stories.tsx      # Storybookストーリー
     Button/                  # ボタンコンポーネント
@@ -66,12 +67,62 @@ src/                   # 共通コンポーネント・ユーティリティ
     Card/                    # カードレイアウト
       index.tsx              # コンポーネント本体
       index.stories.tsx      # Storybookストーリー
-    Badge/                   # バッジコンポーネント
+    Checkbox/                # チェックボックス
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Divider/                 # 区切り線
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    FAB/                     # フローティングアクションボタン
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    HelperText/              # ヘルパーテキスト
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    SegmentedButtons/        # セグメントボタン
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Switch/                  # スイッチ
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    Text/                    # テキストコンポーネント
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+    TextInput/               # テキスト入力
       index.tsx              # コンポーネント本体
       index.stories.tsx      # Storybookストーリー
     index.ts                 # エクスポート設定
+  features/            # 機能別モジュール
+    Articles/                # 記事機能
+      index.tsx              # コンポーネント本体
+      index.stories.tsx      # Storybookストーリー
+      index.test.tsx         # テストファイル
+      index.mocks.ts         # モックデータ
+      useContainer.ts        # ビジネスロジック
+      useContainer.test.ts   # コンテナテスト
+  libs/                # 共通ライブラリ
+    openapi/                 # OpenAPI関連
+      client.ts              # APIクライアント
+      schemas/qiita.ts       # 生成されたスキーマ
+    swr.ts                   # SWR設定
+    test/                    # テストユーティリティ
+      TestProvider.tsx       # テストプロバイダー
+      client.ts              # テストクライアント
+      server.ts              # テストサーバー
+      testing-library.tsx    # テストライブラリ設定
 assets/                # 画像・フォントなどのリソース
+  fonts/                     # フォントファイル
+  images/                    # アプリアイコン・画像
+openapi/               # OpenAPI仕様
+  qiita.yaml                 # Qiita API仕様
+public/                # 公開Webアセット
+  mockServiceWorker.js       # MSWワーカー
 vrt/                   # VRTの結果・設定
+  public/report/             # テストレポート
+    actual/                  # 現在のスクリーンショット
+    diff/                    # 差分画像
+    expected/                # 期待値画像
+    index.html               # レポート
 ```
 
 ### 設定ファイル
@@ -100,17 +151,26 @@ vrt/                   # VRTの結果・設定
 ### パス解決
 
 - `@/*` -> `./src/*` のパスエイリアスが設定済み
-- コンポーネントのインポート時は `@/ui/Input` のような形式を使用
 - コンポーネントカタログは `@/components` からインポート
+- フィーチャーモジュールは `@/features` からインポート
+- 共通ライブラリは `@/libs` からインポート
 
 ### コンポーネントカタログ
 
 `src/components` にReact Native Paper風のコンポーネントを実装済み：
 
 - **ActivityIndicator** - ローディングインジケーター（サイズ・色・表示状態をカスタマイズ可能）
+- **Badge** - バッジコンポーネント（default, secondary, destructive, outline バリエーション）
 - **Button** - ボタンコンポーネント（default, destructive, outline, secondary, ghost バリエーション）
 - **Card** - カードレイアウト（Header, Content, Footer で構成）
-- **Badge** - バッジコンポーネント（default, secondary, destructive, outline バリエーション）
+- **Checkbox** - チェックボックス入力コンポーネント
+- **Divider** - 視覚的区切り線コンポーネント
+- **FAB** - フローティングアクションボタン
+- **HelperText** - 補助テキスト表示コンポーネント
+- **SegmentedButtons** - マルチオプション選択ボタン
+- **Switch** - トグルスイッチコンポーネント
+- **Text** - タイポグラフィコンポーネント（Material Design準拠のバリエーション）
+- **TextInput** - テキスト入力フィールドコンポーネント
 
 #### コンポーネント設計原則
 
@@ -224,9 +284,17 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 既存コンポーネントの実装パターンを参考にする場合：
 
 - **ActivityIndicator**: children不要、条件付きレンダリング
+- **Badge**: children必要、シンプルなバリエーション
 - **Button**: children不要、複数バリエーション、ローディング状態
 - **Card**: 複数子コンポーネント、階層構造
-- **Badge**: children必要、シンプルなバリエーション
+- **Checkbox**: children不要、状態管理、イベントハンドリング
+- **Divider**: children不要、シンプルな区切り線
+- **FAB**: children不要、アイコン表示、アクション実行
+- **HelperText**: children必要、エラー状態対応
+- **SegmentedButtons**: children不要、複数オプション、選択状態管理
+- **Switch**: children不要、トグル状態、イベントハンドリング
+- **Text**: children必要、タイポグラフィバリエーション
+- **TextInput**: children不要、入力状態管理、バリデーション
 
 ### VRTワークフロー
 
@@ -269,11 +337,11 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 
 #### 利用可能なコンポーネント
 
-- **レイアウト**: Card, CardHeader, CardTitle, CardContent, CardFooter
-- **テキスト**: Text（variant指定でタイポグラフィ統一）
-- **インタラクション**: Button, FAB, Checkbox, Switch
-- **表示**: Badge, ActivityIndicator, Divider
-- **入力**: TextInput, SegmentedButtons
+- **レイアウト**: Card, CardHeader, CardTitle, CardContent, CardFooter, Divider
+- **テキスト**: Text（variant指定でタイポグラフィ統一）, HelperText
+- **インタラクション**: Button, FAB, Checkbox, Switch, SegmentedButtons
+- **表示**: Badge, ActivityIndicator
+- **入力**: TextInput
 
 #### Featuresでの責務
 
