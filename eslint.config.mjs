@@ -57,6 +57,7 @@ const javaScriptRules = {
 };
 
 const ignores = [
+  "graphql/**",
   "**/__templates/**",
   "**/.drizzle/**",
   "**/node_modules/**",

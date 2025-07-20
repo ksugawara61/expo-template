@@ -1,0 +1,33 @@
+{
+  "name": "graphql",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Generated with `npm create pylon`",
+  "scripts": {
+    "dev": "pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
+    "build": "pylon build",
+    "test": "vitest",
+    "test:ui": "vitest --ui --watch",
+    "lint:biome": "biome ci . ",
+    "lint": "pnpm lint:biome",
+    "fmt:biome": "biome format . --write",
+    "fmt": "pnpm fmt:biome",
+    "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts"
+  },
+  "dependencies": {
+    "@getcronit/pylon": "^2.0.0",
+    "@hono/node-server": "^1.12.2",
+    "openapi-fetch": "^0.14.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
+    "@getcronit/pylon-dev": "^1.0.0",
+    "@vitest/ui": "^3.2.4",
+    "msw": "^2.3.1",
+    "openapi-msw": "^1.2.0",
+    "openapi-typescript": "^7.8.0",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "pnpm@9.15.9+sha256.cf86a7ad764406395d4286a6d09d730711720acc6d93e9dce9ac7ac4dc4a28a7"
+}
