@@ -1,11 +1,28 @@
-import { createQiitaApiClient } from "@/libs/openapi/client";
-import { useSWRSuspense } from "@/libs/swr";
+import { useSuspenseQuery } from "@apollo/client";
+import { graphql } from "@/libs/gql";
+
+export const GetArticles = graphql(`
+  query GetArticles($page: Number!) {
+    articles(page: $page) {
+      id
+      title
+      user {
+        name
+      }
+      created_at
+      tags {
+        name
+      }
+    }
+  }
+`);
 
 export const useContainer = () => {
-  const { data } = useSWRSuspense("/items", async () => {
-    const response = await createQiitaApiClient().GET("/items", {});
-    return response.data;
+  const {
+    data: { articles },
+  } = useSuspenseQuery(GetArticles, {
+    variables: { page: 1 },
   });
 
-  return { data };
+  return { data: articles };
 };

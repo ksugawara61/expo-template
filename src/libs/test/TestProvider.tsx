@@ -1,6 +1,7 @@
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AppApolloProvider } from "../graphql/AppApolloProvider";
 import { SWRConfig } from "../swr";
 
 const testSwrConfig = {
@@ -18,18 +19,20 @@ export const suspenseLoadingTestId = "suspenseLoading";
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <SWRConfig value={testSwrConfig}>
-      <SafeAreaProvider initialMetrics={testInitialMetrics}>
-        <Suspense
-          fallback={
-            <View testID={suspenseLoadingTestId}>
-              <ActivityIndicator />
-            </View>
-          }
-        >
-          {children}
-        </Suspense>
-      </SafeAreaProvider>
-    </SWRConfig>
+    <AppApolloProvider>
+      <SWRConfig value={testSwrConfig}>
+        <SafeAreaProvider initialMetrics={testInitialMetrics}>
+          <Suspense
+            fallback={
+              <View testID={suspenseLoadingTestId}>
+                <ActivityIndicator />
+              </View>
+            }
+          >
+            {children}
+          </Suspense>
+        </SafeAreaProvider>
+      </SWRConfig>
+    </AppApolloProvider>
   );
 };
