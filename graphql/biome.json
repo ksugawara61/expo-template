@@ -1,16 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
   "files": {
     "includes": [
-      "**/.mcp.json",
-      "**/.textlintrc.json",
-      "**/eslint.config.mjs",
-      "**/.storybook/**",
-      "**/app/**",
+      "biome.json",
+      "**/package.json",
       "**/src/**",
-      "!**/src/libs/openapi/schemas/**",
-      "!**/android/**",
-      "!**/ios/**",
+      "**/.mcp.json",
+      "!**/src/generated/**",
       "!**/node_modules/**",
       "!**/dist/**",
       "!**/build/**",

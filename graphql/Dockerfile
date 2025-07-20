@@ -31,7 +31,8 @@ ENV NODE_ENV=production
 # Create .pylon folder (mkdir)
 RUN mkdir -p .pylon
 # RUN npm test
-RUN npm run pylon build
+RUN corepack enable pnpm
+RUN pnpm build
 
 # copy production dependencies and source code into final image
 FROM base AS release

@@ -8,13 +8,18 @@
     "dev": "pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
     "build": "pylon build",
     "test": "vitest",
-    "test:ui": "vitest --ui --watch"
+    "test:ui": "vitest --ui --watch",
+    "lint:biome": "biome ci . ",
+    "lint": "pnpm lint:biome",
+    "fmt:biome": "biome format . --write",
+    "fmt": "pnpm fmt:biome"
   },
   "dependencies": {
     "@getcronit/pylon": "^2.0.0",
     "@hono/node-server": "^1.12.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
     "@getcronit/pylon-dev": "^1.0.0",
     "@vitest/ui": "^3.2.4",
     "vitest": "^3.2.4"
