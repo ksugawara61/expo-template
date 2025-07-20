@@ -1,0 +1,19 @@
+{
+  "name": "graphql",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Generated with `npm create pylon`",
+  "scripts": {
+    "dev": "pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
+    "build": "pylon build"
+  },
+  "dependencies": {
+    "@getcronit/pylon": "^2.0.0",
+    "@hono/node-server": "^1.12.2"
+  },
+  "devDependencies": {
+    "@getcronit/pylon-dev": "^1.0.0"
+  },
+  "packageManager": "pnpm@9.15.9+sha256.cf86a7ad764406395d4286a6d09d730711720acc6d93e9dce9ac7ac4dc4a28a7"
+}
