@@ -22,9 +22,11 @@
     "vrt": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -E",
     "vrt:report": "pnpm vrt; open ./vrt/public/report/index.html",
     "vrt:approve": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
-    "expo:fix": "expo install --fix"
+    "expo:fix": "expo install --fix",
+    "codegen": "graphql-codegen"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@expo/vector-icons": "^14.1.0",
     "@react-navigation/native": "^7.1.6",
     "expo": "~53.0.19",
@@ -35,6 +37,7 @@
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
+    "graphql": "^16.11.0",
     "nativewind": "^4.1.23",
     "openapi-fetch": "^0.14.0",
     "react": "19.0.0",
@@ -49,6 +52,10 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@biomejs/biome": "^2.1.2",
+    "@graphql-codegen/cli": "^5.0.7",
+    "@graphql-codegen/near-operation-file-preset": "^3.1.0",
+    "@graphql-codegen/typescript-msw": "^3.0.1",
+    "@graphql-codegen/typescript-operations": "^4.6.1",
     "@storybook/addon-a11y": "^9.0.16",
     "@storybook/addon-docs": "^9.0.16",
     "@storybook/react-native-web-vite": "^9.0.16",

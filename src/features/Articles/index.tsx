@@ -14,8 +14,7 @@ type Item = {
   id: string;
   title: string;
   user: {
-    id: string;
-    name: string | null;
+    name?: string | null;
   };
   created_at: string;
   tags: Array<{

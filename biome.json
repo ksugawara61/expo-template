@@ -8,6 +8,8 @@
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
+      "!**/src/libs/gql/**",
+      "!**/src/**/*.msw.ts",
       "!**/src/libs/openapi/schemas/**",
       "!**/android/**",
       "!**/ios/**",

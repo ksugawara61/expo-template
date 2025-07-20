@@ -1,7 +1,7 @@
 import { server } from "@/libs/test/server";
 import { renderHook } from "@/libs/test/testing-library";
-import { handlers } from "./index.mocks";
 import { useContainer } from "./useContainer";
+import { handlers } from "./useContainer.mocks";
 
 describe("useContainer", () => {
   it("should fetch articles", async () => {

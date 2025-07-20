@@ -5,22 +5,25 @@ import { initialize, mswLoader } from "msw-storybook-addon";
 import { View } from "react-native";
 import { MINIMAL_VIEWPORTS } from "storybook/viewport";
 import { withScreenshot } from "storycap";
+import { AppApolloProvider } from "../src/libs/graphql/AppApolloProvider";
 
 initialize();
 
 export const decorators = [
   (Story) => (
-    <View
-      style={{
-        width: 414,
-        height: 896,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      testID="storybook-snapshot"
-    >
-      <Story />
-    </View>
+    <AppApolloProvider>
+      <View
+        style={{
+          width: 414,
+          height: 896,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        testID="storybook-snapshot"
+      >
+        <Story />
+      </View>
+    </AppApolloProvider>
   ),
   withScreenshot,
 ];
