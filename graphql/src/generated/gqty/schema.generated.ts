@@ -57,10 +57,49 @@ export const scalarsEnumsHash: ScalarsEnumsHash = {
   Void: true,
 };
 export const generatedSchema = {
+  Article: {
+    __typename: { __type: "String!" },
+    body: { __type: "String!" },
+    created_at: { __type: "String!" },
+    id: { __type: "String!" },
+    tags: { __type: "[Tag!]!" },
+    title: { __type: "String!" },
+    updated_at: { __type: "String!" },
+    url: { __type: "String!" },
+    user: { __type: "User!" },
+  },
+  Tag: { __typename: { __type: "String!" }, name: { __type: "String!" } },
+  User: { __typename: { __type: "String!" }, name: { __type: "String" } },
   mutation: {},
-  query: { __typename: { __type: "String!" }, hello: { __type: "String!" } },
+  query: {
+    __typename: { __type: "String!" },
+    articles: { __type: "[Article!]!", __args: { page: "Number!" } },
+    hello: { __type: "String!" },
+  },
   subscription: {},
 } as const;
+
+export interface Article {
+  __typename?: "Article";
+  body: ScalarsEnums["String"];
+  created_at: ScalarsEnums["String"];
+  id: ScalarsEnums["String"];
+  tags: Array<Tag>;
+  title: ScalarsEnums["String"];
+  updated_at: ScalarsEnums["String"];
+  url: ScalarsEnums["String"];
+  user: User;
+}
+
+export interface Tag {
+  __typename?: "Tag";
+  name: ScalarsEnums["String"];
+}
+
+export interface User {
+  __typename?: "User";
+  name?: Maybe<ScalarsEnums["String"]>;
+}
 
 export interface Mutation {
   __typename?: "Mutation";
@@ -68,6 +107,7 @@ export interface Mutation {
 
 export interface Query {
   __typename?: "Query";
+  articles: (args: { page: ScalarsEnums["Number"] }) => Array<Article>;
   hello: ScalarsEnums["String"];
 }
 
