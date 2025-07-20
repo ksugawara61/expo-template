@@ -35,15 +35,66 @@ export type Article = {
   user: User;
 };
 
+export type Bookmark = {
+  __typename?: 'Bookmark';
+  created_at: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  updated_at: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type InputInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+  url: Scalars['String']['input'];
+};
+
+export type InputInput_1 = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createBookmark: Bookmark;
+  deleteBookmark: Scalars['Boolean']['output'];
+  updateBookmark?: Maybe<Bookmark>;
+};
+
+
+export type MutationCreateBookmarkArgs = {
+  input: InputInput;
+};
+
+
+export type MutationDeleteBookmarkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateBookmarkArgs = {
+  id: Scalars['String']['input'];
+  input: InputInput_1;
+};
+
 export type Query = {
   __typename?: 'Query';
   articles: Array<Article>;
-  hello: Scalars['String']['output'];
+  bookmark?: Maybe<Bookmark>;
+  bookmarks: Array<Bookmark>;
 };
 
 
 export type QueryArticlesArgs = {
   page: Scalars['Number']['input'];
+};
+
+
+export type QueryBookmarkArgs = {
+  id: Scalars['String']['input'];
 };
 
 export type Tag = {
