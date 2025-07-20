@@ -1,17 +1,27 @@
 import { describe, expect, it } from "vitest";
+import { ArticleMocks } from "./domains/articles/index.mocks";
+import { mockServer } from "./libs/test/mockServer";
 import { server } from "./server";
 
 describe("GraphQL Resolvers", () => {
   describe("Query", () => {
-    describe("hello", () => {
-      it("should return 'Hello, world!'", () => {
-        const result = server.Query.hello();
-        expect(result).toBe("Hello, world!");
-      });
+    describe("articles", () => {
+      it("should return an array of articles", async () => {
+        mockServer.use(...ArticleMocks.Success);
+        const page = 1;
+        const result = await server.Query.articles(page);
 
-      it("should always return a string", () => {
-        const result = server.Query.hello();
-        expect(typeof result).toBe("string");
+        expect(result.length).toBeGreaterThan(0);
+        for (const article of result) {
+          expect(article).toHaveProperty("id");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("body");
+          expect(article).toHaveProperty("url");
+          expect(article).toHaveProperty("user");
+          expect(article).toHaveProperty("tags");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("updated_at");
+        }
       });
     });
   });

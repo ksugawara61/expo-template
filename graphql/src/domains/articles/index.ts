@@ -1,7 +1,5 @@
 import { createQiitaApiClient } from "../../libs/openapi/client";
 
-const client = createQiitaApiClient();
-
 type Tag = {
   name: string;
 };
@@ -22,7 +20,7 @@ type Article = {
 };
 
 export const fetchArticles = async (page: number): Promise<Article[]> => {
-  const response = await client.GET("/items", {
+  const response = await createQiitaApiClient().GET("/items", {
     params: {
       query: {
         page,
