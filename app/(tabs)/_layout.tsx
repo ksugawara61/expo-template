@@ -17,7 +17,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
+          title: "Articles",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/" asChild>
@@ -31,6 +31,15 @@ export default function TabLayout() {
                 )}
               </Pressable>
             </Link>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="bookmarks"
+        options={{
+          title: "Bookmarks",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="bookmark" color={color} />
           ),
         }}
       />
