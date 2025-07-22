@@ -1,18 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const GET_BOOKMARKS = gql`
-  query GetBookmarks {
-    bookmarks {
-      id
-      title
-      url
-      description
-      created_at
-      updated_at
-    }
-  }
-`;
-
 export const GET_BOOKMARK = gql`
   query GetBookmark($id: String!) {
     bookmark(id: $id) {
@@ -49,11 +36,5 @@ export const UPDATE_BOOKMARK = gql`
       created_at
       updated_at
     }
-  }
-`;
-
-export const DELETE_BOOKMARK = gql`
-  mutation DeleteBookmark($id: String!) {
-    deleteBookmark(id: $id)
   }
 `;
