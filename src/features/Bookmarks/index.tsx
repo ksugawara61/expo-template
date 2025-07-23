@@ -90,7 +90,7 @@ export const DELETE_BOOKMARK = graphql(`
   }
 `);
 
-export const BookmarkListWrapper: FC = () => {
+export const Bookmarks: FC = () => {
   return (
     <Suspense
       fallback={
@@ -102,12 +102,12 @@ export const BookmarkListWrapper: FC = () => {
         </View>
       }
     >
-      <BookmarkList />
+      <Content />
     </Suspense>
   );
 };
 
-export const BookmarkList: FC = () => {
+export const Content: FC = () => {
   const {
     data: { bookmarks },
     error,

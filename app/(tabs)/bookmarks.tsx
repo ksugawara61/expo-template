@@ -1,5 +1,5 @@
-import { BookmarkListWrapper } from "@/features/Bookmarks";
+import { Bookmarks } from "@/features/Bookmarks";
 
 export default () => {
-  return <BookmarkListWrapper />;
+  return <Bookmarks />;
 };
