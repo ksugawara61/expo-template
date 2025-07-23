@@ -1,7 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { router } from "expo-router";
 import { type FC, Suspense } from "react";
-import { Alert, ScrollView, View } from "react-native";
+import { Alert, FlatList, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -46,9 +46,6 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
         )}
       </CardHeader>
       <CardContent>
-        <Text variant="bodyMedium" className="text-blue-600 mb-4">
-          {bookmark.url}
-        </Text>
         <View className="flex-row gap-2">
           <Button
             variant="outline"
@@ -170,26 +167,22 @@ export const BookmarkList: FC = () => {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1">
-        {bookmarks
-          .map((bookmark) => getFragmentData(BOOKMARK, bookmark))
-          .map((bookmark) => {
-            return (
-              <BookmarkItem
-                key={bookmark.id}
-                bookmark={bookmark}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-              />
-            );
-          })}
-      </ScrollView>
+    <>
+      <FlatList
+        data={bookmarks.map((bookmark) => getFragmentData(BOOKMARK, bookmark))}
+        renderItem={({ item }) => (
+          <BookmarkItem
+            bookmark={item}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+        )}
+      />
       <FAB
         icon="add"
         onPress={handleAdd}
         className="absolute bottom-4 right-4"
       />
-    </View>
+    </>
   );
 };
