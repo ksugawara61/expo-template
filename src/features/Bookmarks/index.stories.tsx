@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
-import { BookmarkListWrapper } from ".";
+import { Bookmarks } from ".";
 import { MocksBookmarks } from "./index.mocks";
 
 const meta = {
-  component: BookmarkListWrapper,
+  component: Bookmarks,
   decorators: [(Story) => <Story />],
-} satisfies Meta<typeof BookmarkListWrapper>;
+} satisfies Meta<typeof Bookmarks>;
 
 export default meta;
 
