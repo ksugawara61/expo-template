@@ -1,13 +1,6 @@
 import * as Types from '@/libs/gql/graphql';
 
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'
-export type GetBookmarkQueryVariables = Types.Exact<{
-  id: Types.Scalars['String']['input'];
-}>;
-
-
-export type GetBookmarkQuery = { __typename?: 'Query', bookmark?: { __typename?: 'Bookmark', id: string, title: string, url: string, description?: string | null, created_at: string, updated_at: string } | null };
-
 export type CreateBookmarkMutationVariables = Types.Exact<{
   input: Types.InputInput;
 }>;
@@ -23,28 +16,6 @@ export type UpdateBookmarkMutationVariables = Types.Exact<{
 
 export type UpdateBookmarkMutation = { __typename?: 'Mutation', updateBookmark?: { __typename?: 'Bookmark', id: string, title: string, url: string, description?: string | null, created_at: string, updated_at: string } | null };
 
-
-/**
- * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
- * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockGetBookmarkQuery(
- *   ({ query, variables }) => {
- *     const { id } = variables;
- *     return HttpResponse.json({
- *       data: { bookmark }
- *     })
- *   },
- *   requestOptions
- * )
- */
-export const mockGetBookmarkQuery = (resolver: GraphQLResponseResolver<GetBookmarkQuery, GetBookmarkQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<GetBookmarkQuery, GetBookmarkQueryVariables>(
-    'GetBookmark',
-    resolver,
-    options
-  )
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))

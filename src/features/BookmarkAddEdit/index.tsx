@@ -1,8 +1,8 @@
 import { useMutation } from "@apollo/client";
+import { router } from "expo-router";
 import type { FC } from "react";
 import { useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
-
 import {
   Button,
   Card,
@@ -12,25 +12,45 @@ import {
   Text,
   TextInput,
 } from "@/components";
-
-import { CREATE_BOOKMARK, GET_BOOKMARKS, UPDATE_BOOKMARK } from "./queries";
+import { graphql } from "@/libs/gql";
+import { GET_BOOKMARKS } from "../Bookmarks";
+import type { BookmarkFragment } from "../Bookmarks/index.msw";
 import type {
-  Bookmark,
   CreateBookmarkInput,
   UpdateBookmarkInput,
-} from "./types";
+} from "../Bookmarks/types";
 
-type BookmarkFormProps = {
-  bookmark?: Bookmark;
-  onSuccess?: () => void;
-  onCancel?: () => void;
+const CREATE_BOOKMARK = graphql(`
+  mutation CreateBookmark($input: InputInput!) {
+    createBookmark(input: $input) {
+      id
+      title
+      url
+      description
+      created_at
+      updated_at
+    }
+  }
+`);
+
+const UPDATE_BOOKMARK = graphql(`
+  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {
+    updateBookmark(id: $id, input: $input) {
+      id
+      title
+      url
+      description
+      created_at
+      updated_at
+    }
+  }
+`);
+
+type Props = {
+  bookmark?: BookmarkFragment;
 };
 
-export const BookmarkForm: FC<BookmarkFormProps> = ({
-  bookmark,
-  onSuccess,
-  onCancel,
-}) => {
+export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
 
   const [title, setTitle] = useState(bookmark?.title || "");
@@ -53,6 +73,14 @@ export const BookmarkForm: FC<BookmarkFormProps> = ({
   );
 
   const loading = createLoading || updateLoading;
+
+  const handleSuccess = () => {
+    router.back();
+  };
+
+  const handleCancel = () => {
+    router.back();
+  };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -111,7 +139,7 @@ export const BookmarkForm: FC<BookmarkFormProps> = ({
         setDescription("");
       }
 
-      onSuccess?.();
+      handleSuccess();
     } catch {
       Alert.alert(
         "エラー",
@@ -121,7 +149,7 @@ export const BookmarkForm: FC<BookmarkFormProps> = ({
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <ScrollView className="w-full bg-gray-50">
       <Card className="m-4">
         <CardHeader>
           <Text variant="headlineSmall">
@@ -166,15 +194,13 @@ export const BookmarkForm: FC<BookmarkFormProps> = ({
             </View>
 
             <View className="flex-row gap-2 mt-4">
-              {onCancel && (
-                <Button
-                  variant="outline"
-                  onPress={onCancel}
-                  disabled={loading}
-                  className="flex-1"
-                  title="キャンセル"
-                />
-              )}
+              <Button
+                variant="outline"
+                onPress={handleCancel}
+                disabled={loading}
+                className="flex-1"
+                title="キャンセル"
+              />
               <Button
                 onPress={handleSubmit}
                 disabled={loading}
