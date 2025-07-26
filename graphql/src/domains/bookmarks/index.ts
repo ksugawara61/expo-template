@@ -1,10 +1,14 @@
+import { PrismaClient } from "../../generated/prisma";
+
+const prisma = new PrismaClient();
+
 type Bookmark = {
   id: string;
   title: string;
   url: string;
-  description?: string;
-  created_at: string;
-  updated_at: string;
+  description?: string | null;
+  created_at: Date;
+  updated_at: Date;
 };
 
 type CreateBookmarkInput = {
@@ -19,50 +23,63 @@ type UpdateBookmarkInput = {
   description?: string;
 };
 
-// In-memory storage for demonstration
-const bookmarks: Map<string, Bookmark> = new Map();
-
 export const fetchBookmarks = async (): Promise<Bookmark[]> => {
-  return Array.from(bookmarks.values());
+  return await prisma.bookmark.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
+  });
 };
 
-export const fetchBookmarkById = async (id: string): Promise<Bookmark | null> => {
-  return bookmarks.get(id) || null;
+export const fetchBookmarkById = async (
+  id: string,
+): Promise<Bookmark | null> => {
+  return await prisma.bookmark.findUnique({
+    where: { id },
+  });
 };
 
-export const createBookmark = async (input: CreateBookmarkInput): Promise<Bookmark> => {
-  const id = `bookmark-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  const now = new Date().toISOString();
-  
-  const bookmark: Bookmark = {
-    id,
-    title: input.title,
-    url: input.url,
-    description: input.description,
-    created_at: now,
-    updated_at: now,
-  };
-  
-  bookmarks.set(id, bookmark);
-  return bookmark;
+export const createBookmark = async (
+  input: CreateBookmarkInput,
+): Promise<Bookmark> => {
+  return await prisma.bookmark.create({
+    data: {
+      title: input.title,
+      url: input.url,
+      description: input.description,
+    },
+  });
 };
 
-export const updateBookmark = async (id: string, input: UpdateBookmarkInput): Promise<Bookmark | null> => {
-  const existingBookmark = bookmarks.get(id);
-  if (!existingBookmark) {
+export const updateBookmark = async (
+  id: string,
+  input: UpdateBookmarkInput,
+): Promise<Bookmark | null> => {
+  try {
+    return await prisma.bookmark.update({
+      where: { id },
+      data: {
+        ...(input.title !== undefined && { title: input.title }),
+        ...(input.url !== undefined && { url: input.url }),
+        ...(input.description !== undefined && {
+          description: input.description,
+        }),
+      },
+    });
+  } catch (error) {
+    // Record not found
     return null;
   }
-  
-  const updatedBookmark: Bookmark = {
-    ...existingBookmark,
-    ...input,
-    updated_at: new Date().toISOString(),
-  };
-  
-  bookmarks.set(id, updatedBookmark);
-  return updatedBookmark;
 };
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
-  return bookmarks.delete(id);
+  try {
+    await prisma.bookmark.delete({
+      where: { id },
+    });
+    return true;
+  } catch (error) {
+    // Record not found
+    return false;
+  }
 };
