@@ -23,7 +23,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.mocks.ts, ${capture}.test.ts, ${capture}.msw.ts",
-    "*.tsx": "${capture}.stories.tsx, ${capture}.test.tsx, ${capture}.mocks.ts",
+    "*.tsx": "${capture}.stories.tsx, ${capture}.test.tsx, ${capture}.mocks.ts, ${capture}.msw.ts",
   },
   "github.copilot.nextEditSuggestions.enabled": true,
 }

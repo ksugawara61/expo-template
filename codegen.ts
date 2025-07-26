@@ -20,6 +20,9 @@ const config: CodegenConfig = {
   generates: {
     "src/libs/gql/": {
       preset: "client",
+      presetConfig: {
+        fragmentMasking: { unmaskFunctionName: 'getFragmentData' }
+      }
     },
     "src/": {
       preset: "near-operation-file",

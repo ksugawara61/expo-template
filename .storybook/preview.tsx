@@ -2,6 +2,7 @@ import "../global.css";
 
 import type { Preview } from "@storybook/react-native-web-vite";
 import { initialize, mswLoader } from "msw-storybook-addon";
+import { useEffect } from "react";
 import { View } from "react-native";
 import { MINIMAL_VIEWPORTS } from "storybook/viewport";
 import { withScreenshot } from "storycap";
@@ -10,21 +11,28 @@ import { AppApolloProvider } from "../src/libs/graphql/AppApolloProvider";
 initialize();
 
 export const decorators = [
-  (Story) => (
-    <AppApolloProvider>
-      <View
-        style={{
-          width: 414,
-          height: 896,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        testID="storybook-snapshot"
-      >
-        <Story />
-      </View>
-    </AppApolloProvider>
-  ),
+  (Story) => {
+    useEffect(() => {
+      // Story 切り替え後に msw のレスポンスを更新するためリロードする
+      return () => window.location.reload();
+    }, []);
+
+    return (
+      <AppApolloProvider>
+        <View
+          style={{
+            width: 414,
+            height: 896,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          testID="storybook-snapshot"
+        >
+          <Story />
+        </View>
+      </AppApolloProvider>
+    );
+  },
   withScreenshot,
 ];
 
