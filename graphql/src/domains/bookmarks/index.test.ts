@@ -1,4 +1,5 @@
-import { describe, expect, it, beforeEach } from "vitest";
+import { describe, expect, it, beforeEach, afterEach } from "vitest";
+import { PrismaClient } from "../../generated/prisma";
 import {
   fetchBookmarks,
   fetchBookmarkById,
@@ -7,13 +8,17 @@ import {
   deleteBookmark,
 } from ".";
 
+const prisma = new PrismaClient();
+
 describe("bookmarks", () => {
-  beforeEach(() => {
-    // Clear all bookmarks before each test
-    const bookmarks = (globalThis as any).__bookmarks__;
-    if (bookmarks) {
-      bookmarks.clear();
-    }
+  beforeEach(async () => {
+    // Clean up database before each test
+    await prisma.bookmark.deleteMany();
+  });
+
+  afterEach(async () => {
+    // Clean up database after each test
+    await prisma.bookmark.deleteMany();
   });
 
   describe("createBookmark", () => {
@@ -32,7 +37,7 @@ describe("bookmarks", () => {
       expect(result.description).toBe(input.description);
       expect(result).toHaveProperty("created_at");
       expect(result).toHaveProperty("updated_at");
-      expect(result.created_at).toBe(result.updated_at);
+      expect(result.created_at.getTime()).toBe(result.updated_at.getTime());
     });
 
     it("should create a bookmark without description", async () => {
@@ -45,7 +50,7 @@ describe("bookmarks", () => {
 
       expect(result.title).toBe(input.title);
       expect(result.url).toBe(input.url);
-      expect(result.description).toBeUndefined();
+      expect(result.description).toBeNull();
     });
   });
 
@@ -55,11 +60,15 @@ describe("bookmarks", () => {
       expect(result).toEqual([]);
     });
 
-    it("should return all bookmarks", async () => {
+    it("should return all bookmarks ordered by created_at desc", async () => {
       const bookmark1 = await createBookmark({
         title: "Bookmark 1",
         url: "https://example1.com",
       });
+
+      // Small delay to ensure different timestamps
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       const bookmark2 = await createBookmark({
         title: "Bookmark 2",
         url: "https://example2.com",
@@ -68,8 +77,9 @@ describe("bookmarks", () => {
       const result = await fetchBookmarks();
 
       expect(result).toHaveLength(2);
-      expect(result).toContainEqual(bookmark1);
-      expect(result).toContainEqual(bookmark2);
+      // Should be ordered by created_at desc (newest first)
+      expect(result[0].id).toBe(bookmark2.id);
+      expect(result[1].id).toBe(bookmark1.id);
     });
   });
 
@@ -111,8 +121,10 @@ describe("bookmarks", () => {
       expect(result!.title).toBe(updateInput.title);
       expect(result!.url).toBe(created.url); // Should remain unchanged
       expect(result!.description).toBe(updateInput.description);
-      expect(result!.created_at).toBe(created.created_at);
-      expect(result!.updated_at).not.toBe(created.updated_at);
+      expect(result!.created_at.getTime()).toBe(created.created_at.getTime());
+      expect(result!.updated_at.getTime()).not.toBe(
+        created.updated_at.getTime(),
+      );
     });
 
     it("should return null for non-existent bookmark", async () => {
@@ -160,4 +172,9 @@ describe("bookmarks", () => {
       expect(result).toBe(false);
     });
   });
+});
+
+// Close Prisma connection after all tests
+process.on("beforeExit", async () => {
+  await prisma.$disconnect();
 });

@@ -14,10 +14,15 @@ export const server = {
     bookmark: async (id: string) => await fetchBookmarkById(id),
   },
   Mutation: {
-    createBookmark: async (input: { title: string; url: string; description?: string }) =>
-      await createBookmark(input),
-    updateBookmark: async (id: string, input: { title?: string; url?: string; description?: string }) =>
-      await updateBookmark(id, input),
+    createBookmark: async (input: {
+      title: string;
+      url: string;
+      description?: string;
+    }) => await createBookmark(input),
+    updateBookmark: async (
+      id: string,
+      input: { title?: string; url?: string; description?: string },
+    ) => await updateBookmark(id, input),
     deleteBookmark: async (id: string) => await deleteBookmark(id),
   },
 };
