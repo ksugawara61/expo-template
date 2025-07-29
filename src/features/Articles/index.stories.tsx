@@ -4,7 +4,6 @@ import { handlers } from "./useContainer.mocks";
 
 const meta = {
   component: Articles,
-  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof Articles>;
 
 export default meta;

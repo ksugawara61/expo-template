@@ -5,7 +5,6 @@ import { MocksBookmarks } from "./index.mocks";
 
 const meta = {
   component: Bookmarks,
-  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof Bookmarks>;
 
 export default meta;
@@ -32,7 +31,9 @@ export const Empty: Story = {
     },
     screenshot: {
       waitFor: async () => {
-        await screen.findByText(/ブックマークがありません/);
+        await screen.findByText(
+          /右下のボタンから新しいブックマークを追加できます/,
+        );
       },
     },
   },
