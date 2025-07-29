@@ -37,7 +37,7 @@ describe("bookmarks", () => {
       expect(result.description).toBe(input.description);
       expect(result).toHaveProperty("created_at");
       expect(result).toHaveProperty("updated_at");
-      expect(result.created_at).toBe(result.updated_at);
+      expect(result.created_at.getTime()).toBe(result.updated_at.getTime());
     });
 
     it("should create a bookmark without description", async () => {

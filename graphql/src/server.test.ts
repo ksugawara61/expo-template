@@ -27,8 +27,13 @@ describe("GraphQL Resolvers", () => {
   });
 
   describe("Mutation", () => {
-    it("should be an empty object", () => {
-      expect(server.Mutation).toEqual({});
+    it("should have bookmark mutations", () => {
+      expect(server.Mutation).toHaveProperty("createBookmark");
+      expect(server.Mutation).toHaveProperty("updateBookmark");
+      expect(server.Mutation).toHaveProperty("deleteBookmark");
+      expect(typeof server.Mutation.createBookmark).toBe("function");
+      expect(typeof server.Mutation.updateBookmark).toBe("function");
+      expect(typeof server.Mutation.deleteBookmark).toBe("function");
     });
   });
 });
