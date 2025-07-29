@@ -45,9 +45,6 @@ const preview: Preview = {
       },
     },
     screenshot: {
-      fullPage: false,
-      delay: 0,
-      omitBackground: true,
       viewport: {
         width: 414,
         height: 896,

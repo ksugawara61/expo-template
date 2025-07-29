@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
+import { screen } from "@storybook/test";
 import { Bookmarks } from ".";
 import { MocksBookmarks } from "./index.mocks";
 
 const meta = {
   component: Bookmarks,
-  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof Bookmarks>;
 
 export default meta;
@@ -16,6 +16,11 @@ export const Success: Story = {
     msw: {
       handlers: [MocksBookmarks.success],
     },
+    screenshot: {
+      waitFor: async () => {
+        await screen.findByText(/React NativeとExpoで始める/);
+      },
+    },
   },
 };
 
@@ -23,6 +28,13 @@ export const Empty: Story = {
   parameters: {
     msw: {
       handlers: [MocksBookmarks.empty],
+    },
+    screenshot: {
+      waitFor: async () => {
+        await screen.findByText(
+          /右下のボタンから新しいブックマークを追加できます/,
+        );
+      },
     },
   },
 };

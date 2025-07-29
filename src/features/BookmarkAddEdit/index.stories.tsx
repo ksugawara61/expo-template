@@ -3,7 +3,6 @@ import { BookmarkAddEdit } from ".";
 
 const meta = {
   component: BookmarkAddEdit,
-  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof BookmarkAddEdit>;
 
 export default meta;
