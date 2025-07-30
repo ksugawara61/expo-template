@@ -13,7 +13,7 @@ updates:
       time: "08:00"
       timezone: Asia/Tokyo
   - package-ecosystem: npm
-    directory: /
+    directory: /mobile
     schedule:
       interval: weekly
       day: sunday
