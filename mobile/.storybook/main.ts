@@ -19,7 +19,6 @@ const config: StorybookConfig = {
     options: {
       pluginReactOptions: {
         jsxRuntime: "automatic",
-        jsxImportSource: "nativewind",
         babel: {
           plugins: ["react-native-reanimated/plugin"],
         },

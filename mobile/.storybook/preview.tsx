@@ -1,5 +1,3 @@
-import "../global.css";
-
 import type { Preview } from "@storybook/react-native-web-vite";
 import { initialize, mswLoader } from "msw-storybook-addon";
 import { useEffect } from "react";
