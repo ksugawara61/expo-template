@@ -1,13 +1,6 @@
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Text,
-} from "@/components";
+import { Card, Chip, Text } from "react-native-paper";
 import { useContainer } from "./useContainer";
 
 type Item = {
@@ -26,25 +19,22 @@ export const Articles: FC = () => {
   const { data } = useContainer();
 
   const renderItem = ({ item }: { item: Item }) => (
-    <Card className="mx-4 my-2">
-      <CardHeader>
-        <CardTitle>{item.title}</CardTitle>
-        <Text variant="bodySmall" className="text-slate-600">
-          by {item.user.name}
-        </Text>
-      </CardHeader>
-      <CardContent>
-        <View className="flex-row flex-wrap mb-2">
+    <Card style={{ padding: 8 }}>
+      <Card.Title title={item.title} subtitle={`by ${item.user.name}`} />
+      <Card.Content>
+        <View
+          style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8 }}
+        >
           {item.tags.map((tag) => (
-            <Badge key={tag.name} variant="secondary" className="mr-2 mb-1">
+            <Chip key={tag.name} style={{ marginRight: 8, marginBottom: 4 }}>
               {tag.name}
-            </Badge>
+            </Chip>
           ))}
         </View>
-        <Text variant="bodySmall" className="text-slate-500">
+        <Text variant="bodySmall">
           {new Date(item.created_at).toLocaleDateString()}
         </Text>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 
@@ -53,6 +43,8 @@ export const Articles: FC = () => {
       data={data}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
+      style={{ height: "100%", width: "100%" }}
+      contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
     />
   );
 };

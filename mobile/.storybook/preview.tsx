@@ -1,12 +1,11 @@
-import "../global.css";
-
 import type { Preview } from "@storybook/react-native-web-vite";
 import { initialize, mswLoader } from "msw-storybook-addon";
 import { useEffect } from "react";
 import { View } from "react-native";
 import { MINIMAL_VIEWPORTS } from "storybook/viewport";
 import { withScreenshot } from "storycap";
-import { AppApolloProvider } from "../src/libs/graphql/AppApolloProvider";
+import { AppProvider } from "../src/libs/AppProvider";
+import { ScreenWrapper } from "../src/libs/ScreenWrapper";
 
 initialize();
 
@@ -18,7 +17,7 @@ export const decorators = [
     }, []);
 
     return (
-      <AppApolloProvider>
+      <AppProvider>
         <View
           style={{
             width: 414,
@@ -28,9 +27,11 @@ export const decorators = [
           }}
           testID="storybook-snapshot"
         >
-          <Story />
+          <ScreenWrapper>
+            <Story />
+          </ScreenWrapper>
         </View>
-      </AppApolloProvider>
+      </AppProvider>
     );
   },
   withScreenshot,

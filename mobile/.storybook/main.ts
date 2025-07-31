@@ -13,13 +13,12 @@ const config: StorybookConfig = {
       files: "**/*.stories.?(ts|tsx|js|jsx)",
     },
   ],
-  addons: ["@storybook/addon-docs", "@storybook/addon-a11y", "storycap"],
+  addons: ["@storybook/addon-a11y", "storycap"],
   framework: {
     name: "@storybook/react-native-web-vite",
     options: {
       pluginReactOptions: {
         jsxRuntime: "automatic",
-        jsxImportSource: "nativewind",
         babel: {
           plugins: ["react-native-reanimated/plugin"],
         },

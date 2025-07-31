@@ -82,11 +82,11 @@ export const generatedSchema = {
   },
   Bookmark: {
     __typename: { __type: "String!" },
-    created_at: { __type: "String!" },
+    created_at: { __type: "DateTimeISO!" },
     description: { __type: "String" },
     id: { __type: "String!" },
     title: { __type: "String!" },
-    updated_at: { __type: "String!" },
+    updated_at: { __type: "DateTimeISO!" },
     url: { __type: "String!" },
   },
   InputInput: {
@@ -133,11 +133,11 @@ export interface Article {
 
 export interface Bookmark {
   __typename?: "Bookmark";
-  created_at: ScalarsEnums["String"];
+  created_at: ScalarsEnums["DateTimeISO"];
   description?: Maybe<ScalarsEnums["String"]>;
   id: ScalarsEnums["String"];
   title: ScalarsEnums["String"];
-  updated_at: ScalarsEnums["String"];
+  updated_at: ScalarsEnums["DateTimeISO"];
   url: ScalarsEnums["String"];
 }
 
