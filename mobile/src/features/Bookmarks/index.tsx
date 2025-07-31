@@ -44,7 +44,7 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
             <HelperText type="info">{bookmark.description}</HelperText>
           )}
         </View>
-        <View className="flex-row gap-2">
+        <View style={{ flexDirection: "row", gap: 8 }}>
           <Button mode="outlined" onPress={() => onEdit(bookmark)}>
             編集
           </Button>
@@ -86,9 +86,11 @@ export const Bookmarks: FC = () => {
   return (
     <Suspense
       fallback={
-        <View className="flex-1 justify-center items-center">
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="large" />
-          <Text variant="bodyMedium" className="mt-4">
+          <Text variant="bodyMedium" style={{ marginTop: 16 }}>
             ブックマークを読み込み中...
           </Text>
         </View>
