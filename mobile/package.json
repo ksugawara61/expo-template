@@ -56,7 +56,6 @@
     "@graphql-codegen/typescript-msw": "^3.0.1",
     "@graphql-codegen/typescript-operations": "^4.6.1",
     "@storybook/addon-a11y": "^9.0.18",
-    "@storybook/addon-docs": "^9.0.18",
     "@storybook/react-native-web-vite": "^9.0.18",
     "@storybook/test": "^8.6.14",
     "@testing-library/react-native": "14.0.0-alpha.1",

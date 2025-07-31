@@ -93,9 +93,6 @@ importers:
       '@storybook/addon-a11y':
         specifier: ^9.0.18
         version: 9.0.18(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))
-      '@storybook/addon-docs':
-        specifier: ^9.0.18
-        version: 9.0.18(@types/react@19.0.14)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))
       '@storybook/react-native-web-vite':
         specifier: ^9.0.18
         version: 9.0.18(@babel/core@7.28.0)(react-dom@19.0.0(react@19.0.0))(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)(rollup@4.46.2)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))(typescript@5.8.3)(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.27.0)(terser@5.43.1)(yaml@2.8.0))
@@ -1621,12 +1618,6 @@ packages:
   '@kvs/types@2.1.4':
     resolution: {integrity: sha512-XtTOUatnJrDcuYNPfN+9x1xuVp11IuyPi9zOLVJPpfnKp+vUCatka/Crp2cfz0uKt4QE1Pb4Dg/TNYgVYA2Org==}
 
-  '@mdx-js/react@3.1.0':
-    resolution: {integrity: sha512-QjHtSaoameoalGnKDT3FoIl4+9RwyTmo9ZJGBdLOks/YOiWHoRDI3PUwEzOE7kEmGcV3AFcp9K6dYu9rEuKLAQ==}
-    peerDependencies:
-      '@types/react': '>=16'
-      react: '>=16'
-
   '@modelcontextprotocol/sdk@1.15.0':
     resolution: {integrity: sha512-67hnl/ROKdb03Vuu0YOr+baKTvf1/5YBHBm9KnZdjdAh8hjt4FRCPD5ucwxGB237sBpzlqQsLy1PFu7z/ekZ9Q==}
     engines: {node: '>=18'}
@@ -1945,11 +1936,6 @@ packages:
     peerDependencies:
       storybook: ^9.0.18
 
-  '@storybook/addon-docs@9.0.18':
-    resolution: {integrity: sha512-1mLhaRDx8s1JAF51o56OmwMnIsg4BOQJ8cn+4wbMjh14pDFALrovlFl/BpAXnV1VaZqHjCB4ZWuP+y5CwXEpeQ==}
-    peerDependencies:
-      storybook: ^9.0.18
-
   '@storybook/builder-vite@9.0.18':
     resolution: {integrity: sha512-lfbrozA6UPVizDrgbPEe04WMtxIraESwUkmwW3+Lxh8rKEUj5cXngcrJUW+meQNNaggdZZWEqeEtweuaLIR+Hg==}
     peerDependencies:
@@ -1963,13 +1949,6 @@ packages:
 
   '@storybook/global@5.0.0':
     resolution: {integrity: sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==}
-
-  '@storybook/icons@1.4.0':
-    resolution: {integrity: sha512-Td73IeJxOyalzvjQL+JXx72jlIYHgs+REaHiREOqfpo3A2AYYG71AUbcv+lg7mEDIweKVCxsMQ0UKo634c8XeA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
 
   '@storybook/instrumenter@8.6.14':
     resolution: {integrity: sha512-iG4MlWCcz1L7Yu8AwgsnfVAmMbvyRSk700Mfy2g4c8y5O+Cv1ejshE1LBBsCwHgkuqU0H4R0qu4g23+6UnUemQ==}
@@ -2243,9 +2222,6 @@ packages:
 
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
-
-  '@types/mdx@2.0.13':
-    resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
 
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
@@ -9856,12 +9832,6 @@ snapshots:
 
   '@kvs/types@2.1.4': {}
 
-  '@mdx-js/react@3.1.0(@types/react@19.0.14)(react@19.0.0)':
-    dependencies:
-      '@types/mdx': 2.0.13
-      '@types/react': 19.0.14
-      react: 19.0.0
-
   '@modelcontextprotocol/sdk@1.15.0':
     dependencies:
       ajv: 6.12.6
@@ -10222,19 +10192,6 @@ snapshots:
       axe-core: 4.10.3
       storybook: 9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2)
 
-  '@storybook/addon-docs@9.0.18(@types/react@19.0.14)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))':
-    dependencies:
-      '@mdx-js/react': 3.1.0(@types/react@19.0.14)(react@19.0.0)
-      '@storybook/csf-plugin': 9.0.18(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))
-      '@storybook/icons': 1.4.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@storybook/react-dom-shim': 9.0.18(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
-      storybook: 9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2)
-      ts-dedent: 2.2.0
-    transitivePeerDependencies:
-      - '@types/react'
-
   '@storybook/builder-vite@9.0.18(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.27.0)(terser@5.43.1)(yaml@2.8.0))':
     dependencies:
       '@storybook/csf-plugin': 9.0.18(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))
@@ -10248,11 +10205,6 @@ snapshots:
       unplugin: 1.16.1
 
   '@storybook/global@5.0.0': {}
-
-  '@storybook/icons@1.4.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
-    dependencies:
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
 
   '@storybook/instrumenter@8.6.14(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))':
     dependencies:
@@ -10702,8 +10654,6 @@ snapshots:
   '@types/mdast@3.0.15':
     dependencies:
       '@types/unist': 2.0.11
-
-  '@types/mdx@2.0.13': {}
 
   '@types/minimist@1.2.5': {}
 
