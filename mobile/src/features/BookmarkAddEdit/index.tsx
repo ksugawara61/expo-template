@@ -3,15 +3,7 @@ import { router } from "expo-router";
 import type { FC } from "react";
 import { useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  HelperText,
-  Text,
-  TextInput,
-} from "@/components";
+import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
 import { GET_BOOKMARKS } from "../Bookmarks";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
@@ -149,15 +141,14 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   };
 
   return (
-    <ScrollView className="w-full bg-gray-50">
-      <Card className="m-4">
-        <CardHeader>
-          <Text variant="headlineSmall">
-            {isEditing ? "ブックマークを編集" : "新しいブックマーク"}
-          </Text>
-        </CardHeader>
-        <CardContent>
-          <View className="gap-4">
+    <ScrollView style={{ flex: 1, width: "100%", height: "100%" }}>
+      <Card style={{ margin: 16 }}>
+        <Card.Title
+          title={isEditing ? "ブックマークを編集" : "新しいブックマーク"}
+          titleVariant="headlineSmall"
+        />
+        <Card.Content>
+          <View style={{ gap: 16 }}>
             <View>
               <TextInput
                 label="タイトル"
@@ -193,23 +184,26 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
               />
             </View>
 
-            <View className="flex-row gap-2 mt-4">
+            <View style={{ flexDirection: "row", gap: 8, marginTop: 16 }}>
               <Button
-                variant="outline"
+                mode="outlined"
                 onPress={handleCancel}
                 disabled={loading}
-                className="flex-1"
-                title="キャンセル"
-              />
+                style={{ flex: 1 }}
+              >
+                キャンセル
+              </Button>
               <Button
+                mode="contained"
                 onPress={handleSubmit}
                 disabled={loading}
-                className="flex-1"
-                title={loading ? "処理中..." : isEditing ? "更新" : "作成"}
-              />
+                style={{ flex: 1 }}
+              >
+                {loading ? "処理中..." : isEditing ? "更新" : "作成"}
+              </Button>
             </View>
           </View>
-        </CardContent>
+        </Card.Content>
       </Card>
     </ScrollView>
   );
