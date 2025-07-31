@@ -6,12 +6,10 @@ import {
   ActivityIndicator,
   Button,
   Card,
-  CardContent,
-  CardHeader,
   FAB,
   HelperText,
   Text,
-} from "@/components";
+} from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
 import type { BookmarkFragment } from "./index.msw";
 
@@ -38,29 +36,23 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
   };
 
   return (
-    <Card className="mx-4 my-2">
-      <CardHeader>
-        <Text variant="titleMedium">{bookmark.title}</Text>
-        {bookmark.description && (
-          <HelperText>{bookmark.description}</HelperText>
-        )}
-      </CardHeader>
-      <CardContent>
-        <View className="flex-row gap-2">
-          <Button
-            variant="outline"
-            onPress={() => onEdit(bookmark)}
-            className="flex-1"
-            title="編集"
-          />
-          <Button
-            variant="destructive"
-            onPress={handleDelete}
-            className="flex-1"
-            title="削除"
-          />
+    <Card mode="contained" contentStyle={{ padding: 8 }}>
+      <Card.Content style={{ gap: 16 }}>
+        <View style={{ gap: 8 }}>
+          <Text variant="titleMedium">{bookmark.title}</Text>
+          {bookmark.description && (
+            <HelperText type="info">{bookmark.description}</HelperText>
+          )}
         </View>
-      </CardContent>
+        <View className="flex-row gap-2">
+          <Button mode="outlined" onPress={() => onEdit(bookmark)}>
+            編集
+          </Button>
+          <Button mode="contained" onPress={handleDelete}>
+            削除
+          </Button>
+        </View>
+      </Card.Content>
     </Card>
   );
 };
@@ -110,8 +102,6 @@ export const Bookmarks: FC = () => {
 export const Content: FC = () => {
   const {
     data: { bookmarks },
-    error,
-    refetch,
   } = useSuspenseQuery(GET_BOOKMARKS);
   const [deleteBookmark] = useMutation(DELETE_BOOKMARK, {
     refetchQueries: [{ query: GET_BOOKMARKS }],
@@ -136,40 +126,12 @@ export const Content: FC = () => {
     router.push("/modal");
   };
 
-  if (error) {
-    return (
-      <View className="flex-1 justify-center items-center p-4">
-        <Text variant="headlineSmall" className="text-red-600 mb-4">
-          エラーが発生しました
-        </Text>
-        <HelperText className="text-center mb-4">{error.message}</HelperText>
-        <Button onPress={() => refetch()} title="再試行" />
-      </View>
-    );
-  }
-
-  if (bookmarks.length === 0) {
-    return (
-      <View className="flex-1 justify-center items-center p-4">
-        <Text variant="headlineSmall" className="mb-4">
-          ブックマークがありません
-        </Text>
-        <Text variant="bodyMedium" className="text-center mb-4 text-slate-600">
-          右下のボタンから新しいブックマークを追加できます
-        </Text>
-        <FAB
-          icon="add"
-          onPress={handleAdd}
-          className="absolute bottom-4 right-4"
-        />
-      </View>
-    );
-  }
-
   return (
     <>
       <FlatList
         data={bookmarks.map((bookmark) => getFragmentData(BOOKMARK, bookmark))}
+        style={{ height: "100%", width: "100%" }}
+        contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
         renderItem={({ item }) => (
           <BookmarkItem
             bookmark={item}
@@ -177,11 +139,33 @@ export const Content: FC = () => {
             onEdit={handleEdit}
           />
         )}
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 16,
+            }}
+          >
+            <Text variant="titleLarge">ブックマークがありません</Text>
+            <Text variant="bodyMedium">
+              右下のボタンから新しいブックマークを追加できます
+            </Text>
+          </View>
+        )}
       />
       <FAB
-        icon="add"
+        icon="plus"
         onPress={handleAdd}
-        className="absolute bottom-4 right-4"
+        style={{
+          position: "absolute",
+          margin: 16,
+          right: 0,
+          bottom: 0,
+        }}
       />
     </>
   );

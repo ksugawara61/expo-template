@@ -19,7 +19,7 @@ const commonRules = {
   "react-native/no-raw-text": [
     "error",
     {
-      skip: ["CardTitle", "CardDescription"],
+      skip: ["CardTitle", "CardDescription", "Button"],
     },
   ],
   "react-native/no-single-element-style-arrays": "error",
