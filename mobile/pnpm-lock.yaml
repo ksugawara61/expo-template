@@ -103,8 +103,8 @@ importers:
         specifier: 14.0.0-alpha.1
         version: 14.0.0-alpha.1(jest@29.7.0(@types/node@24.0.10))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)(universal-test-renderer@0.6.0(react@19.0.0))
       '@textlint-ja/textlint-rule-preset-ai-writing':
-        specifier: ^1.5.0
-        version: 1.5.0
+        specifier: ^1.6.0
+        version: 1.6.0
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -2045,8 +2045,8 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@textlint-ja/textlint-rule-preset-ai-writing@1.5.0':
-    resolution: {integrity: sha512-Jb++zTsPTFEJqnVTXR73EJjSSC/rt88OXoGra8vL8A0HHfIeailX2zREwtcYghe6+VKvLu+CoPsKPw/taJdd4g==}
+  '@textlint-ja/textlint-rule-preset-ai-writing@1.6.0':
+    resolution: {integrity: sha512-PwPQfNrbQMUBMmCUw0Yf1qK1zxV3HS5dyAT0gTnjj1g0sbvs8NRbj5znunrXqst61savayDlPbrl23tqoFCHbQ==}
 
   '@textlint-rule/textlint-rule-no-invalid-control-character@3.0.0':
     resolution: {integrity: sha512-2o9n4z49ntSPtJPlcJtxakyB4dAg2MKSvR9ZCZEHjye0ee27oWYzK6yHz2HjsXQqt9VeCwxNHDOIGIx2CQX0Dw==}
@@ -10344,7 +10344,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.0
 
-  '@textlint-ja/textlint-rule-preset-ai-writing@1.5.0':
+  '@textlint-ja/textlint-rule-preset-ai-writing@1.6.0':
     dependencies:
       '@textlint/regexp-string-matcher': 2.0.2
       kuromojin: 3.0.1
