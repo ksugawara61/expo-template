@@ -1,0 +1,50 @@
+name: Test
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'graphql/**'
+      - '!.github/workflows/**'
+      - '.github/workflows/graphql_lint.yaml'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run-ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: graphql
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            graphql
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          package_json_file: graphql/package.json
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: graphql/.node-version
+          cache: 'pnpm'
+          cache-dependency-path: 'graphql/**/pnpm-lock.yaml'
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Test
+        run: pnpm test
