@@ -46,5 +46,7 @@ jobs:
           cache-dependency-path: 'graphql/**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+      - name: Database Migration
+        run: pnpm db:migrate:test
       - name: Test
         run: pnpm test
