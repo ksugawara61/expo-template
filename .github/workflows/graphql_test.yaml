@@ -5,7 +5,7 @@ on:
     paths:
       - 'graphql/**'
       - '!.github/workflows/**'
-      - '.github/workflows/graphql_lint.yaml'
+      - '.github/workflows/graphql_test.yaml'
   push:
     branches:
       - main
