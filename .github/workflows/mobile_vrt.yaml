@@ -5,7 +5,7 @@ on:
     paths:
       - 'mobile/**'
       - '!.github/workflows/**'
-      - '.github/workflows/vrt.yml'
+      - '.github/workflows/mobile_vrt.yml'
 
 jobs:
   vrt:

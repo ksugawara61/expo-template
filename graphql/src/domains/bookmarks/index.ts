@@ -66,7 +66,7 @@ export const updateBookmark = async (
         }),
       },
     });
-  } catch (error) {
+  } catch (_error) {
     // Record not found
     return null;
   }
@@ -78,7 +78,7 @@ export const deleteBookmark = async (id: string): Promise<boolean> => {
       where: { id },
     });
     return true;
-  } catch (error) {
+  } catch (_error) {
     // Record not found
     return false;
   }
