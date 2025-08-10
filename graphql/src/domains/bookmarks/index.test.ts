@@ -1,11 +1,11 @@
-import { describe, expect, it, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PrismaClient } from "../../generated/prisma";
 import {
-  fetchBookmarks,
-  fetchBookmarkById,
   createBookmark,
-  updateBookmark,
   deleteBookmark,
+  fetchBookmarkById,
+  fetchBookmarks,
+  updateBookmark,
 } from ".";
 
 const prisma = new PrismaClient();
@@ -117,12 +117,12 @@ describe("bookmarks", () => {
       const result = await updateBookmark(created.id, updateInput);
 
       expect(result).not.toBeNull();
-      expect(result!.id).toBe(created.id);
-      expect(result!.title).toBe(updateInput.title);
-      expect(result!.url).toBe(created.url); // Should remain unchanged
-      expect(result!.description).toBe(updateInput.description);
-      expect(result!.created_at.getTime()).toBe(created.created_at.getTime());
-      expect(result!.updated_at.getTime()).not.toBe(
+      expect(result?.id).toBe(created.id);
+      expect(result?.title).toBe(updateInput.title);
+      expect(result?.url).toBe(created.url); // Should remain unchanged
+      expect(result?.description).toBe(updateInput.description);
+      expect(result?.created_at.getTime()).toBe(created.created_at.getTime());
+      expect(result?.updated_at.getTime()).not.toBe(
         created.updated_at.getTime(),
       );
     });
@@ -146,9 +146,9 @@ describe("bookmarks", () => {
         title: "Updated Title",
       });
 
-      expect(result!.title).toBe("Updated Title");
-      expect(result!.url).toBe(created.url);
-      expect(result!.description).toBe(created.description);
+      expect(result?.title).toBe("Updated Title");
+      expect(result?.url).toBe(created.url);
+      expect(result?.description).toBe(created.description);
     });
   });
 

@@ -1,10 +1,10 @@
 import { fetchArticles } from "./domains/articles";
 import {
-  fetchBookmarks,
-  fetchBookmarkById,
   createBookmark,
-  updateBookmark,
   deleteBookmark,
+  fetchBookmarkById,
+  fetchBookmarks,
+  updateBookmark,
 } from "./domains/bookmarks";
 
 export const server = {
