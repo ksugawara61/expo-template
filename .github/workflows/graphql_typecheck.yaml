@@ -1,11 +1,11 @@
-name: Lint
+name: Typecheck
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'graphql/**'
       - '!.github/workflows/**'
-      - '.github/workflows/graphql_lint.yaml'
+      - '.github/workflows/typecheck.yaml'
   push:
     branches:
       - main
@@ -32,5 +32,5 @@ jobs:
           cache-dependency-path: 'graphql/**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck

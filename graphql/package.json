@@ -20,7 +20,8 @@
     "lint": "pnpm lint:biome",
     "fmt:biome": "biome format . --write",
     "fmt": "pnpm fmt:biome",
-    "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts"
+    "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@getcronit/pylon": "^2.0.0",
@@ -36,6 +37,7 @@
     "msw": "^2.3.1",
     "openapi-msw": "^1.2.0",
     "openapi-typescript": "^7.8.0",
+    "typescript": "5.8.3",
     "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@9.15.9+sha256.cf86a7ad764406395d4286a6d09d730711720acc6d93e9dce9ac7ac4dc4a28a7"
