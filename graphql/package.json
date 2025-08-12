@@ -31,7 +31,7 @@
     "prisma": "^6.13.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.2",
+    "@biomejs/biome": "^2.1.4",
     "@getcronit/pylon-dev": "^1.0.0",
     "@vitest/ui": "^3.2.4",
     "msw": "^2.3.1",
