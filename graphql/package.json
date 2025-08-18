@@ -6,6 +6,8 @@
   "description": "Generated with `npm create pylon`",
   "scripts": {
     "dev": "pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
+    "dev:db:start": "supabase start",
+    "dev:db:stop": "supabase stop",
     "build": "pylon build",
     "test": "vitest",
     "test:ui": "vitest --ui --watch",
@@ -37,6 +39,7 @@
     "msw": "^2.3.1",
     "openapi-msw": "^1.2.0",
     "openapi-typescript": "^7.8.0",
+    "supabase": "^2.34.3",
     "typescript": "5.8.3",
     "vitest": "^3.2.4"
   },
