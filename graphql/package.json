@@ -13,11 +13,10 @@
     "test:ui": "vitest --ui --watch",
     "test:db:up": "docker-compose -f docker-compose.test.yml up -d",
     "test:db:down": "docker-compose -f docker-compose.test.yml down",
-    "test:db:reset": "pnpm test:db:down && pnpm test:db:up && sleep 5 && pnpm db:migrate:test",
     "test:with:db": "pnpm test:db:up && sleep 5 && pnpm db:migrate:test && pnpm test && pnpm test:db:down",
-    "db:migrate": "npx prisma migrate dev",
+    "db:migrate": "prisma migrate dev",
     "db:migrate:test": "DATABASE_URL=\"postgresql://test_user:test_password@localhost:5433/test_db?schema=public\" npx prisma migrate dev",
-    "db:generate": "npx prisma generate",
+    "db:generate": "prisma generate",
     "lint:biome": "biome ci . ",
     "lint": "pnpm lint:biome",
     "fmt:biome": "biome format . --write",
@@ -28,6 +27,7 @@
   "dependencies": {
     "@getcronit/pylon": "^2.0.0",
     "@hono/node-server": "^1.18.2",
+    "@prisma/adapter-pg": "^6.14.0",
     "@prisma/client": "^6.13.0",
     "openapi-fetch": "^0.14.0",
     "prisma": "^6.13.0"
