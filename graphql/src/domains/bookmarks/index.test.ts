@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { PrismaClient } from "../../generated/prisma";
+import { prisma } from "../../libs/prisma/client";
 import {
   createBookmark,
   deleteBookmark,
@@ -7,8 +7,6 @@ import {
   fetchBookmarks,
   updateBookmark,
 } from ".";
-
-const prisma = new PrismaClient();
 
 describe("bookmarks", () => {
   beforeEach(async () => {
