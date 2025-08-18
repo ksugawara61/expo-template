@@ -33,4 +33,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Typecheck
-        run: pnpm typecheck
+        run: |
+          pnpm db:generate
+          pnpm typecheck
