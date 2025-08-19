@@ -28,7 +28,11 @@ module.exports = {
       output: "static",
       favicon: "./assets/images/favicon.png",
     },
-    plugins: ["expo-router"],
+    plugins: [
+      "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+    ],
     experiments: {
       typedRoutes: true,
     },
