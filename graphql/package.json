@@ -28,7 +28,7 @@
     "@getcronit/pylon": "^2.0.0",
     "@hono/node-server": "^1.18.2",
     "@prisma/adapter-pg": "^6.14.0",
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.14.0",
     "openapi-fetch": "^0.14.0",
     "prisma": "^6.13.0"
   },
