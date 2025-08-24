@@ -38,7 +38,7 @@
     "@vitest/ui": "^3.2.4",
     "msw": "^2.3.1",
     "openapi-msw": "^1.2.0",
-    "openapi-typescript": "^7.8.0",
+    "openapi-typescript": "^7.9.1",
     "supabase": "^2.34.3",
     "typescript": "5.8.3",
     "vitest": "^3.2.4"
