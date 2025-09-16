@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "files": {
     "includes": [
       "**/.mcp.json",
@@ -8,19 +8,19 @@
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
-      "!**/src/libs/gql/**",
+      "!**/src/libs/gql",
       "!**/src/**/*.msw.ts",
-      "!**/src/libs/openapi/schemas/**",
-      "!**/android/**",
-      "!**/ios/**",
-      "!**/node_modules/**",
-      "!**/dist/**",
-      "!**/build/**",
-      "!**/coverage/**",
+      "!**/src/libs/openapi/schemas",
+      "!**/android",
+      "!**/ios",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
       "!**/tmp",
       "!**/pnpm-lock.yaml",
       "!**/*.local.json",
-      "!**/graphql/**"
+      "!**/graphql"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
