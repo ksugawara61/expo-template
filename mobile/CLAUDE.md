@@ -15,9 +15,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `pnpm test` - Jestを使用してテストを実行
 - `pnpm test:watch` - ウォッチモードでテストを実行
-- `pnpm lint` - Biomeを使用してコードをチェック
-- `pnpm fmt` - Biomeを使用してコードをフォーマット
+- `pnpm lint` - BiomeとESLintを使用してコードをチェック
+- `pnpm fmt` - BiomeとESLintを使用してコードをフォーマット
 - `pnpm typecheck` - TypeScriptの型チェックを実行（ビルドはしない）
+
+### GraphQL
+
+- `pnpm codegen` - GraphQLスキーマから型定義とMSWモックを生成
+- `pnpm expo:fix` - Expoの依存関係を修正
 
 ### Storybook
 
@@ -37,11 +42,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 このプロジェクトは**Expo Router**を使用したReact Native/Expoアプリケーションです。主要な特徴：
 
 - **Expo Router** - ファイルベースのルーティングシステム
-- **NativeWind** - TailwindCSSをReact Nativeで使用するためのライブラリ
-- **Biome** - TypeScriptファイルのリンティングとフォーマッティング
+- **Apollo Client** - GraphQLクライアント（SWRと併用）
+- **GraphQL Codegen** - 型安全なGraphQLクライアントコードとMSWモックの自動生成
+- **ReactNativePaper** - スタイリングで使用するためのライブラリ
+- **Biome + ESLint** - TypeScriptファイルのリンティングとフォーマッティング
 - **Jest** - テストフレームワーク
 - **Storybook** - UIコンポーネントのドキュメント・テスト環境
 - **VRT（Visual Regression Testing）** - reg-cliとStorycapを使用したビジュアルテスト
+- **MSW** - APIモックとテストデータ管理
 
 ### ディレクトリ構造
 
@@ -101,6 +109,8 @@ src/                   # 共通コンポーネント・ユーティリティ
       useContainer.ts        # ビジネスロジック
       useContainer.test.ts   # コンテナテスト
   libs/                # 共通ライブラリ
+    gql/                     # GraphQL関連（自動生成）
+      graphql.ts             # 型定義とフラグメント
     openapi/                 # OpenAPI関連
       client.ts              # APIクライアント
       schemas/qiita.ts       # 生成されたスキーマ
@@ -130,14 +140,10 @@ vrt/                   # VRTの結果・設定
 - `app.json` - Expoの設定
 - `tsconfig.json` - TypeScript設定（@/\*パスエイリアス設定済み）
 - `biome.json` - Biomeの詳細なルール設定
+- `eslint.config.js` - ESLintの設定
+- `codegen.ts` - GraphQL Code Generatorの設定
 - `jest.config.js` - Jestの設定
 - `.textlintrc.json` - textlintの設定（日本語文章の校正用）
-
-### スタイリング
-
-- **NativeWind** - TailwindCSSクラスをReact Nativeで使用
-- `global.css` - グローバルスタイル
-- `tailwind.config.js` - Tailwindの設定
 
 ### テスト戦略
 
@@ -176,9 +182,9 @@ vrt/                   # VRTの結果・設定
 
 - **型定義**: `type` を使用（`interface` ではなく）
 - **children型**: `FC<PropsWithChildren<Type>>` を使用（`ReactNode` の直接指定は避ける）
-- **スタイリング**: NativeWind で直接 className を記述（cn() 関数は不使用）
-  - `className={`base-classes ${variant} ${size} ${conditional ? "class" : ""} ${className || ""}`}` パターンを使用
-  - テンプレートリテラルで動的にクラスを組み合わせ
+- **スタイリング**: React Native PaperのthemeやStyleSheetを使用
+  - `style={[styles.base, styles[variant], style]}` パターンを使用
+  - Material Design準拠のスタイル実装
 - **Storybook**: 各コンポーネントに複数のストーリーを用意
 - **エクスポート**: `src/components/index.ts` で統一管理
 
@@ -193,12 +199,12 @@ import { View, Text } from "react-native";
 // children を使わないコンポーネントの場合
 export type ComponentProps = {
   variant?: "default" | "secondary";
-  className?: string;
+  style?: ViewStyle;
 };
 
-export const Component: FC<ComponentProps> = ({ variant = "default", className }) => {
+export const Component: FC<ComponentProps> = ({ variant = "default", style }) => {
   return (
-    <View className={`base-classes ${variants[variant]} ${className || ""}`}>
+    <View style={[styles.base, styles[variant], style]}>
       {/* content */}
     </View>
   );
@@ -207,16 +213,16 @@ export const Component: FC<ComponentProps> = ({ variant = "default", className }
 // children を使うコンポーネントの場合
 export type ContainerProps = {
   variant?: "default" | "secondary";
-  className?: string;
+  style?: ViewStyle;
 };
 
-export const Container: FC<PropsWithChildren<ContainerProps>> = ({ 
-  children, 
-  variant = "default", 
-  className 
+export const Container: FC<PropsWithChildren<ContainerProps>> = ({
+  children,
+  variant = "default",
+  style
 }) => {
   return (
-    <View className={`base-classes ${variants[variant]} ${className || ""}`}>
+    <View style={[styles.base, styles[variant], style]}>
       {children}
     </View>
   );
@@ -252,20 +258,35 @@ export const Variant: Story = {
 ##### バリエーションパターン実装
 
 ```typescript
-const variants = {
-  default: "bg-slate-900 text-slate-50",
-  secondary: "bg-slate-100 text-slate-900",
-  destructive: "bg-red-500 text-white",
-};
+import { StyleSheet } from "react-native";
 
-const sizes = {
-  default: "h-10 px-4 py-2",
-  sm: "h-8 px-3 py-1",
-  lg: "h-12 px-8 py-3",
-};
+const styles = StyleSheet.create({
+  base: {
+    borderRadius: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  default: {
+    backgroundColor: '#1e293b',
+  },
+  secondary: {
+    backgroundColor: '#f1f5f9',
+  },
+  destructive: {
+    backgroundColor: '#ef4444',
+  },
+  sm: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  lg: {
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+  },
+});
 
 // 使用例
-className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
+style={[styles.base, styles[variant], sizes && styles[size], style]}
 ```
 
 #### コンポーネント追加手順
@@ -274,7 +295,7 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 2. **コンポーネントファイル作成**: `src/components/ComponentName/index.tsx`
 3. **型定義**: `type` で Props を定義（children使用時は `FC<PropsWithChildren<Type>>`）
 4. **バリエーション定義**: オブジェクトでバリエーション用のクラス群を定義
-5. **スタイリング**: テンプレートリテラルで NativeWind クラスを組み合わせ
+5. **スタイリング**: StyleSheetでスタイル定義を作成
 6. **Storybookストーリー作成**: `src/components/ComponentName/index.stories.tsx`
 7. **エクスポート追加**: `src/components/index.ts` に追加
 8. **フォーマット確認**: `pnpm fmt && pnpm lint` で確認
@@ -309,7 +330,7 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 
 #### 基本原則
 
-1. **直接スタイリング禁止**: `className` で直接TailwindCSSクラスを記述しない
+1. **直接スタイリング禁止**: インラインスタイルや直接的なStyleSheet定義を避ける
 2. **コンポーネント活用**: `@/components` から適切なコンポーネントを選択・組み合わせて使用
 3. **構造化**: 意味のある構造（Card、Header、Content等）を意識した実装
 
@@ -317,15 +338,17 @@ className={`rounded-md ${variants[variant]} ${sizes[size]} ${className || ""}`}
 
 ```typescript
 // ❌ 避けるべき実装（直接スタイリング）
-<View className="p-4 border-b border-gray-200">
-  <Text className="text-lg font-bold text-gray-900 mb-2">{title}</Text>
-  <Text className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+<View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#e5e7eb' }}>
+  <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#111827', marginBottom: 8 }}>
+    {title}
+  </Text>
+  <Text style={{ backgroundColor: '#dbeafe', color: '#1e40af', fontSize: 12, padding: 4, borderRadius: 4 }}>
     {tag}
   </Text>
 </View>
 
 // ✅ 推奨される実装（コンポーネント活用）
-<Card className="mx-4 my-2">
+<Card style={{ marginHorizontal: 16, marginVertical: 8 }}>
   <CardHeader>
     <CardTitle>{title}</CardTitle>
   </CardHeader>
