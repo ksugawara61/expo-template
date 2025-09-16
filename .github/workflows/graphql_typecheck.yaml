@@ -36,3 +36,5 @@ jobs:
         run: |
           pnpm db:generate
           pnpm typecheck
+        env:
+          DATABASE_URL: "file:./dev.db"

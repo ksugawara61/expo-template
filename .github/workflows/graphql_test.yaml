@@ -17,20 +17,6 @@ jobs:
     defaults:
       run:
         working-directory: graphql
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -46,7 +32,14 @@ jobs:
           cache-dependency-path: 'graphql/**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Database Migration
-        run: pnpm test:db:migrate
+      - name: Setup SQLite Database
+        run: |
+          pnpm db:generate
+          pnpm db:migrate
+        env:
+          DATABASE_URL: "file:./test.db"
       - name: Test
         run: pnpm test
+        env:
+          NODE_ENV: development
+          DATABASE_URL: "file:./test.db"
