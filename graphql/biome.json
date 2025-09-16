@@ -6,15 +6,15 @@
       "**/package.json",
       "**/src/**",
       "**/.mcp.json",
-      "!**/src/generated/**",
-      "!**/node_modules/**",
-      "!**/dist/**",
-      "!**/build/**",
-      "!**/coverage/**",
+      "!**/src/generated",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
       "!**/tmp",
       "!**/pnpm-lock.yaml",
       "!**/*.local.json",
-      "!**/graphql/**"
+      "!**/graphql"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
