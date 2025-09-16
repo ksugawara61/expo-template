@@ -4,9 +4,9 @@ import { useContainer } from "./useContainer";
 import { handlers } from "./useContainer.mocks";
 
 describe("useContainer", () => {
-  it("should fetch articles", () => {
+  it("should fetch articles", async () => {
     server.use(...handlers.Success);
-    const { result } = renderHook(() => useContainer());
+    const { result } = await renderHook(() => useContainer());
 
     expect(result.current.data).toBeDefined();
   });
