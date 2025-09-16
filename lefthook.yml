@@ -1,0 +1,17 @@
+pre-push:
+  parallel: true
+  commands:
+    mobile-tests:
+      run: cd mobile && pnpm test
+    # graphql-tests:
+    #   run: cd graphql && pnpm test
+
+pre-commit:
+  parallel: true
+  commands:
+    mobile-fmt:
+      glob: "mobile/**/*.{js,ts,jsx,tsx,json}"
+      run: cd mobile && pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
+    graphql-fmt:
+      glob: "graphql/**/*.{js,ts,jsx,tsx,json}"
+      run: cd graphql && pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged

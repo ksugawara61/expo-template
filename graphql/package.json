@@ -19,7 +19,7 @@
     "db:generate": "prisma generate",
     "lint:biome": "biome ci . ",
     "lint": "pnpm lint:biome",
-    "fmt:biome": "biome format . --write",
+    "fmt:biome": "biome check . --write",
     "fmt": "pnpm fmt:biome",
     "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
     "typecheck": "tsc --noEmit"

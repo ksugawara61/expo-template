@@ -13,7 +13,7 @@
     "lint:biome": "biome ci . ",
     "lint": "pnpm lint:biome && pnpm lint:eslint",
     "fmt:eslint": "eslint . --fix",
-    "fmt:biome": "biome format . --write",
+    "fmt:biome": "biome check . --write",
     "fmt": "pnpm fmt:biome && pnpm fmt:eslint",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
