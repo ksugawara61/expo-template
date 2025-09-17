@@ -1,5 +1,5 @@
+import { execSync } from "node:child_process";
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { execSync } from "child_process";
 import { mockServer } from "./mockServer";
 
 beforeAll(async () => {
