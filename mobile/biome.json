@@ -8,6 +8,7 @@
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
+      "**/graphql/**",
       "!**/src/libs/gql",
       "!**/src/**/*.msw.ts",
       "!**/src/libs/openapi/schemas",
@@ -19,8 +20,7 @@
       "!**/coverage",
       "!**/tmp",
       "!**/pnpm-lock.yaml",
-      "!**/*.local.json",
-      "!**/graphql"
+      "!**/*.local.json"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },

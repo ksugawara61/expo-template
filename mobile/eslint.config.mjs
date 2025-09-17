@@ -1,5 +1,6 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import graphqlPlugin from "@graphql-eslint/eslint-plugin";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import jestPlugin from "eslint-plugin-jest";
@@ -57,7 +58,6 @@ const javaScriptRules = {
 };
 
 const ignores = [
-  "graphql/**",
   "**/__templates/**",
   "**/.drizzle/**",
   "**/node_modules/**",
@@ -167,6 +167,26 @@ export default [
     rules: {
       ...commonRules,
       ...javaScriptRules,
+    },
+  },
+
+  // GraphQL用の設定
+  {
+    files: ["**/*.graphql"],
+    ignores,
+    plugins: {
+      "@graphql-eslint": graphqlPlugin,
+    },
+    processor: "@graphql-eslint/graphql",
+    rules: {
+      "@graphql-eslint/require-description": "error",
+      "@graphql-eslint/naming-convention": [
+        "error",
+        {
+          types: "PascalCase",
+          FieldDefinition: "camelCase",
+        },
+      ],
     },
   },
 ];
