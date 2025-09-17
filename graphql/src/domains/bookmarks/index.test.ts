@@ -107,6 +107,9 @@ describe("bookmarks", () => {
         description: "Original description",
       });
 
+      // Small delay to ensure different timestamps
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       const updateInput = {
         title: "Updated Title",
         description: "Updated description",
