@@ -32,14 +32,5 @@ jobs:
           cache-dependency-path: 'graphql/**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Setup SQLite Database
-        run: |
-          pnpm db:generate
-          pnpm db:migrate
-        env:
-          DATABASE_URL: "file:./test.db"
       - name: Test
         run: pnpm test
-        env:
-          NODE_ENV: development
-          DATABASE_URL: "file:./test.db"
