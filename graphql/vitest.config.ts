@@ -6,7 +6,7 @@ export default defineConfig({
     silent: false,
     watch: false,
     env: {
-      DATABASE_URL: "postgresql://test_user:test_password@localhost:5433/test_db?schema=public",
+      DATABASE_URL: "file:./test.db",
     },
   },
 });
