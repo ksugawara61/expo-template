@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
 import { Articles } from ".";
-import { handlers } from "./useContainer.mocks";
+import { handlers } from "./index.mocks";
 
 const meta = {
   component: Articles,
