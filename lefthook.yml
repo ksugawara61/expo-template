@@ -2,9 +2,9 @@ pre-push:
   parallel: true
   commands:
     mobile-tests:
-      run: cd mobile && pnpm test
-    # graphql-tests:
-    #   run: cd graphql && pnpm test
+      run: cd mobile && pnpm jest --changedSince main
+    graphql-tests:
+      run: cd graphql && pnpm vitest --changed main
 
 pre-commit:
   parallel: true
