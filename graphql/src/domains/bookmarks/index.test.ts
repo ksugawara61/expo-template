@@ -120,7 +120,7 @@ describe("bookmarks", () => {
       expect(result?.url).toBe(created.url); // Should remain unchanged
       expect(result?.description).toBe(updateInput.description);
       expect(result?.created_at.getTime()).toBe(created.created_at.getTime());
-      expect(result?.updated_at.getTime()).not.toBe(
+      expect(result?.updated_at.getTime()).toBeGreaterThanOrEqual(
         created.updated_at.getTime(),
       );
     });

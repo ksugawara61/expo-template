@@ -175,3 +175,7 @@ dist
 .pylon
 
 /src/generated/prisma
+
+# SQLite database files
+*.db
+*.db-journal

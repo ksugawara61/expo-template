@@ -5,8 +5,14 @@ export default defineConfig({
     setupFiles: "./src/libs/test/vitest.setup.ts",
     silent: false,
     watch: false,
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
     env: {
-      DATABASE_URL: "postgresql://test_user:test_password@localhost:5433/test_db?schema=public",
+      DATABASE_URL: "file:./test.db",
     },
   },
 });
