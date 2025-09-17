@@ -23,39 +23,11 @@ pnpm db:generate
 pnpm db:migrate
 ```
 
-#### Test Database
-```bash
-# Start test PostgreSQL container
-pnpm test:db:up
-
-# Run migrations on test database
-pnpm db:migrate:test
-
-# Stop test database
-pnpm test:db:down
-```
 
 ### Running Tests
 
-#### Run tests with temporary database
 ```bash
-# This will start DB, run migrations, execute tests, and cleanup
-pnpm test:with:db
-```
-
-#### Manual test setup
-```bash
-# Start test database
-pnpm test:db:up
-
-# Run migrations
-pnpm db:migrate:test
-
-# Run tests
 pnpm test
-
-# Clean up
-pnpm test:db:down
 ```
 
 ### Available Scripts
@@ -64,19 +36,14 @@ pnpm test:db:down
 - `pnpm build` - Build for production
 - `pnpm test` - Run tests
 - `pnpm test:ui` - Run tests with UI
-- `pnpm test:with:db` - Run tests with automatic DB setup/teardown
-- `pnpm test:db:up` - Start test database container
-- `pnpm test:db:down` - Stop test database container
-- `pnpm test:db:reset` - Reset test database
 - `pnpm db:migrate` - Run database migrations (development)
-- `pnpm db:migrate:test` - Run database migrations (test)
 - `pnpm db:generate` - Generate Prisma client
 - `pnpm lint` - Run linting
 - `pnpm fmt` - Format code
 
 ## Database Schema
 
-The application uses Prisma ORM with PostgreSQL. The database schema is defined in `prisma/schema.prisma`.
+The application uses Prisma ORM with SQLite. The database schema is defined in `prisma/schema.prisma`.
 
 ### Bookmarks Model
 ```prisma
