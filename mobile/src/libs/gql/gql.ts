@@ -14,17 +14,17 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      id\n      title\n      user {\n        name\n      }\n      created_at\n      tags {\n        name\n      }\n    }\n  }\n": typeof types.GetArticlesDocument,
-    "\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n": typeof types.CreateBookmarkDocument,
-    "\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n": typeof types.UpdateBookmarkDocument,
+    "\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      created_at\n      id\n      tags {\n        name\n      }\n      title\n      user {\n        name\n      }\n    }\n  }\n": typeof types.GetArticlesDocument,
+    "\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n": typeof types.CreateBookmarkDocument,
+    "\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n": typeof types.UpdateBookmarkDocument,
     "\n  fragment Bookmark on Bookmark {\n    id\n    title\n    url\n    description\n    created_at\n    updated_at\n  }\n": typeof types.BookmarkFragmentDoc,
     "\n  query GetBookmarks {\n    bookmarks {\n      ...Bookmark\n    }\n  }\n": typeof types.GetBookmarksDocument,
     "\n  mutation DeleteBookmark($id: String!) {\n    deleteBookmark(id: $id)\n  }\n": typeof types.DeleteBookmarkDocument,
 };
 const documents: Documents = {
-    "\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      id\n      title\n      user {\n        name\n      }\n      created_at\n      tags {\n        name\n      }\n    }\n  }\n": types.GetArticlesDocument,
-    "\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n": types.CreateBookmarkDocument,
-    "\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n": types.UpdateBookmarkDocument,
+    "\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      created_at\n      id\n      tags {\n        name\n      }\n      title\n      user {\n        name\n      }\n    }\n  }\n": types.GetArticlesDocument,
+    "\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n": types.CreateBookmarkDocument,
+    "\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n": types.UpdateBookmarkDocument,
     "\n  fragment Bookmark on Bookmark {\n    id\n    title\n    url\n    description\n    created_at\n    updated_at\n  }\n": types.BookmarkFragmentDoc,
     "\n  query GetBookmarks {\n    bookmarks {\n      ...Bookmark\n    }\n  }\n": types.GetBookmarksDocument,
     "\n  mutation DeleteBookmark($id: String!) {\n    deleteBookmark(id: $id)\n  }\n": types.DeleteBookmarkDocument,
@@ -47,15 +47,15 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      id\n      title\n      user {\n        name\n      }\n      created_at\n      tags {\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      id\n      title\n      user {\n        name\n      }\n      created_at\n      tags {\n        name\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      created_at\n      id\n      tags {\n        name\n      }\n      title\n      user {\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetArticles($page: Number!) {\n    articles(page: $page) {\n      created_at\n      id\n      tags {\n        name\n      }\n      title\n      user {\n        name\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n"];
+export function graphql(source: "\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n"): (typeof documents)["\n  mutation CreateBookmark($input: InputInput!) {\n    createBookmark(input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      id\n      title\n      url\n      description\n      created_at\n      updated_at\n    }\n  }\n"];
+export function graphql(source: "\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {\n    updateBookmark(id: $id, input: $input) {\n      created_at\n      description\n      id\n      title\n      updated_at\n      url\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

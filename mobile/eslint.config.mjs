@@ -1,5 +1,6 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import graphqlPlugin from "@graphql-eslint/eslint-plugin";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import jestPlugin from "eslint-plugin-jest";
@@ -57,7 +58,6 @@ const javaScriptRules = {
 };
 
 const ignores = [
-  "graphql/**",
   "**/__templates/**",
   "**/.drizzle/**",
   "**/node_modules/**",
@@ -167,6 +167,47 @@ export default [
     rules: {
       ...commonRules,
       ...javaScriptRules,
+    },
+  },
+
+  // TypeScript内のGraphQL operations用の設定
+  {
+    files: ["**/*.{ts,tsx}"],
+    ignores: [...ignores, "**/src/libs/gql/**"],
+    processor: graphqlPlugin.processor,
+  },
+
+  // GraphQL用の設定
+  {
+    files: ["**/*.graphql"],
+    ignores,
+    languageOptions: {
+      parser: graphqlPlugin.parser,
+      parserOptions: {
+        graphQLConfig: {
+          schema: "./src/libs/graphql/schema.graphql",
+        },
+      },
+    },
+    plugins: {
+      "@graphql-eslint": graphqlPlugin,
+    },
+    rules: {
+      "@graphql-eslint/alphabetize": [
+        "error",
+        { selections: ["OperationDefinition"] },
+      ],
+      "@graphql-eslint/no-anonymous-operations": "error",
+      "@graphql-eslint/naming-convention": [
+        "error",
+        {
+          OperationDefinition: {
+            style: "PascalCase",
+            forbiddenPrefixes: ["Query", "Mutation", "Subscription"],
+            forbiddenSuffixes: ["Query", "Mutation", "Subscription"],
+          },
+        },
+      ],
     },
   },
 ];

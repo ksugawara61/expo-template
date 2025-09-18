@@ -15,12 +15,12 @@ import type {
 const CREATE_BOOKMARK = graphql(`
   mutation CreateBookmark($input: InputInput!) {
     createBookmark(input: $input) {
+      created_at
+      description
       id
       title
-      url
-      description
-      created_at
       updated_at
+      url
     }
   }
 `);
@@ -28,12 +28,12 @@ const CREATE_BOOKMARK = graphql(`
 const UPDATE_BOOKMARK = graphql(`
   mutation UpdateBookmark($id: String!, $input: InputInput_1!) {
     updateBookmark(id: $id, input: $input) {
+      created_at
+      description
       id
       title
-      url
-      description
-      created_at
       updated_at
+      url
     }
   }
 `);

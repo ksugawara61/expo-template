@@ -6,7 +6,7 @@ export type GetArticlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetArticlesQuery = { __typename?: 'Query', articles: Array<{ __typename?: 'Article', id: string, title: string, created_at: string, user: { __typename?: 'User', name?: string | null }, tags: Array<{ __typename?: 'Tag', name: string }> }> };
+export type GetArticlesQuery = { __typename?: 'Query', articles: Array<{ __typename?: 'Article', created_at: string, id: string, title: string, tags: Array<{ __typename?: 'Tag', name: string }>, user: { __typename?: 'User', name?: string | null } }> };
 
 
 /**

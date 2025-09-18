@@ -1,0 +1,56 @@
+input InputInput {
+  title: String!
+  url: String!
+  description: String
+}
+input InputInput_1 {
+  title: String
+  url: String
+  description: String
+}
+type Query {
+  articles(page: Number!): [Article!]!
+  bookmarks: [Bookmark!]!
+  bookmark(id: String!): Bookmark
+}
+type Article {
+  id: String!
+  title: String!
+  body: String!
+  url: String!
+  user: User!
+  tags: [Tag!]!
+  created_at: String!
+  updated_at: String!
+}
+type User {
+  name: String
+}
+type Tag {
+  name: String!
+}
+type Bookmark {
+  id: String!
+  title: String!
+  url: String!
+  description: String
+  created_at: Date!
+  updated_at: Date!
+}
+type Mutation {
+  createBookmark(input: InputInput!): Bookmark!
+  updateBookmark(id: String!, input: InputInput_1!): Bookmark
+  deleteBookmark(id: String!): Boolean!
+}
+scalar ID
+scalar Int
+scalar Float
+scalar Number
+scalar Any
+scalar Void
+scalar Object
+scalar File
+scalar Date
+scalar JSON
+scalar String
+scalar Boolean
