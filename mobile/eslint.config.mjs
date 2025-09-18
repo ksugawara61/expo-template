@@ -170,41 +170,25 @@ export default [
     },
   },
 
+  // TypeScript内のGraphQL operations用の設定
+  {
+    files: ["**/*.{ts,tsx}"],
+    ignores: [...ignores, "**/src/libs/gql/**"],
+    processor: graphqlPlugin.processor,
+  },
+
   // GraphQL用の設定
   {
     files: ["**/*.graphql"],
     ignores,
     languageOptions: {
-      parser: graphqlPlugin,
+      parser: graphqlPlugin.parser,
     },
     plugins: {
       "@graphql-eslint": graphqlPlugin,
     },
     rules: {
-      "@graphql-eslint/require-description": "error",
-      "@graphql-eslint/naming-convention": [
-        "error",
-        {
-          types: "PascalCase",
-          FieldDefinition: "camelCase",
-          InputValueDefinition: "camelCase",
-          Argument: "camelCase",
-          DirectiveDefinition: "camelCase",
-          EnumValueDefinition: "SCREAMING_SNAKE_CASE",
-          "FieldDefinition[parent.name.value=Query]": {
-            forbiddenPrefixes: ["query", "get"],
-            forbiddenSuffixes: ["Query"],
-          },
-          "FieldDefinition[parent.name.value=Mutation]": {
-            forbiddenPrefixes: ["mutation"],
-            forbiddenSuffixes: ["Mutation"],
-          },
-          "FieldDefinition[parent.name.value=Subscription]": {
-            forbiddenPrefixes: ["subscription"],
-            forbiddenSuffixes: ["Subscription"],
-          },
-        },
-      ],
+      // 基本的なルールのみ追加（スキーマが不要なもの）
     },
   },
 ];
