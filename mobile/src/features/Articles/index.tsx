@@ -19,13 +19,13 @@ type Item = {
 export const GetArticles = graphql(`
   query GetArticles($page: Number!) {
     articles(page: $page) {
+      created_at
       id
-      title
-      user {
+      tags {
         name
       }
-      created_at
-      tags {
+      title
+      user {
         name
       }
     }

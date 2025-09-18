@@ -183,12 +183,31 @@ export default [
     ignores,
     languageOptions: {
       parser: graphqlPlugin.parser,
+      parserOptions: {
+        graphQLConfig: {
+          schema: "./src/libs/graphql/schema.graphql",
+        },
+      },
     },
     plugins: {
       "@graphql-eslint": graphqlPlugin,
     },
     rules: {
-      // 基本的なルールのみ追加（スキーマが不要なもの）
+      "@graphql-eslint/alphabetize": [
+        "error",
+        { selections: ["OperationDefinition"] },
+      ],
+      "@graphql-eslint/no-anonymous-operations": "error",
+      "@graphql-eslint/naming-convention": [
+        "error",
+        {
+          OperationDefinition: {
+            style: "PascalCase",
+            forbiddenPrefixes: ["Query", "Mutation", "Subscription"],
+            forbiddenSuffixes: ["Query", "Mutation", "Subscription"],
+          },
+        },
+      ],
     },
   },
 ];

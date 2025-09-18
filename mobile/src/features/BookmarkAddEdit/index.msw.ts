@@ -6,7 +6,7 @@ export type CreateBookmarkMutationVariables = Types.Exact<{
 }>;
 
 
-export type CreateBookmarkMutation = { __typename?: 'Mutation', createBookmark: { __typename?: 'Bookmark', id: string, title: string, url: string, description?: string | null, created_at: string, updated_at: string } };
+export type CreateBookmarkMutation = { __typename?: 'Mutation', createBookmark: { __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string } };
 
 export type UpdateBookmarkMutationVariables = Types.Exact<{
   id: Types.Scalars['String']['input'];
@@ -14,7 +14,7 @@ export type UpdateBookmarkMutationVariables = Types.Exact<{
 }>;
 
 
-export type UpdateBookmarkMutation = { __typename?: 'Mutation', updateBookmark?: { __typename?: 'Bookmark', id: string, title: string, url: string, description?: string | null, created_at: string, updated_at: string } | null };
+export type UpdateBookmarkMutation = { __typename?: 'Mutation', updateBookmark?: { __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string } | null };
 
 
 /**
