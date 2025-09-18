@@ -1,20 +1,20 @@
-export interface Bookmark {
+export type Bookmark = {
   id: string;
   title: string;
   url: string;
   description?: string | null;
   created_at: Date;
   updated_at: Date;
-}
+};
 
-export interface CreateBookmarkInput {
+export type CreateBookmarkInput = {
   title: string;
   url: string;
   description?: string;
-}
+};
 
-export interface UpdateBookmarkInput {
+export type UpdateBookmarkInput = {
   title?: string;
   url?: string;
   description?: string;
-}
+};

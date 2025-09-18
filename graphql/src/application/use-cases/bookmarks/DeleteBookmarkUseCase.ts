@@ -1,9 +1,5 @@
-import type { BookmarkRepository } from "../../../domain/bookmarks/repositories/BookmarkRepository";
+import * as bookmarkRepository from "../../../infrastructure/repositories/BookmarkRepositoryImpl";
 
-export class DeleteBookmarkUseCase {
-  constructor(private readonly bookmarkRepository: BookmarkRepository) {}
-
-  async execute(id: string): Promise<boolean> {
-    return this.bookmarkRepository.delete(id);
-  }
-}
+export const execute = async (id: string): Promise<boolean> => {
+  return bookmarkRepository.deleteBookmark(id);
+};

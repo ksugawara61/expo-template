@@ -1,13 +1,11 @@
 import type {
   Bookmark,
   CreateBookmarkInput,
-} from "../../../domain/bookmarks/entities";
-import type { BookmarkRepository } from "../../../domain/bookmarks/repositories/BookmarkRepository";
+} from "../../../domain/bookmarks/Bookmark";
+import * as bookmarkRepository from "../../../infrastructure/repositories/BookmarkRepositoryImpl";
 
-export class CreateBookmarkUseCase {
-  constructor(private readonly bookmarkRepository: BookmarkRepository) {}
-
-  async execute(input: CreateBookmarkInput): Promise<Bookmark> {
-    return this.bookmarkRepository.create(input);
-  }
-}
+export const execute = async (
+  input: CreateBookmarkInput,
+): Promise<Bookmark> => {
+  return bookmarkRepository.create(input);
+};

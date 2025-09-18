@@ -1,12 +1,12 @@
-export interface Tag {
+export type Tag = {
   name: string;
-}
+};
 
-export interface User {
+export type User = {
   name: string | null;
-}
+};
 
-export interface Article {
+export type Article = {
   id: string;
   title: string;
   body: string;
@@ -15,4 +15,4 @@ export interface Article {
   tags: Tag[];
   created_at: string;
   updated_at: string;
-}
+};

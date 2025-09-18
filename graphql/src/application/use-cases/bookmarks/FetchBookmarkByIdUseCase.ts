@@ -1,10 +1,6 @@
-import type { Bookmark } from "../../../domain/bookmarks/entities";
-import type { BookmarkRepository } from "../../../domain/bookmarks/repositories/BookmarkRepository";
+import type { Bookmark } from "../../../domain/bookmarks/Bookmark";
+import * as bookmarkRepository from "../../../infrastructure/repositories/BookmarkRepositoryImpl";
 
-export class FetchBookmarkByIdUseCase {
-  constructor(private readonly bookmarkRepository: BookmarkRepository) {}
-
-  async execute(id: string): Promise<Bookmark | null> {
-    return this.bookmarkRepository.findById(id);
-  }
-}
+export const execute = async (id: string): Promise<Bookmark | null> => {
+  return bookmarkRepository.findById(id);
+};

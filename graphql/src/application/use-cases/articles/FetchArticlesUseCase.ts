@@ -1,10 +1,6 @@
-import type { Article } from "../../../domain/articles/entities";
-import type { ArticleRepository } from "../../../domain/articles/repositories/ArticleRepository";
+import type { Article } from "../../../domain/articles/Article";
+import * as articleRepository from "../../../infrastructure/repositories/ArticleRepositoryImpl";
 
-export class FetchArticlesUseCase {
-  constructor(private readonly articleRepository: ArticleRepository) {}
-
-  async execute(page: number): Promise<Article[]> {
-    return this.articleRepository.fetchArticles(page);
-  }
-}
+export const execute = async (page: number): Promise<Article[]> => {
+  return articleRepository.fetchArticles(page);
+};
