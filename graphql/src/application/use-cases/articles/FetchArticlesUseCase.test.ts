@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { ArticleRepositoryImpl } from "../../../infrastructure/repositories";
 import { mockServer } from "../../../libs/test/mockServer";
 import { FetchArticlesUseCase } from "./FetchArticlesUseCase";
-import { ArticleRepositoryImpl } from "../../../infrastructure/repositories";
 import { ArticleMocks } from "./FetchArticlesUseCase.mocks";
 
 describe("FetchArticlesUseCase", () => {

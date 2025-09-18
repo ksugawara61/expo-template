@@ -1,12 +1,15 @@
 import {
-  FetchBookmarksUseCase,
-  FetchBookmarkByIdUseCase,
   CreateBookmarkUseCase,
-  UpdateBookmarkUseCase,
   DeleteBookmarkUseCase,
+  FetchBookmarkByIdUseCase,
+  FetchBookmarksUseCase,
+  UpdateBookmarkUseCase,
 } from "../../application/use-cases/bookmarks";
+import type {
+  CreateBookmarkInput,
+  UpdateBookmarkInput,
+} from "../../domain/bookmarks/entities";
 import { BookmarkRepositoryImpl } from "../../infrastructure/repositories";
-import type { CreateBookmarkInput, UpdateBookmarkInput } from "../../domain/bookmarks/entities";
 
 export class BookmarkController {
   private readonly fetchBookmarksUseCase: FetchBookmarksUseCase;
@@ -18,7 +21,9 @@ export class BookmarkController {
   constructor() {
     const bookmarkRepository = new BookmarkRepositoryImpl();
     this.fetchBookmarksUseCase = new FetchBookmarksUseCase(bookmarkRepository);
-    this.fetchBookmarkByIdUseCase = new FetchBookmarkByIdUseCase(bookmarkRepository);
+    this.fetchBookmarkByIdUseCase = new FetchBookmarkByIdUseCase(
+      bookmarkRepository,
+    );
     this.createBookmarkUseCase = new CreateBookmarkUseCase(bookmarkRepository);
     this.updateBookmarkUseCase = new UpdateBookmarkUseCase(bookmarkRepository);
     this.deleteBookmarkUseCase = new DeleteBookmarkUseCase(bookmarkRepository);

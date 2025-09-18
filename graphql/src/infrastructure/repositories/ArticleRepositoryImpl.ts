@@ -1,5 +1,5 @@
-import type { ArticleRepository } from "../../domain/articles/repositories/ArticleRepository";
 import type { Article } from "../../domain/articles/entities";
+import type { ArticleRepository } from "../../domain/articles/repositories/ArticleRepository";
 import { createQiitaApiClient } from "../../libs/openapi/client";
 
 export class ArticleRepositoryImpl implements ArticleRepository {

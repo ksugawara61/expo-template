@@ -1,5 +1,9 @@
+import type {
+  Bookmark,
+  CreateBookmarkInput,
+  UpdateBookmarkInput,
+} from "../../domain/bookmarks/entities";
 import type { BookmarkRepository } from "../../domain/bookmarks/repositories/BookmarkRepository";
-import type { Bookmark, CreateBookmarkInput, UpdateBookmarkInput } from "../../domain/bookmarks/entities";
 import { prisma } from "../../libs/prisma/client";
 
 export class BookmarkRepositoryImpl implements BookmarkRepository {
@@ -27,7 +31,10 @@ export class BookmarkRepositoryImpl implements BookmarkRepository {
     });
   }
 
-  async update(id: string, input: UpdateBookmarkInput): Promise<Bookmark | null> {
+  async update(
+    id: string,
+    input: UpdateBookmarkInput,
+  ): Promise<Bookmark | null> {
     try {
       return await prisma.bookmark.update({
         where: { id },

@@ -87,7 +87,8 @@ describe("BookmarkController", () => {
     });
 
     it("should return null for non-existent id", async () => {
-      const result = await bookmarkController.getBookmarkById("non-existent-id");
+      const result =
+        await bookmarkController.getBookmarkById("non-existent-id");
       expect(result).toBeNull();
     });
   });
@@ -105,7 +106,10 @@ describe("BookmarkController", () => {
         description: "Updated description",
       };
 
-      const result = await bookmarkController.updateBookmark(created.id, updateInput);
+      const result = await bookmarkController.updateBookmark(
+        created.id,
+        updateInput,
+      );
 
       expect(result).not.toBeNull();
       expect(result?.id).toBe(created.id);
@@ -119,9 +123,12 @@ describe("BookmarkController", () => {
     });
 
     it("should return null for non-existent bookmark", async () => {
-      const result = await bookmarkController.updateBookmark("non-existent-id", {
-        title: "Updated Title",
-      });
+      const result = await bookmarkController.updateBookmark(
+        "non-existent-id",
+        {
+          title: "Updated Title",
+        },
+      );
 
       expect(result).toBeNull();
     });

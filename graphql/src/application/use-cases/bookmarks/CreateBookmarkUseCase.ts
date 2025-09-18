@@ -1,5 +1,8 @@
+import type {
+  Bookmark,
+  CreateBookmarkInput,
+} from "../../../domain/bookmarks/entities";
 import type { BookmarkRepository } from "../../../domain/bookmarks/repositories/BookmarkRepository";
-import type { Bookmark, CreateBookmarkInput } from "../../../domain/bookmarks/entities";
 
 export class CreateBookmarkUseCase {
   constructor(private readonly bookmarkRepository: BookmarkRepository) {}

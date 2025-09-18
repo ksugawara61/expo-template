@@ -7,7 +7,8 @@ export const server = {
   Query: {
     articles: async (page: number) => await articleController.getArticles(page),
     bookmarks: async () => await bookmarkController.getBookmarks(),
-    bookmark: async (id: string) => await bookmarkController.getBookmarkById(id),
+    bookmark: async (id: string) =>
+      await bookmarkController.getBookmarkById(id),
   },
   Mutation: {
     createBookmark: async (input: {
@@ -19,6 +20,7 @@ export const server = {
       id: string,
       input: { title?: string; url?: string; description?: string },
     ) => await bookmarkController.updateBookmark(id, input),
-    deleteBookmark: async (id: string) => await bookmarkController.deleteBookmark(id),
+    deleteBookmark: async (id: string) =>
+      await bookmarkController.deleteBookmark(id),
   },
 };

@@ -1,4 +1,8 @@
-import type { Bookmark, CreateBookmarkInput, UpdateBookmarkInput } from "../entities";
+import type {
+  Bookmark,
+  CreateBookmarkInput,
+  UpdateBookmarkInput,
+} from "../entities";
 
 export interface BookmarkRepository {
   findMany(): Promise<Bookmark[]>;
