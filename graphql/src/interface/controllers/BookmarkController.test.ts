@@ -1,21 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "../../libs/prisma/client";
-import {
-  createBookmark,
-  deleteBookmark,
-  fetchBookmarkById,
-  fetchBookmarks,
-  updateBookmark,
-} from ".";
+import { BookmarkController } from "./BookmarkController";
 
-describe("bookmarks", () => {
+describe("BookmarkController", () => {
+  let bookmarkController: BookmarkController;
+
   beforeEach(async () => {
-    // Clean up database before each test
     await prisma.bookmark.deleteMany();
+    bookmarkController = new BookmarkController();
   });
 
   afterEach(async () => {
-    // Clean up database after each test
     await prisma.bookmark.deleteMany();
   });
 
@@ -27,7 +22,7 @@ describe("bookmarks", () => {
         description: "A test bookmark",
       };
 
-      const result = await createBookmark(input);
+      const result = await bookmarkController.createBookmark(input);
 
       expect(result).toHaveProperty("id");
       expect(result.title).toBe(input.title);
@@ -44,7 +39,7 @@ describe("bookmarks", () => {
         url: "https://example.com",
       };
 
-      const result = await createBookmark(input);
+      const result = await bookmarkController.createBookmark(input);
 
       expect(result.title).toBe(input.title);
       expect(result.url).toBe(input.url);
@@ -52,56 +47,54 @@ describe("bookmarks", () => {
     });
   });
 
-  describe("fetchBookmarks", () => {
+  describe("getBookmarks", () => {
     it("should return empty array when no bookmarks exist", async () => {
-      const result = await fetchBookmarks();
+      const result = await bookmarkController.getBookmarks();
       expect(result).toEqual([]);
     });
 
     it("should return all bookmarks ordered by created_at desc", async () => {
-      const bookmark1 = await createBookmark({
+      const bookmark1 = await bookmarkController.createBookmark({
         title: "Bookmark 1",
         url: "https://example1.com",
       });
 
-      // Small delay to ensure different timestamps
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const bookmark2 = await createBookmark({
+      const bookmark2 = await bookmarkController.createBookmark({
         title: "Bookmark 2",
         url: "https://example2.com",
       });
 
-      const result = await fetchBookmarks();
+      const result = await bookmarkController.getBookmarks();
 
       expect(result).toHaveLength(2);
-      // Should be ordered by created_at desc (newest first)
       expect(result[0].id).toBe(bookmark2.id);
       expect(result[1].id).toBe(bookmark1.id);
     });
   });
 
-  describe("fetchBookmarkById", () => {
+  describe("getBookmarkById", () => {
     it("should return bookmark by id", async () => {
-      const created = await createBookmark({
+      const created = await bookmarkController.createBookmark({
         title: "Test Bookmark",
         url: "https://example.com",
       });
 
-      const result = await fetchBookmarkById(created.id);
+      const result = await bookmarkController.getBookmarkById(created.id);
 
       expect(result).toEqual(created);
     });
 
     it("should return null for non-existent id", async () => {
-      const result = await fetchBookmarkById("non-existent-id");
+      const result = await bookmarkController.getBookmarkById("non-existent-id");
       expect(result).toBeNull();
     });
   });
 
   describe("updateBookmark", () => {
     it("should update existing bookmark", async () => {
-      const created = await createBookmark({
+      const created = await bookmarkController.createBookmark({
         title: "Original Title",
         url: "https://example.com",
         description: "Original description",
@@ -112,12 +105,12 @@ describe("bookmarks", () => {
         description: "Updated description",
       };
 
-      const result = await updateBookmark(created.id, updateInput);
+      const result = await bookmarkController.updateBookmark(created.id, updateInput);
 
       expect(result).not.toBeNull();
       expect(result?.id).toBe(created.id);
       expect(result?.title).toBe(updateInput.title);
-      expect(result?.url).toBe(created.url); // Should remain unchanged
+      expect(result?.url).toBe(created.url);
       expect(result?.description).toBe(updateInput.description);
       expect(result?.created_at.getTime()).toBe(created.created_at.getTime());
       expect(result?.updated_at.getTime()).toBeGreaterThanOrEqual(
@@ -126,7 +119,7 @@ describe("bookmarks", () => {
     });
 
     it("should return null for non-existent bookmark", async () => {
-      const result = await updateBookmark("non-existent-id", {
+      const result = await bookmarkController.updateBookmark("non-existent-id", {
         title: "Updated Title",
       });
 
@@ -134,13 +127,13 @@ describe("bookmarks", () => {
     });
 
     it("should update only provided fields", async () => {
-      const created = await createBookmark({
+      const created = await bookmarkController.createBookmark({
         title: "Original Title",
         url: "https://example.com",
         description: "Original description",
       });
 
-      const result = await updateBookmark(created.id, {
+      const result = await bookmarkController.updateBookmark(created.id, {
         title: "Updated Title",
       });
 
@@ -152,27 +145,26 @@ describe("bookmarks", () => {
 
   describe("deleteBookmark", () => {
     it("should delete existing bookmark", async () => {
-      const created = await createBookmark({
+      const created = await bookmarkController.createBookmark({
         title: "Test Bookmark",
         url: "https://example.com",
       });
 
-      const result = await deleteBookmark(created.id);
+      const result = await bookmarkController.deleteBookmark(created.id);
 
       expect(result).toBe(true);
 
-      const fetched = await fetchBookmarkById(created.id);
+      const fetched = await bookmarkController.getBookmarkById(created.id);
       expect(fetched).toBeNull();
     });
 
     it("should return false for non-existent bookmark", async () => {
-      const result = await deleteBookmark("non-existent-id");
+      const result = await bookmarkController.deleteBookmark("non-existent-id");
       expect(result).toBe(false);
     });
   });
 });
 
-// Close Prisma connection after all tests
 process.on("beforeExit", async () => {
   await prisma.$disconnect();
 });
