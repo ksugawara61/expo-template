@@ -174,10 +174,12 @@ export default [
   {
     files: ["**/*.graphql"],
     ignores,
+    languageOptions: {
+      parser: graphqlPlugin,
+    },
     plugins: {
       "@graphql-eslint": graphqlPlugin,
     },
-    processor: "@graphql-eslint/graphql",
     rules: {
       "@graphql-eslint/require-description": "error",
       "@graphql-eslint/naming-convention": [
@@ -185,6 +187,22 @@ export default [
         {
           types: "PascalCase",
           FieldDefinition: "camelCase",
+          InputValueDefinition: "camelCase",
+          Argument: "camelCase",
+          DirectiveDefinition: "camelCase",
+          EnumValueDefinition: "SCREAMING_SNAKE_CASE",
+          "FieldDefinition[parent.name.value=Query]": {
+            forbiddenPrefixes: ["query", "get"],
+            forbiddenSuffixes: ["Query"],
+          },
+          "FieldDefinition[parent.name.value=Mutation]": {
+            forbiddenPrefixes: ["mutation"],
+            forbiddenSuffixes: ["Mutation"],
+          },
+          "FieldDefinition[parent.name.value=Subscription]": {
+            forbiddenPrefixes: ["subscription"],
+            forbiddenSuffixes: ["Subscription"],
+          },
         },
       ],
     },
