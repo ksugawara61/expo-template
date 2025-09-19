@@ -13,15 +13,61 @@ import {
 
 export const server = {
   Query: {
-    articles: async (page: number) => await fetchArticlesUseCase(page),
-    bookmarks: async () => await fetchBookmarksUseCase(),
-    bookmark: async (id: string) => await fetchBookmarkByIdUseCase(id),
+    articles: async (page: number) => {
+      try {
+        return await fetchArticlesUseCase(page);
+      } catch (error) {
+        throw new Error(
+          `Failed to fetch articles: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
+    },
+    bookmarks: async () => {
+      try {
+        return await fetchBookmarksUseCase();
+      } catch (error) {
+        throw new Error(
+          `Failed to fetch bookmarks: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
+    },
+    bookmark: async (id: string) => {
+      try {
+        return await fetchBookmarkByIdUseCase(id);
+      } catch (error) {
+        throw new Error(
+          `Failed to fetch bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
+    },
   },
   Mutation: {
-    createBookmark: async (input: CreateBookmarkInput) =>
-      await createBookmarkUseCase(input),
-    updateBookmark: async (id: string, input: UpdateBookmarkInput) =>
-      await updateBookmarkUseCase(id, input),
-    deleteBookmark: async (id: string) => await deleteBookmarkUseCase(id),
+    createBookmark: async (input: CreateBookmarkInput) => {
+      try {
+        return await createBookmarkUseCase(input);
+      } catch (error) {
+        throw new Error(
+          `Failed to create bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
+    },
+    updateBookmark: async (id: string, input: UpdateBookmarkInput) => {
+      try {
+        return await updateBookmarkUseCase(id, input);
+      } catch (error) {
+        throw new Error(
+          `Failed to update bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
+    },
+    deleteBookmark: async (id: string) => {
+      try {
+        return await deleteBookmarkUseCase(id);
+      } catch (error) {
+        throw new Error(
+          `Failed to delete bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
+    },
   },
 };

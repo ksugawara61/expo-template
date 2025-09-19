@@ -32,30 +32,21 @@ export const create = async (input: CreateBookmarkInput): Promise<Bookmark> => {
 export const update = async (
   id: string,
   input: UpdateBookmarkInput,
-): Promise<Bookmark | null> => {
-  try {
-    return await prisma.bookmark.update({
-      where: { id },
-      data: {
-        ...(input.title !== undefined && { title: input.title }),
-        ...(input.url !== undefined && { url: input.url }),
-        ...(input.description !== undefined && {
-          description: input.description,
-        }),
-      },
-    });
-  } catch (_error) {
-    return null;
-  }
+): Promise<Bookmark> => {
+  return await prisma.bookmark.update({
+    where: { id },
+    data: {
+      ...(input.title !== undefined && { title: input.title }),
+      ...(input.url !== undefined && { url: input.url }),
+      ...(input.description !== undefined && {
+        description: input.description,
+      }),
+    },
+  });
 };
 
-export const deleteBookmark = async (id: string): Promise<boolean> => {
-  try {
-    await prisma.bookmark.delete({
-      where: { id },
-    });
-    return true;
-  } catch (_error) {
-    return false;
-  }
+export const deleteBookmark = async (id: string): Promise<void> => {
+  await prisma.bookmark.delete({
+    where: { id },
+  });
 };

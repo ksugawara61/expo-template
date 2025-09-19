@@ -9,6 +9,6 @@ export type { UpdateBookmarkInput };
 export const updateBookmarkUseCase = async (
   id: string,
   input: UpdateBookmarkInput,
-): Promise<Bookmark | null> => {
+): Promise<Bookmark> => {
   return bookmarkRepository.update(id, input);
 };
