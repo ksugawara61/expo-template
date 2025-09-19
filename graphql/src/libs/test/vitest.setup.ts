@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll } from "vitest";
+import { prisma } from "../prisma/client";
 import { mockServer } from "./mockServer";
 
 beforeAll(async () => {
@@ -7,8 +8,10 @@ beforeAll(async () => {
 
 afterEach(async () => {
   mockServer.resetHandlers();
+  await prisma.bookmark.deleteMany();
 });
 
-afterAll(() => {
+afterAll(async () => {
   mockServer.close();
+  await prisma.$disconnect();
 });
