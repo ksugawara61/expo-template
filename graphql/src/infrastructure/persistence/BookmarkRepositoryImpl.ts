@@ -1,9 +1,9 @@
+import { prisma } from "../../libs/prisma/client";
 import type {
   Bookmark,
   CreateBookmarkInput,
   UpdateBookmarkInput,
-} from "../../domain/bookmarks/Bookmark";
-import { prisma } from "../../libs/prisma/client";
+} from "../domain/Bookmark";
 
 export const findMany = async (): Promise<Bookmark[]> => {
   return await prisma.bookmark.findMany({

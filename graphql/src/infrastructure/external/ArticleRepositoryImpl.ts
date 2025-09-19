@@ -1,5 +1,5 @@
-import type { Article } from "../../domain/articles/Article";
 import { createQiitaApiClient } from "../../libs/openapi/client";
+import type { Article } from "../domain/Article";
 
 export const fetchArticles = async (page: number): Promise<Article[]> => {
   const response = await createQiitaApiClient().GET("/items", {
