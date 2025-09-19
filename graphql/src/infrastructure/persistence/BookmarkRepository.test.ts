@@ -115,12 +115,12 @@ describe("BookmarkRepository", () => {
       );
     });
 
-    it("should return null for non-existent bookmark", async () => {
-      const result = await bookmarkRepository.update("non-existent-id", {
-        title: "Updated Title",
-      });
-
-      expect(result).toBeNull();
+    it("should throw error for non-existent bookmark", async () => {
+      await expect(
+        bookmarkRepository.update("non-existent-id", {
+          title: "Updated Title",
+        }),
+      ).rejects.toThrow();
     });
 
     it("should update only provided fields", async () => {
@@ -147,17 +147,16 @@ describe("BookmarkRepository", () => {
         url: "https://example.com",
       });
 
-      const result = await bookmarkRepository.deleteBookmark(created.id);
-
-      expect(result).toBe(true);
+      await bookmarkRepository.deleteBookmark(created.id);
 
       const fetched = await bookmarkRepository.findById(created.id);
       expect(fetched).toBeNull();
     });
 
-    it("should return false for non-existent bookmark", async () => {
-      const result = await bookmarkRepository.deleteBookmark("non-existent-id");
-      expect(result).toBe(false);
+    it("should throw error for non-existent bookmark", async () => {
+      await expect(
+        bookmarkRepository.deleteBookmark("non-existent-id"),
+      ).rejects.toThrow();
     });
   });
 });
