@@ -52,73 +52,72 @@ graph TD
     %% Layers
     subgraph "Interface Layer"
         Server[server.ts]
-        Controllers[interface/controllers]
     end
 
     subgraph "Application Layer"
-        UseCases[application/use-cases]
-    end
-
-    subgraph "Domain Layer"
-        Entities[domain/entities]
-        RepoInterfaces[domain/repositories<br/>interfaces]
+        Articles[application/articles]
+        Bookmarks[application/bookmarks]
     end
 
     subgraph "Infrastructure Layer"
-        RepoImpl[infrastructure/repositories<br/>implementations]
+        Domain[infrastructure/domain<br/>Article.ts, Bookmark.ts]
+        External[infrastructure/external<br/>ArticleRepositoryImpl.ts]
+        Persistence[infrastructure/persistence<br/>BookmarkRepositoryImpl.ts]
         ExternalAPIs[External APIs<br/>Qiita API, Prisma]
     end
 
     %% Dependencies
-    Server --> Controllers
-    Controllers --> UseCases
-    UseCases --> RepoInterfaces
-    RepoImpl -.-> RepoInterfaces
-    RepoImpl --> ExternalAPIs
-    Controllers --> RepoImpl
+    Server --> Articles
+    Server --> Bookmarks
+    Articles --> Domain
+    Bookmarks --> Domain
+    Articles --> External
+    Bookmarks --> Persistence
+    External --> ExternalAPIs
+    Persistence --> ExternalAPIs
 
     %% Styling
     classDef interface fill:#e1f5fe
     classDef application fill:#f3e5f5
-    classDef domain fill:#e8f5e8
     classDef infrastructure fill:#fff3e0
 
-    class Server,Controllers interface
-    class UseCases application
-    class Entities,RepoInterfaces domain
-    class RepoImpl,ExternalAPIs infrastructure
+    class Server interface
+    class Articles,Bookmarks application
+    class Domain,External,Persistence,ExternalAPIs infrastructure
 ```
 
 ### 各層の責務
 
-#### Domain Layer (`src/domain/`)
-- **Entities**: ビジネスロジックの中核となるエンティティ定義
-  - `articles/entities/Article.ts`: 記事エンティティ
-  - `bookmarks/entities/Bookmark.ts`: ブックマークエンティティ
-- **Repository Interfaces**: データアクセスの抽象化
-  - `articles/repositories/ArticleRepository.ts`
-  - `bookmarks/repositories/BookmarkRepository.ts`
-
 #### Application Layer (`src/application/`)
 - **Use Cases**: ビジネスロジックとユースケースの実装
-  - `use-cases/articles/FetchArticlesUseCase.ts`
-  - `use-cases/bookmarks/` (CRUD operations)
+  - `articles/FetchArticlesUseCase.ts`: 記事取得ユースケース
+  - `bookmarks/`: ブックマークのCRUD操作
+    - `CreateBookmarkUseCase.ts`
+    - `FetchBookmarksUseCase.ts`
+    - `FetchBookmarkByIdUseCase.ts`
+    - `UpdateBookmarkUseCase.ts`
+    - `DeleteBookmarkUseCase.ts`
 
 #### Infrastructure Layer (`src/infrastructure/`)
-- **Repository Implementations**: 外部システムとの連携実装
-  - `repositories/ArticleRepositoryImpl.ts`: Qiita API連携
-  - `repositories/BookmarkRepositoryImpl.ts`: Prisma DB連携
+- **Domain**: エンティティ定義（簡略化のためinfrastructure層に配置）
+  - `domain/Article.ts`: 記事エンティティ
+  - `domain/Bookmark.ts`: ブックマークエンティティ
+- **External**: 外部API連携実装
+  - `external/ArticleRepositoryImpl.ts`: Qiita API連携
+- **Persistence**: データベース連携実装
+  - `persistence/BookmarkRepositoryImpl.ts`: Prisma DB連携
 
-#### Interface Layer (`src/interface/`)
-- **Controllers**: GraphQLリゾルバーとの連携
-  - `controllers/ArticleController.ts`
-  - `controllers/BookmarkController.ts`
+#### Interface Layer (`src/`)
+- **Server**: GraphQLリゾルバーの直接実装
+  - `server.ts`: 各ユースケースを直接呼び出すシンプルな構成
 
-### 依存関係の原則
+### 設計の特徴
 
-1. **依存性逆転**: 上位層は下位層の抽象（インターフェース）に依存
-2. **単一責任**: 各層は明確に定義された責務のみを持つ
-3. **開放閉鎖**: 新機能追加時は既存コードを変更せず拡張可能
+1. **TypeScript関数ベース**: クラスではなく関数を使用したシンプルな実装
+2. **type定義**: interfaceではなくtype定義を使用
+3. **シンプルな構造**: 複雑な抽象化を避け、理解しやすい構成
+4. **責任の分離**: 外部API（external）とDB（persistence）の明確な分離
+5. **直接的な依存**: ユースケースからrepository実装への直接インポート
 
 ## Database Schema
 
