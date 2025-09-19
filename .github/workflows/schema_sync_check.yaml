@@ -1,0 +1,50 @@
+name: Schema Sync Check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'graphql/**'
+      - '!.github/workflows/**'
+      - '.github/workflows/schema_sync_check.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'graphql/**'
+  workflow_dispatch:
+
+jobs:
+  run-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: graphql/.node-version
+      - name: Enable Corepack
+        run: corepack enable pnpm
+      - name: Install Dependencies (GraphQL)
+        run: cd graphql && pnpm install --frozen-lockfile
+      - name: Install Dependencies (Mobile)
+        run: cd mobile && pnpm install --frozen-lockfile
+      - name: Setup Environment
+        run: |
+          cd graphql
+          cp .env.sample .env
+      - name: Build GraphQL Schema
+        run: cd graphql && pnpm build
+      - name: Copy and Format Schema
+        run: |
+          cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql
+          cd mobile && pnpm fmt src/libs/graphql/schema.graphql
+      - name: Check Schema Diff
+        run: |
+          git add mobile/src/libs/graphql/schema.graphql
+          if git diff --cached --quiet mobile/src/libs/graphql/schema.graphql; then
+            echo 'Schema files are in sync.'
+            git reset mobile/src/libs/graphql/schema.graphql
+          else
+            echo 'Schema files are out of sync. The schema.graphql file needs to be updated.'
+            git reset mobile/src/libs/graphql/schema.graphql
+            exit 1
+          fi

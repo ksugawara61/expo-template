@@ -1,9 +1,9 @@
-input InputInput {
+input CreateBookmarkInputInput {
   title: String!
   url: String!
   description: String
 }
-input InputInput_1 {
+input UpdateBookmarkInputInput {
   title: String
   url: String
   description: String
@@ -38,8 +38,8 @@ type Bookmark {
   updated_at: Date!
 }
 type Mutation {
-  createBookmark(input: InputInput!): Bookmark!
-  updateBookmark(id: String!, input: InputInput_1!): Bookmark
+  createBookmark(input: CreateBookmarkInputInput!): Bookmark!
+  updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
   deleteBookmark(id: String!): Boolean!
 }
 scalar ID
