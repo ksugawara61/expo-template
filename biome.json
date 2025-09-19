@@ -2,6 +2,8 @@
   "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "files": {
     "includes": [
+      "biome.json",
+      "**/package.json",
       "**/.mcp.json",
       "**/.textlintrc.json",
       "**/eslint.config.mjs",
@@ -9,6 +11,7 @@
       "**/app/**",
       "**/src/**",
       "**/graphql/**",
+      "!**/src/generated",
       "!**/src/libs/gql",
       "!**/src/**/*.msw.ts",
       "!**/src/libs/openapi/schemas",
