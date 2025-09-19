@@ -1,13 +1,15 @@
 import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
-import { createBookmarkUseCase } from "./application/bookmarks/CreateBookmarkUseCase";
+import {
+  createBookmarkUseCase,
+  type CreateBookmarkInput,
+} from "./application/bookmarks/CreateBookmarkUseCase";
 import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
 import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
 import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
-import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
-import type {
-  CreateBookmarkInput,
-  UpdateBookmarkInput,
-} from "./infrastructure/domain/Bookmark";
+import {
+  updateBookmarkUseCase,
+  type UpdateBookmarkInput,
+} from "./application/bookmarks/UpdateBookmarkUseCase";
 
 export const server = {
   Query: {
