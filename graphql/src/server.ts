@@ -4,6 +4,10 @@ import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUse
 import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
 import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
 import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
+import type {
+  CreateBookmarkInput,
+  UpdateBookmarkInput,
+} from "./infrastructure/domain/Bookmark";
 
 export const server = {
   Query: {
@@ -12,15 +16,10 @@ export const server = {
     bookmark: async (id: string) => await fetchBookmarkByIdUseCase(id),
   },
   Mutation: {
-    createBookmark: async (input: {
-      title: string;
-      url: string;
-      description?: string;
-    }) => await createBookmarkUseCase(input),
-    updateBookmark: async (
-      id: string,
-      input: { title?: string; url?: string; description?: string },
-    ) => await updateBookmarkUseCase(id, input),
+    createBookmark: async (input: CreateBookmarkInput) =>
+      await createBookmarkUseCase(input),
+    updateBookmark: async (id: string, input: UpdateBookmarkInput) =>
+      await updateBookmarkUseCase(id, input),
     deleteBookmark: async (id: string) => await deleteBookmarkUseCase(id),
   },
 };
