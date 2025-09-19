@@ -1,8 +1,8 @@
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepositoryImpl";
 import type {
   Bookmark,
   UpdateBookmarkInput,
 } from "../../infrastructure/domain/Bookmark";
+import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepositoryImpl";
 
 export const updateBookmarkUseCase = async (
   id: string,

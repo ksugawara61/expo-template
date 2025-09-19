@@ -1,5 +1,5 @@
-import * as articleRepository from "../../infrastructure/external/ArticleRepositoryImpl";
 import type { Article } from "../../infrastructure/domain/Article";
+import * as articleRepository from "../../infrastructure/external/ArticleRepositoryImpl";
 
 export const fetchArticlesUseCase = async (
   page: number,

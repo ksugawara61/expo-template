@@ -1,5 +1,5 @@
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepositoryImpl";
 import type { Bookmark } from "../../infrastructure/domain/Bookmark";
+import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepositoryImpl";
 
 export const fetchBookmarkByIdUseCase = async (
   id: string,
