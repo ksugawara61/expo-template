@@ -61,8 +61,8 @@ graph TD
 
     subgraph "Infrastructure Layer"
         Domain[infrastructure/domain<br/>Article.ts, Bookmark.ts]
-        External[infrastructure/external<br/>ArticleRepositoryImpl.ts]
-        Persistence[infrastructure/persistence<br/>BookmarkRepositoryImpl.ts]
+        External[infrastructure/external<br/>ArticleRepository.ts]
+        Persistence[infrastructure/persistence<br/>BookmarkRepository.ts]
         ExternalAPIs[External APIs<br/>Qiita API, Prisma]
     end
 
@@ -103,9 +103,9 @@ graph TD
   - `domain/Article.ts`: 記事エンティティ
   - `domain/Bookmark.ts`: ブックマークエンティティ
 - **External**: 外部API連携実装
-  - `external/ArticleRepositoryImpl.ts`: Qiita API連携
+  - `external/ArticleRepository.ts`: Qiita API連携
 - **Persistence**: データベース連携実装
-  - `persistence/BookmarkRepositoryImpl.ts`: Prisma DB連携
+  - `persistence/BookmarkRepository.ts`: Prisma DB連携
 
 #### Interface Layer (`src/`)
 - **Server**: GraphQLリゾルバーの直接実装
@@ -117,7 +117,7 @@ graph TD
 2. **type定義**: interfaceではなくtype定義を使用
 3. **シンプルな構造**: 複雑な抽象化を避け、理解しやすい構成
 4. **責任の分離**: 外部API（external）とDB（persistence）の明確な分離
-5. **直接的な依存**: ユースケースからrepository実装への直接インポート
+5. **直接的な依存**: ユースケースからrepositoryへの直接インポート
 
 ## Database Schema
 

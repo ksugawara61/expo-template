@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "../../libs/prisma/client";
-import * as bookmarkRepository from "./BookmarkRepositoryImpl";
+import * as bookmarkRepository from "./BookmarkRepository";
 
-describe("BookmarkRepositoryImpl", () => {
+describe("BookmarkRepository", () => {
   beforeEach(async () => {
     await prisma.bookmark.deleteMany();
   });
