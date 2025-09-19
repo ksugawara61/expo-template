@@ -5,7 +5,10 @@ export const deleteBookmarkUseCase = async (id: string): Promise<boolean> => {
     await bookmarkRepository.deleteBookmark(id);
     return true;
   } catch (error) {
-    if (error instanceof Error && error.message.includes("No record was found")) {
+    if (
+      error instanceof Error &&
+      error.message.includes("No record was found")
+    ) {
       throw new Error("Bookmark not found");
     }
     throw new Error(
