@@ -1,3 +1,4 @@
+import { ServiceError } from "@getcronit/pylon";
 import type {
   Bookmark,
   UpdateBookmarkInput,
@@ -17,10 +18,17 @@ export const updateBookmarkUseCase = async (
       error instanceof Error &&
       error.message.includes("No record was found")
     ) {
-      throw new Error("Bookmark not found");
+      throw new ServiceError("Bookmark not found", {
+        statusCode: 404,
+        code: "NOT_FOUND",
+      });
     }
-    throw new Error(
+    throw new ServiceError(
       `Failed to update bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+      {
+        statusCode: 500,
+        code: "INTERNAL_ERROR",
+      },
     );
   }
 };

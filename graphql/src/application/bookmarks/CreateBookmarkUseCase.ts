@@ -1,3 +1,4 @@
+import { ServiceError } from "@getcronit/pylon";
 import type {
   Bookmark,
   CreateBookmarkInput,
@@ -12,8 +13,12 @@ export const createBookmarkUseCase = async (
   try {
     return await bookmarkRepository.create(input);
   } catch (error) {
-    throw new Error(
+    throw new ServiceError(
       `Failed to create bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+      {
+        statusCode: 500,
+        code: "INTERNAL_ERROR",
+      },
     );
   }
 };
