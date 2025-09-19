@@ -119,7 +119,7 @@ describe("BookmarkRepository", () => {
       await expect(
         bookmarkRepository.update("non-existent-id", {
           title: "Updated Title",
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -155,7 +155,7 @@ describe("BookmarkRepository", () => {
 
     it("should throw error for non-existent bookmark", async () => {
       await expect(
-        bookmarkRepository.deleteBookmark("non-existent-id")
+        bookmarkRepository.deleteBookmark("non-existent-id"),
       ).rejects.toThrow();
     });
   });
