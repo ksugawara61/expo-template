@@ -1,16 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { prisma } from "../../libs/prisma/client";
 import { createBookmarkUseCase } from "./CreateBookmarkUseCase";
 
 describe("CreateBookmarkUseCase", () => {
-  beforeEach(async () => {
-    await prisma.bookmark.deleteMany();
-  });
-
-  afterEach(async () => {
-    await prisma.bookmark.deleteMany();
-  });
-
   describe("正常系", () => {
     it("should create a bookmark successfully", async () => {
       const input = {
