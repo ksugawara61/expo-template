@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mockServer } from "../../../libs/test/mockServer";
+import { mockServer } from "../../libs/test/mockServer";
 import { fetchArticlesUseCase } from "./FetchArticlesUseCase";
 import { ArticleMocks } from "./FetchArticlesUseCase.mocks";
 

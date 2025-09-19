@@ -1,9 +1,9 @@
-import { fetchArticlesUseCase } from "./application/use-cases/articles/FetchArticlesUseCase";
-import { createBookmarkUseCase } from "./application/use-cases/bookmarks/CreateBookmarkUseCase";
-import { deleteBookmarkUseCase } from "./application/use-cases/bookmarks/DeleteBookmarkUseCase";
-import { fetchBookmarkByIdUseCase } from "./application/use-cases/bookmarks/FetchBookmarkByIdUseCase";
-import { fetchBookmarksUseCase } from "./application/use-cases/bookmarks/FetchBookmarksUseCase";
-import { updateBookmarkUseCase } from "./application/use-cases/bookmarks/UpdateBookmarkUseCase";
+import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
+import { createBookmarkUseCase } from "./application/bookmarks/CreateBookmarkUseCase";
+import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
+import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
+import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
+import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
 
 export const server = {
   Query: {
