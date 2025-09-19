@@ -1,8 +1,8 @@
 {
 	"scripts": {
 		"postinstall": "lefthook install",
-		"schema:sync": "cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql",
-		"schema:check": "node -e \"const fs = require('fs'); const original = fs.readFileSync('mobile/src/libs/graphql/schema.graphql', 'utf8'); const source = fs.readFileSync('graphql/.pylon/schema.graphql', 'utf8'); if (original !== source) { console.error('Schema files are out of sync. Run \\\"pnpm schema:sync\\\" to update.'); process.exit(1); } else { console.log('Schema files are in sync.'); }\""
+		"schema:sync": "cd graphql && pnpm build && cd .. && cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql && cd mobile && pnpm fmt src/libs/graphql/schema.graphql",
+		"schema:check": "pnpm schema:sync && git add mobile/src/libs/graphql/schema.graphql && if git diff --cached --quiet mobile/src/libs/graphql/schema.graphql; then echo 'Schema files are in sync.'; git reset mobile/src/libs/graphql/schema.graphql; else echo 'Schema files are out of sync. Please commit the changes after running pnpm schema:sync.'; git reset mobile/src/libs/graphql/schema.graphql; exit 1; fi"
 	},
 	"dependencies": {
 		"lefthook": "^1.13.0"
