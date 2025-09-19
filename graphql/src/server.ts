@@ -1,14 +1,14 @@
 import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
 import {
-  createBookmarkUseCase,
   type CreateBookmarkInput,
+  createBookmarkUseCase,
 } from "./application/bookmarks/CreateBookmarkUseCase";
 import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
 import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
 import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
 import {
-  updateBookmarkUseCase,
   type UpdateBookmarkInput,
+  updateBookmarkUseCase,
 } from "./application/bookmarks/UpdateBookmarkUseCase";
 
 export const server = {
@@ -25,4 +25,3 @@ export const server = {
     deleteBookmark: async (id: string) => await deleteBookmarkUseCase(id),
   },
 };
-
