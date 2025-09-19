@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mockServer } from "../../../libs/test/mockServer";
-import * as fetchArticlesUseCase from "./FetchArticlesUseCase";
+import { fetchArticlesUseCase } from "./FetchArticlesUseCase";
 import { ArticleMocks } from "./FetchArticlesUseCase.mocks";
 
 describe("FetchArticlesUseCase", () => {
@@ -8,7 +8,7 @@ describe("FetchArticlesUseCase", () => {
     mockServer.use(...ArticleMocks.Success);
 
     const page = 1;
-    const result = await fetchArticlesUseCase.execute(page);
+    const result = await fetchArticlesUseCase(page);
 
     expect(result.length).toBeGreaterThan(0);
     for (const article of result) {

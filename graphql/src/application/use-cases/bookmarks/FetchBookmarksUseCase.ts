@@ -1,6 +1,6 @@
 import type { Bookmark } from "../../../domain/bookmarks/Bookmark";
-import * as bookmarkRepository from "../../../infrastructure/repositories/BookmarkRepositoryImpl";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepositoryImpl";
 
-export const execute = async (): Promise<Bookmark[]> => {
+export const fetchBookmarksUseCase = async (): Promise<Bookmark[]> => {
   return bookmarkRepository.findMany();
 };
