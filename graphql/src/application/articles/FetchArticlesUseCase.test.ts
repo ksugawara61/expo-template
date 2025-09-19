@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { mockServer } from "../../libs/test/mockServer";
-import { fetchArticles } from ".";
-import { ArticleMocks } from "./index.mocks";
+import { fetchArticlesUseCase } from "./FetchArticlesUseCase";
+import { ArticleMocks } from "./FetchArticlesUseCase.mocks";
 
-describe("articles", () => {
-  it("fetchArticles should return an array of articles", async () => {
+describe("FetchArticlesUseCase", () => {
+  it("should return an array of articles", async () => {
     mockServer.use(...ArticleMocks.Success);
+
     const page = 1;
-    const result = await fetchArticles(page);
+    const result = await fetchArticlesUseCase(page);
 
     expect(result.length).toBeGreaterThan(0);
     for (const article of result) {

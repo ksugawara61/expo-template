@@ -1,23 +1,5 @@
 import { createQiitaApiClient } from "../../libs/openapi/client";
-
-type Tag = {
-  name: string;
-};
-
-type User = {
-  name: string | null;
-};
-
-type Article = {
-  id: string;
-  title: string;
-  body: string;
-  url: string;
-  user: User;
-  tags: Tag[];
-  created_at: string;
-  updated_at: string;
-};
+import type { Article } from "../domain/Article";
 
 export const fetchArticles = async (page: number): Promise<Article[]> => {
   const response = await createQiitaApiClient().GET("/items", {

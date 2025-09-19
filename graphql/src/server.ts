@@ -1,28 +1,26 @@
-import { fetchArticles } from "./domains/articles";
-import {
-  createBookmark,
-  deleteBookmark,
-  fetchBookmarkById,
-  fetchBookmarks,
-  updateBookmark,
-} from "./domains/bookmarks";
+import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
+import { createBookmarkUseCase } from "./application/bookmarks/CreateBookmarkUseCase";
+import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
+import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
+import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
+import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
 
 export const server = {
   Query: {
-    articles: async (page: number) => await fetchArticles(page),
-    bookmarks: async () => await fetchBookmarks(),
-    bookmark: async (id: string) => await fetchBookmarkById(id),
+    articles: async (page: number) => await fetchArticlesUseCase(page),
+    bookmarks: async () => await fetchBookmarksUseCase(),
+    bookmark: async (id: string) => await fetchBookmarkByIdUseCase(id),
   },
   Mutation: {
     createBookmark: async (input: {
       title: string;
       url: string;
       description?: string;
-    }) => await createBookmark(input),
+    }) => await createBookmarkUseCase(input),
     updateBookmark: async (
       id: string,
       input: { title?: string; url?: string; description?: string },
-    ) => await updateBookmark(id, input),
-    deleteBookmark: async (id: string) => await deleteBookmark(id),
+    ) => await updateBookmarkUseCase(id, input),
+    deleteBookmark: async (id: string) => await deleteBookmarkUseCase(id),
   },
 };

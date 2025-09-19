@@ -1,27 +1,11 @@
 import { prisma } from "../../libs/prisma/client";
+import type {
+  Bookmark,
+  CreateBookmarkInput,
+  UpdateBookmarkInput,
+} from "../domain/Bookmark";
 
-type Bookmark = {
-  id: string;
-  title: string;
-  url: string;
-  description?: string | null;
-  created_at: Date;
-  updated_at: Date;
-};
-
-type CreateBookmarkInput = {
-  title: string;
-  url: string;
-  description?: string;
-};
-
-type UpdateBookmarkInput = {
-  title?: string;
-  url?: string;
-  description?: string;
-};
-
-export const fetchBookmarks = async (): Promise<Bookmark[]> => {
+export const findMany = async (): Promise<Bookmark[]> => {
   return await prisma.bookmark.findMany({
     orderBy: {
       created_at: "desc",
@@ -29,17 +13,13 @@ export const fetchBookmarks = async (): Promise<Bookmark[]> => {
   });
 };
 
-export const fetchBookmarkById = async (
-  id: string,
-): Promise<Bookmark | null> => {
+export const findById = async (id: string): Promise<Bookmark | null> => {
   return await prisma.bookmark.findUnique({
     where: { id },
   });
 };
 
-export const createBookmark = async (
-  input: CreateBookmarkInput,
-): Promise<Bookmark> => {
+export const create = async (input: CreateBookmarkInput): Promise<Bookmark> => {
   return await prisma.bookmark.create({
     data: {
       title: input.title,
@@ -49,7 +29,7 @@ export const createBookmark = async (
   });
 };
 
-export const updateBookmark = async (
+export const update = async (
   id: string,
   input: UpdateBookmarkInput,
 ): Promise<Bookmark | null> => {
@@ -65,7 +45,6 @@ export const updateBookmark = async (
       },
     });
   } catch (_error) {
-    // Record not found
     return null;
   }
 };
@@ -77,7 +56,6 @@ export const deleteBookmark = async (id: string): Promise<boolean> => {
     });
     return true;
   } catch (_error) {
-    // Record not found
     return false;
   }
 };
