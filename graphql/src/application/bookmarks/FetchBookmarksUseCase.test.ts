@@ -1,16 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { prisma } from "../../libs/prisma/client";
 import { fetchBookmarksUseCase } from "./FetchBookmarksUseCase";
 
 describe("FetchBookmarksUseCase", () => {
-  beforeEach(async () => {
-    await prisma.bookmark.deleteMany();
-  });
-
-  afterEach(async () => {
-    await prisma.bookmark.deleteMany();
-  });
-
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
       await prisma.bookmark.createMany({

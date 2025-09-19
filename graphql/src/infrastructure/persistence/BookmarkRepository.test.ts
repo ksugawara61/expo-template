@@ -1,16 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { prisma } from "../../libs/prisma/client";
 import * as bookmarkRepository from "./BookmarkRepository";
 
 describe("BookmarkRepository", () => {
-  beforeEach(async () => {
-    await prisma.bookmark.deleteMany();
-  });
-
-  afterEach(async () => {
-    await prisma.bookmark.deleteMany();
-  });
-
   describe("create", () => {
     it("should create a new bookmark", async () => {
       const input = {
