@@ -9,5 +9,11 @@ export type { CreateBookmarkInput };
 export const createBookmarkUseCase = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
-  return bookmarkRepository.create(input);
+  try {
+    return await bookmarkRepository.create(input);
+  } catch (error) {
+    throw new Error(
+      `Failed to create bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
+  }
 };

@@ -4,5 +4,11 @@ import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRe
 export const fetchBookmarkByIdUseCase = async (
   id: string,
 ): Promise<Bookmark | null> => {
-  return bookmarkRepository.findById(id);
+  try {
+    return await bookmarkRepository.findById(id);
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
+  }
 };
