@@ -45,13 +45,13 @@ export interface Scalars {
   Void: { input: any; output: any };
 }
 
-export interface InputInput {
+export interface CreateBookmarkInputInput {
   description?: InputMaybe<Scalars["String"]["input"]>;
   title: Scalars["String"]["input"];
   url: Scalars["String"]["input"];
 }
 
-export interface InputInput_1 {
+export interface UpdateBookmarkInputInput {
   description?: InputMaybe<Scalars["String"]["input"]>;
   title?: InputMaybe<Scalars["String"]["input"]>;
   url?: InputMaybe<Scalars["String"]["input"]>;
@@ -89,25 +89,28 @@ export const generatedSchema = {
     updated_at: { __type: "DateTimeISO!" },
     url: { __type: "String!" },
   },
-  InputInput: {
+  CreateBookmarkInputInput: {
     description: { __type: "String" },
     title: { __type: "String!" },
     url: { __type: "String!" },
   },
-  InputInput_1: {
+  Tag: { __typename: { __type: "String!" }, name: { __type: "String!" } },
+  UpdateBookmarkInputInput: {
     description: { __type: "String" },
     title: { __type: "String" },
     url: { __type: "String" },
   },
-  Tag: { __typename: { __type: "String!" }, name: { __type: "String!" } },
   User: { __typename: { __type: "String!" }, name: { __type: "String" } },
   mutation: {
     __typename: { __type: "String!" },
-    createBookmark: { __type: "Bookmark!", __args: { input: "InputInput!" } },
+    createBookmark: {
+      __type: "Bookmark!",
+      __args: { input: "CreateBookmarkInputInput!" },
+    },
     deleteBookmark: { __type: "Boolean!", __args: { id: "String!" } },
     updateBookmark: {
-      __type: "Bookmark",
-      __args: { id: "String!", input: "InputInput_1!" },
+      __type: "Bookmark!",
+      __args: { id: "String!", input: "UpdateBookmarkInputInput!" },
     },
   },
   query: {
@@ -153,14 +156,14 @@ export interface User {
 
 export interface Mutation {
   __typename?: "Mutation";
-  createBookmark: (args: { input: InputInput }) => Bookmark;
+  createBookmark: (args: { input: CreateBookmarkInputInput }) => Bookmark;
   deleteBookmark: (args: {
     id: ScalarsEnums["String"];
   }) => ScalarsEnums["Boolean"];
   updateBookmark: (args: {
     id: ScalarsEnums["String"];
-    input: InputInput_1;
-  }) => Maybe<Bookmark>;
+    input: UpdateBookmarkInputInput;
+  }) => Bookmark;
 }
 
 export interface Query {
