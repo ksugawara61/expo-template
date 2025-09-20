@@ -48,7 +48,7 @@ try {
   licenseData.sort((a, b) => a.name.localeCompare(b.name));
 
   // Write the data to file
-  fs.writeFileSync(outputFile, JSON.stringify(licenseData, null, 2));
+  fs.writeFileSync(outputFile, `${JSON.stringify(licenseData, null, 2)}\n`);
   console.log(
     `Generated ${licenseData.length} license entries to ${outputFile}`,
   );
