@@ -3,9 +3,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
+      - 'mobile/**'
       - 'graphql/**'
+      - 'biome.json'
+      - 'package.json'
       - '!.github/workflows/**'
-      - '.github/workflows/graphql_lint.yaml'
+      - '.github/workflows/lint.yaml'
   push:
     branches:
       - main
@@ -14,23 +17,20 @@ on:
 jobs:
   run-ci:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: graphql
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          sparse-checkout: |
-            graphql
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
-          package_json_file: graphql/package.json
+          package_json_file: package.json
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version-file: graphql/.node-version
+          node-version-file: mobile/.node-version
           cache: 'pnpm'
-          cache-dependency-path: 'graphql/**/pnpm-lock.yaml'
+          cache-dependency-path: 'pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Lint
+      - name: Lint with Biome
+        run: pnpm lint
+      - name: Lint Mobile with ESLint
+        working-directory: mobile
         run: pnpm lint
