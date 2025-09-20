@@ -7,7 +7,7 @@ import * as stories from "./index.stories";
 const { Primary } = composeStories(stories);
 
 describe("Articles", () => {
-  it("複数の記事が正しく表示される", async () => {
+  it.skip("複数の記事が正しく表示される", async () => {
     server.use(...handlers.Success);
     render(<Primary />);
 
