@@ -2,7 +2,7 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "postinstall": "lefthook install",
-    "schema:sync": "cd graphql && pnpm build && cd .. && cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql && cd mobile && pnpm fmt src/libs/graphql/schema.graphql",
+    "schema:sync": "cd graphql && pnpm build && cd .. && cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql && pnpm fmt mobile/src/libs/graphql/schema.graphql",
     "schema:check": "pnpm schema:sync && git add mobile/src/libs/graphql/schema.graphql && if git diff --cached --quiet mobile/src/libs/graphql/schema.graphql; then echo 'Schema files are in sync.'; git reset mobile/src/libs/graphql/schema.graphql; else echo 'Schema files are out of sync. Please commit the changes after running pnpm schema:sync.'; git reset mobile/src/libs/graphql/schema.graphql; exit 1; fi",
     "lint:biome": "biome ci .",
     "lint": "pnpm lint:biome",

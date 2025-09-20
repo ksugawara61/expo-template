@@ -26,28 +26,13 @@ jobs:
           node-version-file: mobile/.node-version
           cache: 'pnpm'
           cache-dependency-path: 'pnpm-lock.yaml'
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
       - name: Install Dependencies (GraphQL)
         run: cd graphql && pnpm install --frozen-lockfile
-      - name: Install Dependencies (Mobile)
-        run: cd mobile && pnpm install --frozen-lockfile
       - name: Setup Environment
         run: |
           cd graphql
           cp .env.sample .env
-      - name: Build GraphQL Schema
-        run: cd graphql && pnpm build
-      - name: Copy and Format Schema
-        run: |
-          cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql
-          cd mobile && pnpm fmt src/libs/graphql/schema.graphql
       - name: Check Schema Diff
-        run: |
-          git add mobile/src/libs/graphql/schema.graphql
-          if git diff --cached --quiet mobile/src/libs/graphql/schema.graphql; then
-            echo 'Schema files are in sync.'
-            git reset mobile/src/libs/graphql/schema.graphql
-          else
-            echo 'Schema files are out of sync. The schema.graphql file needs to be updated.'
-            git reset mobile/src/libs/graphql/schema.graphql
-            exit 1
-          fi
+        run: pnpm schema:check
