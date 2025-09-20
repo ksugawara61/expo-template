@@ -42,7 +42,7 @@ jobs:
           git status
           git diff
           git add vrt/public/report/expected
-          git commit -m "VRT Approve"
-          git push origin ${{ github.head_ref }}
+          git commit -m "VRT Approve" --no-verify
+          git push origin ${{ github.head_ref }} --no-verify
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
