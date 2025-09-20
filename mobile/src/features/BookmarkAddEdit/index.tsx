@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
@@ -43,6 +44,7 @@ type Props = {
 };
 
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
+  const { t } = useTranslation();
   const isEditing = !!bookmark;
 
   const [title, setTitle] = useState(bookmark?.title || "");
@@ -78,17 +80,17 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
     const newErrors: Record<string, string> = {};
 
     if (!title.trim()) {
-      newErrors.title = "タイトルは必須です";
+      newErrors.title = t("bookmarkAddEdit.titleRequired");
     }
 
     if (!url.trim()) {
-      newErrors.url = "URLは必須です";
+      newErrors.url = t("bookmarkAddEdit.urlRequired");
     } else {
       // Basic URL validation
       try {
         new URL(url);
       } catch {
-        newErrors.url = "有効なURLを入力してください";
+        newErrors.url = t("bookmarkAddEdit.urlInvalid");
       }
     }
 
@@ -111,7 +113,10 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           variables: { id: bookmark.id, input },
         });
 
-        Alert.alert("成功", "ブックマークを更新しました");
+        Alert.alert(
+          t("bookmarkAddEdit.success"),
+          t("bookmarkAddEdit.bookmarkUpdated"),
+        );
       } else {
         const input: CreateBookmarkInput = {
           title: title.trim(),
@@ -123,7 +128,10 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           variables: { input },
         });
 
-        Alert.alert("成功", "ブックマークを作成しました");
+        Alert.alert(
+          t("bookmarkAddEdit.success"),
+          t("bookmarkAddEdit.bookmarkCreated"),
+        );
 
         // Reset form for new bookmark
         setTitle("");
@@ -134,8 +142,12 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
       handleSuccess();
     } catch {
       Alert.alert(
-        "エラー",
-        `ブックマークの${isEditing ? "更新" : "作成"}に失敗しました`,
+        t("bookmarkAddEdit.error"),
+        t(
+          isEditing
+            ? "bookmarkAddEdit.updateFailed"
+            : "bookmarkAddEdit.createFailed",
+        ),
       );
     }
   };
@@ -144,17 +156,21 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
     <ScrollView style={{ flex: 1, width: "100%", height: "100%" }}>
       <Card style={{ margin: 16 }}>
         <Card.Title
-          title={isEditing ? "ブックマークを編集" : "新しいブックマーク"}
+          title={t(
+            isEditing
+              ? "bookmarkAddEdit.editBookmark"
+              : "bookmarkAddEdit.newBookmark",
+          )}
           titleVariant="headlineSmall"
         />
         <Card.Content>
           <View style={{ gap: 16 }}>
             <View>
               <TextInput
-                label="タイトル"
+                label={t("bookmarkAddEdit.title")}
                 value={title}
                 onChangeText={setTitle}
-                placeholder="ブックマークのタイトルを入力"
+                placeholder={t("bookmarkAddEdit.titlePlaceholder")}
                 error={!!errors.title}
               />
               {errors.title && (
@@ -164,10 +180,10 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
 
             <View>
               <TextInput
-                label="URL"
+                label={t("bookmarkAddEdit.url")}
                 value={url}
                 onChangeText={setUrl}
-                placeholder="https://example.com"
+                placeholder={t("bookmarkAddEdit.urlPlaceholder")}
                 error={!!errors.url}
               />
               {errors.url && <HelperText type="error">{errors.url}</HelperText>}
@@ -175,10 +191,10 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
 
             <View>
               <TextInput
-                label="説明（任意）"
+                label={t("bookmarkAddEdit.description")}
                 value={description}
                 onChangeText={setDescription}
-                placeholder="ブックマークの説明を入力"
+                placeholder={t("bookmarkAddEdit.descriptionPlaceholder")}
                 multiline
                 numberOfLines={3}
               />
@@ -191,7 +207,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
                 disabled={loading}
                 style={{ flex: 1 }}
               >
-                キャンセル
+                {t("bookmarkAddEdit.cancel")}
               </Button>
               <Button
                 mode="contained"
@@ -199,7 +215,13 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
                 disabled={loading}
                 style={{ flex: 1 }}
               >
-                {loading ? "処理中..." : isEditing ? "更新" : "作成"}
+                {loading
+                  ? t("bookmarkAddEdit.processing")
+                  : t(
+                      isEditing
+                        ? "bookmarkAddEdit.update"
+                        : "bookmarkAddEdit.create",
+                    )}
               </Button>
             </View>
           </View>

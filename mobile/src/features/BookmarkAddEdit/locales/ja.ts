@@ -1,0 +1,25 @@
+import type { bookmarkAddEdit as bookmarkAddEditEn } from "./en";
+
+export const bookmarkAddEdit: typeof bookmarkAddEditEn = {
+  editBookmark: "ブックマークを編集",
+  newBookmark: "新しいブックマーク",
+  title: "タイトル",
+  titlePlaceholder: "ブックマークのタイトルを入力",
+  titleRequired: "タイトルは必須です",
+  url: "URL",
+  urlPlaceholder: "https://example.com",
+  urlRequired: "URLは必須です",
+  urlInvalid: "有効なURLを入力してください",
+  description: "説明（任意）",
+  descriptionPlaceholder: "ブックマークの説明を入力",
+  cancel: "キャンセル",
+  create: "作成",
+  update: "更新",
+  processing: "処理中...",
+  success: "成功",
+  bookmarkUpdated: "ブックマークを更新しました",
+  bookmarkCreated: "ブックマークを作成しました",
+  error: "エラー",
+  updateFailed: "ブックマークの更新に失敗しました",
+  createFailed: "ブックマークの作成に失敗しました",
+};
