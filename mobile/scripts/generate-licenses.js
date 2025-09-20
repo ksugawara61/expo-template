@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const checker = require('license-checker');
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,36 +12,45 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-checker.init({
-  start: path.join(__dirname, '..'),
-  excludePrivatePackages: true,
-}, (err, packages) => {
-  if (err) {
-    console.error('Error generating licenses:', err);
-    process.exit(1);
+try {
+  // Execute pnpm licenses command to get license information
+  const result = execSync('pnpm licenses list --json --long', {
+    cwd: path.join(__dirname, '..'),
+    encoding: 'utf8',
+  });
+
+  const licensesByType = JSON.parse(result);
+
+  // Transform the data into a flat array format for easier consumption
+  const licenseData = [];
+
+  for (const [licenseType, packages] of Object.entries(licensesByType)) {
+    for (const pkg of packages) {
+      // Handle multiple versions of the same package
+      for (const version of pkg.versions) {
+        licenseData.push({
+          name: pkg.name,
+          version,
+          license: licenseType,
+          repository: pkg.homepage,
+          publisher: pkg.author,
+          email: undefined, // Not provided by pnpm licenses
+          url: pkg.homepage,
+          licenseFile: undefined, // Not provided by pnpm licenses
+          noticeFile: undefined, // Not provided by pnpm licenses
+          description: pkg.description,
+        });
+      }
+    }
   }
 
-  // Transform the data into a more usable format
-  const licenseData = Object.entries(packages).map(([packageName, info]) => {
-    // Extract package name and version from the key (format: "package@version")
-    const lastAtIndex = packageName.lastIndexOf('@');
-    const name = packageName.substring(0, lastAtIndex);
-    const version = packageName.substring(lastAtIndex + 1);
-
-    return {
-      name,
-      version,
-      license: info.licenses,
-      repository: info.repository,
-      publisher: info.publisher,
-      email: info.email,
-      url: info.url,
-      licenseFile: info.licenseFile,
-      noticeFile: info.noticeFile,
-    };
-  }).sort((a, b) => a.name.localeCompare(b.name));
+  // Sort by package name
+  licenseData.sort((a, b) => a.name.localeCompare(b.name));
 
   // Write the data to file
   fs.writeFileSync(outputFile, JSON.stringify(licenseData, null, 2));
   console.log(`Generated ${licenseData.length} license entries to ${outputFile}`);
-});
+} catch (error) {
+  console.error('Error generating licenses:', error.message);
+  process.exit(1);
+}
