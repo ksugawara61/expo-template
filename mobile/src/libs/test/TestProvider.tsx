@@ -1,9 +1,10 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { type FC, type PropsWithChildren, Suspense } from "react";
+import { I18nextProvider } from "react-i18next";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import i18n from "@/libs/i18n";
 import { SWRConfig } from "../swr";
-import "@/libs/i18n";
 
 const testSwrConfig = {
   /** テスト間でキャッシュを利用しないようにするため設定 */
@@ -34,20 +35,22 @@ const createApolloClient = () =>
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <ApolloProvider client={createApolloClient()}>
-      <SWRConfig value={testSwrConfig}>
-        <SafeAreaProvider initialMetrics={testInitialMetrics}>
-          <Suspense
-            fallback={
-              <View testID={suspenseLoadingTestId}>
-                <ActivityIndicator />
-              </View>
-            }
-          >
-            {children}
-          </Suspense>
-        </SafeAreaProvider>
-      </SWRConfig>
-    </ApolloProvider>
+    <I18nextProvider i18n={i18n}>
+      <ApolloProvider client={createApolloClient()}>
+        <SWRConfig value={testSwrConfig}>
+          <SafeAreaProvider initialMetrics={testInitialMetrics}>
+            <Suspense
+              fallback={
+                <View testID={suspenseLoadingTestId}>
+                  <ActivityIndicator />
+                </View>
+              }
+            >
+              {children}
+            </Suspense>
+          </SafeAreaProvider>
+        </SWRConfig>
+      </ApolloProvider>
+    </I18nextProvider>
   );
 };

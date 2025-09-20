@@ -1,14 +1,11 @@
 import { composeStories } from "@storybook/react";
-import { server } from "@/libs/test/server";
 import { render, screen } from "@/libs/test/testing-library";
-import { MocksBookmarks } from "./index.mocks";
 import * as stories from "./index.stories";
 
 const { Success, Empty } = composeStories(stories);
 
 describe("Bookmarks", () => {
-  it.skip("ブックマークが正しく表示される", async () => {
-    server.use(MocksBookmarks.success);
+  it("ブックマークが正しく表示される", async () => {
     render(<Success />);
 
     expect(
@@ -16,8 +13,7 @@ describe("Bookmarks", () => {
     ).toBeOnTheScreen();
   });
 
-  it.skip("ブックマークがない場合のメッセージが表示される", async () => {
-    server.use(MocksBookmarks.empty);
+  it("ブックマークがない場合のメッセージが表示される", async () => {
     render(<Empty />);
 
     expect(
