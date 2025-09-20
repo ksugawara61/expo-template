@@ -18,12 +18,8 @@ pre-push:
           echo "  # or create a new commit"
           exit 1
         fi
-    mobile-tests:
-      glob: "mobile/**"
-      run: cd mobile && pnpm jest --changedSince main
-    graphql-tests:
-      glob: "graphql/**"
-      run: cd graphql && pnpm vitest --changed main
+    tests:
+      run: pnpm turbo test --filter="...[HEAD~1]"
 
 pre-commit:
   parallel: true

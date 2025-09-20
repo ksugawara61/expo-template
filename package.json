@@ -5,14 +5,18 @@
     "schema:sync": "cd graphql && pnpm build && cd .. && cp graphql/.pylon/schema.graphql mobile/src/libs/graphql/schema.graphql && pnpm fmt mobile/src/libs/graphql/schema.graphql && cd mobile && pnpm codegen",
     "schema:check": "pnpm schema:sync && git add mobile/src && if git diff --cached --quiet mobile/src; then echo 'Schema files are in sync.'; git reset mobile/src/libs/graphql/schema.graphql; else echo 'Schema files are out of sync. Please commit the changes after running pnpm schema:sync.'; git reset mobile/src; exit 1; fi",
     "lint:biome": "biome ci .",
-    "lint": "pnpm lint:biome",
+    "lint": "turbo lint",
     "fmt:biome": "biome check . --write",
-    "fmt": "pnpm fmt:biome",
-    "typecheck": "cd mobile && pnpm typecheck && cd ../graphql && pnpm typecheck"
+    "fmt": "turbo fmt",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "dev": "turbo dev",
+    "build": "turbo build"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.2",
-    "lefthook": "^1.13.0"
+    "lefthook": "^1.13.0",
+    "turbo": "^2.5.6"
   },
   "packageManager": "pnpm@10.17.0+sha256.bd9ec5417641391e0acb3912b2912bd5b0385407a82da94744a7407b567fdb4f"
 }
