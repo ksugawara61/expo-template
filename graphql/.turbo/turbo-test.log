@@ -1,0 +1,67 @@
+
+> graphql@0.0.1 test /Users/katsuya/Documents/sandbox/expo-template/graphql
+> vitest
+
+
+ RUN  v3.2.4 /Users/katsuya/Documents/sandbox/expo-template/graphql
+
+Database migration starting...
+
+> graphql@0.0.1 db:generate /Users/katsuya/Documents/sandbox/expo-template/graphql
+> prisma generate
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (6.14.0) to ./src/generated/prisma in 54ms
+
+
+> graphql@0.0.1 db:migrate /Users/katsuya/Documents/sandbox/expo-template/graphql
+> prisma migrate dev
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:./test.db"
+
+Already in sync, no schema change or pending migration was found.
+
+Running generate... (Use --skip-generate to skip the generators)
+[2K[1A[2K[GRunning generate... - Prisma Client
+[2K[1A[2K[G✔ Generated Prisma Client (6.14.0) to ./src/generated/prisma in 54ms
+
+
+Database migration completed.
+ ✓ src/infrastructure/persistence/BookmarkRepository.test.ts (11 tests) 54ms
+ ✓ src/server.test.ts (2 tests) 24ms
+ ✓ src/application/articles/FetchArticlesUseCase.test.ts (1 test) 6ms
+ ✓ src/application/bookmarks/DeleteBookmarkUseCase.test.ts (2 tests) 5ms
+ ❯ src/application/bookmarks/UpdateBookmarkUseCase.test.ts (3 tests | 1 failed) 12ms
+   × UpdateBookmarkUseCase > 正常系 > should update a bookmark successfully 3ms
+     → expected 1758372506614 to be greater than 1758372506614
+   ✓ UpdateBookmarkUseCase > 正常系 > should update partial fields only 5ms
+   ✓ UpdateBookmarkUseCase > 異常系 > should throw ServiceError with NOT_FOUND when bookmark does not exist 4ms
+ ✓ src/application/bookmarks/FetchBookmarkByIdUseCase.test.ts (2 tests) 4ms
+ ✓ src/application/bookmarks/FetchBookmarksUseCase.test.ts (2 tests) 4ms
+ ✓ src/application/bookmarks/CreateBookmarkUseCase.test.ts (2 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/application/bookmarks/UpdateBookmarkUseCase.test.ts > UpdateBookmarkUseCase > 正常系 > should update a bookmark successfully
+AssertionError: expected 1758372506614 to be greater than 1758372506614
+ ❯ src/application/bookmarks/UpdateBookmarkUseCase.test.ts:27:43
+     25|       expect(result.url).toBe(bookmark.url);
+     26|       expect(result.description).toBe(updateInput.description);
+     27|       expect(result.updated_at.getTime()).toBeGreaterThan(
+       |                                           ^
+     28|         result.created_at.getTime(),
+     29|       );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  1 failed | 24 passed (25)
+   Start at  21:48:23
+   Duration  2.77s (transform 86ms, setup 374ms, collect 419ms, tests 112ms, environment 0ms, prepare 37ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

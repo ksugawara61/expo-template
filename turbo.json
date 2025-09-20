@@ -1,0 +1,72 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".pylon/**", ".expo/**", "dist/**", "build/**", "out/**", ".next/**", "storybook-static/**"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint:eslint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "fmt": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "fmt:eslint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "codegen": {
+      "inputs": ["src/libs/graphql/schema.graphql", "codegen.yml", "src/**/*.graphql"],
+      "outputs": ["src/generated/**"]
+    },
+    "db:generate": {
+      "inputs": ["prisma/schema.prisma"],
+      "outputs": ["src/generated/prisma/**"]
+    },
+    "db:push": {
+      "cache": false
+    },
+    "db:seed": {
+      "cache": false
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
+    },
+    "storybook:build": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
+    "vrt": {
+      "dependsOn": ["storybook:build"],
+      "outputs": ["vrt/public/report/**"]
+    }
+  }
+}

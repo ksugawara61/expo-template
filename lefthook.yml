@@ -18,12 +18,8 @@ pre-push:
           echo "  # or create a new commit"
           exit 1
         fi
-    mobile-tests:
-      glob: "mobile/**"
-      run: cd mobile && pnpm jest --changedSince main
-    graphql-tests:
-      glob: "graphql/**"
-      run: cd graphql && pnpm vitest --changed main
+    turbo-tests:
+      run: pnpx turbo run test --filter="...[origin/main]"
 
 pre-commit:
   parallel: true
@@ -31,6 +27,5 @@ pre-commit:
     biome-fmt:
       glob: "**/*.{js,ts,jsx,tsx,json}"
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
-    mobile-eslint-fmt:
-      glob: "mobile/**/*.{js,ts,jsx,tsx}"
-      run: cd mobile && echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm eslint --fix
+    turbo-fmt:
+      run: pnpx turbo run fmt --filter="...[HEAD~1]"

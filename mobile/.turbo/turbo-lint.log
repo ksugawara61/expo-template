@@ -1,0 +1,8 @@
+
+> mobile@1.0.0 lint /Users/katsuya/Documents/sandbox/expo-template/mobile
+> pnpm lint:eslint
+
+
+> mobile@1.0.0 lint:eslint /Users/katsuya/Documents/sandbox/expo-template/mobile
+> eslint .
+
