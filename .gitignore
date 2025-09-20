@@ -2,3 +2,5 @@
 node_modules/
 
 lefthook-local.yml
+
+.turbo
