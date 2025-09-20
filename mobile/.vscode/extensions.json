@@ -1,8 +1,0 @@
-{
-  "recommendations": [
-    "biomejs.biome",
-    "nicolas-liger.dbml-viewer",
-    "davidanson.vscode-markdownlint",
-    "apollographql.vscode-apollo"
-  ]
-}
