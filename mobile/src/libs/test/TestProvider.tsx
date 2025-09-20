@@ -3,6 +3,7 @@ import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SWRConfig } from "../swr";
+import "@/libs/i18n";
 
 const testSwrConfig = {
   /** テスト間でキャッシュを利用しないようにするため設定 */
