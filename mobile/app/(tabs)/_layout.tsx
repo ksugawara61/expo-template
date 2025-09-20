@@ -43,6 +43,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="license"
+        options={{
+          title: "License",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="file-text" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
