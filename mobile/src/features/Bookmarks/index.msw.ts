@@ -1,12 +1,12 @@
 import * as Types from '@/libs/gql/graphql';
 
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'
-export type BookmarkFragment = { __typename?: 'Bookmark', id: string, title: string, url: string, description?: string | null, created_at: string, updated_at: string };
+export type BookmarkFragment = { __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string };
 
 export type GetBookmarksQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type GetBookmarksQuery = { __typename?: 'Query', bookmarks: Array<{ __typename?: 'Bookmark', id: string, title: string, url: string, description?: string | null, created_at: string, updated_at: string }> };
+export type GetBookmarksQuery = { __typename?: 'Query', bookmarks: Array<{ __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string }> };
 
 export type DeleteBookmarkMutationVariables = Types.Exact<{
   id: Types.Scalars['String']['input'];
