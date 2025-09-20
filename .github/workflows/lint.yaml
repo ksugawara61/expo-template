@@ -29,6 +29,9 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+      - name: Install Mobile Dependencies
+        working-directory: mobile
+        run: pnpm install --frozen-lockfile
       - name: Lint with Biome
         run: pnpm lint
       - name: Lint Mobile with ESLint
