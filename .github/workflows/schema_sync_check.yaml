@@ -30,6 +30,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Dependencies (GraphQL)
         run: cd graphql && pnpm install --frozen-lockfile
+      - name: Install Dependencies (Mobile)
+        run: cd mobile && pnpm install --frozen-lockfile
       - name: Setup Environment
         run: |
           cd graphql

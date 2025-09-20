@@ -33,4 +33,4 @@ pre-commit:
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
     mobile-eslint-fmt:
       glob: "mobile/**/*.{js,ts,jsx,tsx}"
-      run: cd mobile && pnpm eslint --fix {staged_files}
+      run: cd mobile && echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm eslint --fix
