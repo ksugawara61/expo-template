@@ -21,7 +21,8 @@
     "vrt:report": "pnpm vrt; open ./vrt/public/report/index.html",
     "vrt:approve": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
     "expo:fix": "expo install --fix",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "generate-licenses": "node scripts/generate-licenses.js"
   },
   "dependencies": {
     "@apollo/client": "^3.13.9",
@@ -37,6 +38,7 @@
     "expo-system-ui": "~5.0.11",
     "expo-web-browser": "~14.2.0",
     "graphql": "^16.11.0",
+    "license-checker": "^25.0.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.62.0",
