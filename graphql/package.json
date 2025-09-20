@@ -8,6 +8,8 @@
     "dev": "pnpm db:generate && pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
     "build": "pnpm db:generate && pylon build",
     "test": "vitest",
+    "lint": "biome ci .",
+    "fmt": "biome check . --write",
     "db:reset": "prisma migrate reset --force",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",

@@ -1,36 +1,44 @@
-name: Typecheck
+name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - 'mobile/**'
-      - '!.github/workflows/**'
-      - '.github/workflows/mobile_typecheck.yaml'
   push:
     branches:
       - main
   workflow_dispatch:
 
+env:
+  DATABASE_URL: "file:./dev.db"
+
 jobs:
-  run-ci:
+  ci:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mobile
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          sparse-checkout: |
-            mobile
+          fetch-depth: 0
+
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
-          package_json_file: mobile/package.json
+          package_json_file: package.json
+
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version-file: mobile/.node-version
+          node-version-file: .node-version
           cache: 'pnpm'
-          cache-dependency-path: 'mobile/**/pnpm-lock.yaml'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Typecheck
+
+      - name: Generate Prisma client
+        run: cd graphql && pnpm db:generate
+
+      - name: Run Lint
+        run: pnpm lint
+
+      - name: Run Typecheck
         run: pnpm typecheck
+
+      - name: Run Tests
+        run: pnpm test
