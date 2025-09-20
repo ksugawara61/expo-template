@@ -3,8 +3,7 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
-    "quickfix.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
+    "source.fixAll.eslint": "explicit"
   },
   "files.insertFinalNewline": true,
   "markdownlint.config": {
@@ -27,5 +26,6 @@
     "*.tsx": "${capture}.stories.tsx, ${capture}.test.tsx, ${capture}.mocks.ts, ${capture}.msw.ts"
   },
   "github.copilot.nextEditSuggestions.enabled": true,
-  "eslint.workingDirectories": ["graphql", "mobile"]
+  "eslint.workingDirectories": ["graphql", "mobile"],
+  "eslint.format.enable": true
 }

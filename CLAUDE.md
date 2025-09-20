@@ -100,22 +100,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### パス解決
 
 #### Mobile
+
 - `@/*` -> `./src/*` のパスエイリアスが設定済み
 - コンポーネントカタログは `@/components` からインポート
 - フィーチャーモジュールは `@/features` からインポート
 - 共通ライブラリは `@/libs` からインポート
 
 #### GraphQL
+
 - 絶対パスでのインポートを使用
 
 ### テスト戦略
 
 #### Mobile
+
 - **単体テスト** - Jest + @testing-library/react-native
 - **ストーリーテスト** - Storybook
 - **VRT** - Storycap + reg-cli で自動スクリーンショット比較
 - **文章校正** - textlint（日本語技術文書の設定）
 
 #### GraphQL
+
 - **単体テスト** - Vitest
 - **統合テスト** - Prismaモックを使用したテスト

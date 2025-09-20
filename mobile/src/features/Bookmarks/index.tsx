@@ -59,12 +59,12 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
 
 export const BOOKMARK = graphql(`
   fragment Bookmark on Bookmark {
+    created_at
+    description
     id
     title
-    url
-    description
-    created_at
     updated_at
+    url
   }
 `);
 

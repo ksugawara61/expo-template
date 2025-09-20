@@ -195,7 +195,7 @@ export default [
     rules: {
       "@graphql-eslint/alphabetize": [
         "error",
-        { selections: ["OperationDefinition"] },
+        { selections: ["OperationDefinition", "FragmentDefinition"] },
       ],
       "@graphql-eslint/no-anonymous-operations": "error",
       "@graphql-eslint/naming-convention": [
