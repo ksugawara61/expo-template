@@ -1,15 +1,18 @@
 import { useMutation } from "@apollo/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import type { FC } from "react";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
 import { GET_BOOKMARKS } from "../Bookmarks";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
-import type {
-  CreateBookmarkInput,
-  UpdateBookmarkInput,
+import {
+  type CreateBookmarkInput,
+  createBookmarkSchema,
+  type UpdateBookmarkInput,
+  updateBookmarkSchema,
 } from "../Bookmarks/types";
 
 const CREATE_BOOKMARK = graphql(`
@@ -45,26 +48,29 @@ type Props = {
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
 
-  const [title, setTitle] = useState(bookmark?.title || "");
-  const [url, setUrl] = useState(bookmark?.url || "");
-  const [description, setDescription] = useState(bookmark?.description || "");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
-  const [createBookmark, { loading: createLoading }] = useMutation(
-    CREATE_BOOKMARK,
-    {
-      refetchQueries: [{ query: GET_BOOKMARKS }],
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<CreateBookmarkInput | UpdateBookmarkInput>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      title: bookmark?.title || "",
+      url: bookmark?.url || "",
+      description: bookmark?.description || "",
     },
-  );
+  });
 
-  const [updateBookmark, { loading: updateLoading }] = useMutation(
-    UPDATE_BOOKMARK,
-    {
-      refetchQueries: [{ query: GET_BOOKMARKS }],
-    },
-  );
+  const [createBookmark] = useMutation(CREATE_BOOKMARK, {
+    refetchQueries: [{ query: GET_BOOKMARKS }],
+  });
 
-  const loading = createLoading || updateLoading;
+  const [updateBookmark] = useMutation(UPDATE_BOOKMARK, {
+    refetchQueries: [{ query: GET_BOOKMARKS }],
+  });
 
   const handleSuccess = () => {
     router.back();
@@ -74,37 +80,13 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
     router.back();
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!title.trim()) {
-      newErrors.title = "タイトルは必須です";
-    }
-
-    if (!url.trim()) {
-      newErrors.url = "URLは必須です";
-    } else {
-      // Basic URL validation
-      try {
-        new URL(url);
-      } catch {
-        newErrors.url = "有効なURLを入力してください";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
+  const onSubmit = async (data: CreateBookmarkInput | UpdateBookmarkInput) => {
     try {
       if (isEditing && bookmark) {
         const input: UpdateBookmarkInput = {
-          title: title.trim(),
-          url: url.trim(),
-          description: description.trim() || undefined,
+          title: data.title?.trim(),
+          url: data.url?.trim(),
+          description: data.description?.trim() || undefined,
         };
 
         await updateBookmark({
@@ -114,9 +96,9 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
         const input: CreateBookmarkInput = {
-          title: title.trim(),
-          url: url.trim(),
-          description: description.trim() || undefined,
+          title: data.title as string,
+          url: data.url as string,
+          description: data.description?.trim() || undefined,
         };
 
         await createBookmark({
@@ -124,11 +106,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
         });
 
         Alert.alert("成功", "ブックマークを作成しました");
-
-        // Reset form for new bookmark
-        setTitle("");
-        setUrl("");
-        setDescription("");
+        reset();
       }
 
       handleSuccess();
@@ -150,56 +128,85 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
         <Card.Content>
           <View style={{ gap: 16 }}>
             <View>
-              <TextInput
-                label="タイトル"
-                value={title}
-                onChangeText={setTitle}
-                placeholder="ブックマークのタイトルを入力"
-                error={!!errors.title}
+              <Controller
+                control={control}
+                name="title"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="タイトル"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="ブックマークのタイトルを入力"
+                    error={!!errors.title}
+                  />
+                )}
               />
               {errors.title && (
-                <HelperText type="error">{errors.title}</HelperText>
+                <HelperText type="error">{errors.title.message}</HelperText>
               )}
             </View>
 
             <View>
-              <TextInput
-                label="URL"
-                value={url}
-                onChangeText={setUrl}
-                placeholder="https://example.com"
-                error={!!errors.url}
+              <Controller
+                control={control}
+                name="url"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="URL"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="https://example.com"
+                    error={!!errors.url}
+                  />
+                )}
               />
-              {errors.url && <HelperText type="error">{errors.url}</HelperText>}
+              {errors.url && (
+                <HelperText type="error">{errors.url.message}</HelperText>
+              )}
             </View>
 
             <View>
-              <TextInput
-                label="説明（任意）"
-                value={description}
-                onChangeText={setDescription}
-                placeholder="ブックマークの説明を入力"
-                multiline
-                numberOfLines={3}
+              <Controller
+                control={control}
+                name="description"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="説明（任意）"
+                    value={value || ""}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="ブックマークの説明を入力"
+                    multiline
+                    numberOfLines={3}
+                    error={!!errors.description}
+                  />
+                )}
               />
+              {errors.description && (
+                <HelperText type="error">
+                  {errors.description.message}
+                </HelperText>
+              )}
             </View>
 
             <View style={{ flexDirection: "row", gap: 8, marginTop: 16 }}>
               <Button
                 mode="outlined"
                 onPress={handleCancel}
-                disabled={loading}
+                disabled={isSubmitting}
                 style={{ flex: 1 }}
               >
                 キャンセル
               </Button>
               <Button
                 mode="contained"
-                onPress={handleSubmit}
-                disabled={loading}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
                 style={{ flex: 1 }}
               >
-                {loading ? "処理中..." : isEditing ? "更新" : "作成"}
+                {isSubmitting ? "処理中..." : isEditing ? "更新" : "作成"}
               </Button>
             </View>
           </View>
