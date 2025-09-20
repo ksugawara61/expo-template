@@ -2,7 +2,7 @@ import * as Types from '@/libs/gql/graphql';
 
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'
 export type CreateBookmarkMutationVariables = Types.Exact<{
-  input: Types.InputInput;
+  input: Types.CreateBookmarkInputInput;
 }>;
 
 
@@ -10,11 +10,11 @@ export type CreateBookmarkMutation = { __typename?: 'Mutation', createBookmark: 
 
 export type UpdateBookmarkMutationVariables = Types.Exact<{
   id: Types.Scalars['String']['input'];
-  input: Types.InputInput_1;
+  input: Types.UpdateBookmarkInputInput;
 }>;
 
 
-export type UpdateBookmarkMutation = { __typename?: 'Mutation', updateBookmark?: { __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string } | null };
+export type UpdateBookmarkMutation = { __typename?: 'Mutation', updateBookmark: { __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string } };
 
 
 /**

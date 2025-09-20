@@ -13,7 +13,7 @@ import type {
 } from "../Bookmarks/types";
 
 const CREATE_BOOKMARK = graphql(`
-  mutation CreateBookmark($input: InputInput!) {
+  mutation CreateBookmark($input: CreateBookmarkInputInput!) {
     createBookmark(input: $input) {
       created_at
       description
@@ -26,7 +26,7 @@ const CREATE_BOOKMARK = graphql(`
 `);
 
 const UPDATE_BOOKMARK = graphql(`
-  mutation UpdateBookmark($id: String!, $input: InputInput_1!) {
+  mutation UpdateBookmark($id: String!, $input: UpdateBookmarkInputInput!) {
     updateBookmark(id: $id, input: $input) {
       created_at
       description

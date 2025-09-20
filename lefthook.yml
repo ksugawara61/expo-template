@@ -28,9 +28,9 @@ pre-push:
 pre-commit:
   parallel: true
   commands:
-    mobile-fmt:
-      glob: "mobile/**/*.{js,ts,jsx,tsx,json}"
-      run: cd mobile && pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged && pnpm eslint --fix {staged_files}
-    graphql-fmt:
-      glob: "graphql/**/*.{js,ts,jsx,tsx,json}"
-      run: cd graphql && pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
+    biome-fmt:
+      glob: "**/*.{js,ts,jsx,tsx,json}"
+      run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
+    mobile-eslint-fmt:
+      glob: "mobile/**/*.{js,ts,jsx,tsx}"
+      run: cd mobile && echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm eslint --fix
