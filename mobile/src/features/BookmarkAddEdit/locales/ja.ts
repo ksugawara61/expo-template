@@ -1,4 +1,6 @@
-export const bookmarkAddEdit = {
+import type { bookmarkAddEdit as bookmarkAddEditEn } from "./en";
+
+export const bookmarkAddEdit: typeof bookmarkAddEditEn = {
   editBookmark: "ブックマークを編集",
   newBookmark: "新しいブックマーク",
   title: "タイトル",
@@ -20,4 +22,4 @@ export const bookmarkAddEdit = {
   error: "エラー",
   updateFailed: "ブックマークの更新に失敗しました",
   createFailed: "ブックマークの作成に失敗しました",
-} as const;
+};
