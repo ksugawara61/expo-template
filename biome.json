@@ -10,6 +10,7 @@
       "**/.storybook/**",
       "**/app/**",
       "**/src/**",
+      "**/scripts/**",
       "**/graphql/**",
       "!**/src/generated",
       "!**/src/libs/gql",

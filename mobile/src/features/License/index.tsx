@@ -8,7 +8,7 @@ import {
   Text,
   TouchableRipple,
 } from "react-native-paper";
-import licensesData from "@/data/licenses.json";
+import licensesData from "./licenses.json";
 import type { LicenseInfo } from "./types";
 
 export const License: FC = () => {
@@ -57,9 +57,7 @@ export const License: FC = () => {
               <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
                 {item.name}
               </Text>
-              <Text variant="bodySmall" style={{ opacity: 0.7 }}>
-                v{item.version}
-              </Text>
+              <Text variant="bodySmall">v{item.version}</Text>
             </View>
             <Chip
               mode="outlined"
@@ -73,14 +71,23 @@ export const License: FC = () => {
           </View>
 
           {item.publisher && (
-            <Text variant="bodySmall" style={{ opacity: 0.8, marginBottom: 4 }}>
+            <Text variant="bodySmall" style={{ marginBottom: 4 }}>
               Publisher: {item.publisher}
-              {item.email && ` (${item.email})`}
             </Text>
           )}
 
           {(item.repository || item.url) && (
-            <Text variant="bodySmall" style={{ opacity: 0.6 }}>
+            <Text
+              variant="bodySmall"
+              style={{
+                flex: 1,
+                flexWrap: "wrap",
+                lineHeight: 16,
+                marginTop: 4,
+                // @ts-expect-error
+                wordBreak: "break-all",
+              }}
+            >
               {item.repository || item.url}
             </Text>
           )}

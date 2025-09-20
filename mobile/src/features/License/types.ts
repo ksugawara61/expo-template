@@ -4,8 +4,5 @@ export interface LicenseInfo {
   license: string | string[];
   repository?: string;
   publisher?: string;
-  email?: string;
   url?: string;
-  licenseFile?: string;
-  noticeFile?: string;
 }

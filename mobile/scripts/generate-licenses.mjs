@@ -1,11 +1,14 @@
 #!/usr/bin/env node
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const outputDir = path.join(__dirname, '../src/data');
-const outputFile = path.join(outputDir, 'licenses.json');
+const outputDir = path.join(__dirname, "../src/features/License");
+const outputFile = path.join(outputDir, "licenses.json");
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -14,9 +17,9 @@ if (!fs.existsSync(outputDir)) {
 
 try {
   // Execute pnpm licenses command to get license information
-  const result = execSync('pnpm licenses list --json --long', {
-    cwd: path.join(__dirname, '..'),
-    encoding: 'utf8',
+  const result = execSync("pnpm licenses list --json --long", {
+    cwd: path.join(__dirname, ".."),
+    encoding: "utf8",
   });
 
   const licensesByType = JSON.parse(result);
@@ -34,10 +37,7 @@ try {
           license: licenseType,
           repository: pkg.homepage,
           publisher: pkg.author,
-          email: undefined, // Not provided by pnpm licenses
           url: pkg.homepage,
-          licenseFile: undefined, // Not provided by pnpm licenses
-          noticeFile: undefined, // Not provided by pnpm licenses
           description: pkg.description,
         });
       }
@@ -49,8 +49,10 @@ try {
 
   // Write the data to file
   fs.writeFileSync(outputFile, JSON.stringify(licenseData, null, 2));
-  console.log(`Generated ${licenseData.length} license entries to ${outputFile}`);
+  console.log(
+    `Generated ${licenseData.length} license entries to ${outputFile}`,
+  );
 } catch (error) {
-  console.error('Error generating licenses:', error.message);
+  console.error("Error generating licenses:", error.message);
   process.exit(1);
 }
