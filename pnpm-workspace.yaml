@@ -1,0 +1,7 @@
+packages:
+  - 'graphql'
+  - 'mobile'
+nodeLinker: 'hoisted'
+hoistWorkspacePackages: false
+sharedWorkspaceLockfile: false
+minimumReleaseAge: 4320
