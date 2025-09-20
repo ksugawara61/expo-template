@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@apollo/client";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/gql";
@@ -33,6 +34,7 @@ export const GetArticles = graphql(`
 `);
 
 export const Articles: FC = () => {
+  const { t } = useTranslation();
   const {
     data: { articles },
   } = useSuspenseQuery(GetArticles, {
@@ -41,7 +43,10 @@ export const Articles: FC = () => {
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>
-      <Card.Title title={item.title} subtitle={`by ${item.user.name}`} />
+      <Card.Title
+        title={item.title}
+        subtitle={`${t("articles.by")} ${item.user.name}`}
+      />
       <Card.Content>
         <View
           style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8 }}
