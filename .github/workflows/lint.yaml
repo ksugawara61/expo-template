@@ -2,13 +2,6 @@ name: Lint
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - 'mobile/**'
-      - 'graphql/**'
-      - 'biome.json'
-      - 'package.json'
-      - '!.github/workflows/**'
-      - '.github/workflows/lint.yaml'
   push:
     branches:
       - main
@@ -24,16 +17,10 @@ jobs:
           package_json_file: package.json
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version-file: mobile/.node-version
+          node-version-file: .node-version
           cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
+          cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Install Mobile Dependencies
-        working-directory: mobile
-        run: pnpm install --frozen-lockfile
-      - name: Lint with Biome
-        run: pnpm lint
-      - name: Lint Mobile with ESLint
-        working-directory: mobile
+      - name: Lint # root に biome があるのでパフォーマンスの問題が起きるまでは affected しない
         run: pnpm lint
