@@ -23,10 +23,11 @@
     "licenses:generate": "node scripts/generate-licenses.mjs"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.9",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@react-navigation/native": "^7.1.6",
+    "@urql/core": "^6.0.1",
+    "@urql/exchange-graphcache": "^8.1.0",
     "expo": "~53.0.22",
     "expo-font": "~13.3.2",
     "expo-linking": "~7.1.7",
@@ -46,6 +47,7 @@
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
     "swr": "^2.3.6",
+    "urql": "^5.0.1",
     "zod": "^4.1.9"
   },
   "devDependencies": {
@@ -54,6 +56,7 @@
     "@graphql-codegen/near-operation-file-preset": "^3.1.0",
     "@graphql-codegen/typescript-msw": "^3.0.1",
     "@graphql-codegen/typescript-operations": "^4.6.1",
+    "@graphql-codegen/typescript-urql": "^4.0.1",
     "@graphql-eslint/eslint-plugin": "^4.4.0",
     "@storybook/addon-a11y": "^9.1.5",
     "@storybook/react-native-web-vite": "^9.1.5",

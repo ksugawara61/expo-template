@@ -1,7 +1,7 @@
-import { useSuspenseQuery } from "@apollo/client";
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
+import { useQuery } from "urql";
 import { graphql } from "@/libs/gql";
 
 type Item = {
@@ -33,11 +33,16 @@ export const GetArticles = graphql(`
 `);
 
 export const Articles: FC = () => {
-  const {
-    data: { articles },
-  } = useSuspenseQuery(GetArticles, {
+  const [result] = useQuery({
+    query: GetArticles,
     variables: { page: 1 },
   });
+
+  if (result.fetching) return null;
+  if (result.error) throw result.error;
+  if (!result.data) return null;
+
+  const { articles } = result.data;
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>

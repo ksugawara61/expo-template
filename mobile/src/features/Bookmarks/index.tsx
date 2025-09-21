@@ -1,4 +1,3 @@
-import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { router } from "expo-router";
 import { type FC, Suspense } from "react";
 import { Alert, FlatList, View } from "react-native";
@@ -10,6 +9,7 @@ import {
   HelperText,
   Text,
 } from "react-native-paper";
+import { useMutation, useQuery } from "urql";
 import { getFragmentData, graphql } from "@/libs/gql";
 import type { BookmarkFragment } from "./index.msw";
 
@@ -102,16 +102,25 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const {
-    data: { bookmarks },
-  } = useSuspenseQuery(GET_BOOKMARKS);
-  const [deleteBookmark] = useMutation(DELETE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
+  const [result, executeQuery] = useQuery({
+    query: GET_BOOKMARKS,
   });
+  const [, deleteBookmark] = useMutation(DELETE_BOOKMARK);
+
+  if (result.fetching) return null;
+  if (result.error) throw result.error;
+  if (!result.data) return null;
+
+  const { bookmarks } = result.data;
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteBookmark({ variables: { id } });
+      const result = await deleteBookmark({ id });
+      if (result.error) {
+        throw result.error;
+      }
+      // Refetch bookmarks after deletion
+      executeQuery({ requestPolicy: "cache-and-network" });
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
