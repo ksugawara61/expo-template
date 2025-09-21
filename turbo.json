@@ -7,6 +7,9 @@
     "test": {
       "cache": false
     },
+    "test:changed": {
+      "cache": false
+    },
     "typecheck": {
       "cache": false
     },

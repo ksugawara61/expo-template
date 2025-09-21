@@ -18,8 +18,8 @@ pre-push:
           echo "  # or create a new commit"
           exit 1
         fi
-    tests:
-      run: pnpm turbo test --filter="...[HEAD~1]"
+    test:
+      run: pnpm turbo test:changed --affected
 
 pre-commit:
   parallel: true
@@ -29,4 +29,4 @@ pre-commit:
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
     mobile-eslint-fmt:
       glob: "mobile/**/*.{js,ts,jsx,tsx}"
-      run: cd mobile && echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm eslint --fix
+      run: echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm --filter mobile eslint --fix
