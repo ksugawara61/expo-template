@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Generated with `npm create pylon`",
   "scripts": {
-    "dev": "pnpm db:generate && pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
+    "start": "pnpm db:generate && cp ./prisma/dev.db ./.pylon/dev.db && pylon dev -c \"node --enable-source-maps .pylon/index.js\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
     "build": "pnpm db:generate && pylon build",
     "test": "vitest",
     "lint": "biome ci .",
