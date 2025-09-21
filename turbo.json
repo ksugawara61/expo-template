@@ -3,18 +3,19 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".pylon/**", "src/generated/prisma/**"]
+      "outputs": [".pylon/**", "src/generated/prisma/**"],
+      "cache": true
     },
     "test": {
-      "dependsOn": ["build"],
+      "dependsOn": ["graphql#build"],
       "cache": false
     },
     "test:changed": {
-      "dependsOn": ["build"],
+      "dependsOn": ["graphql#build"],
       "cache": false
     },
     "typecheck": {
-      "dependsOn": ["build"],
+      "dependsOn": ["graphql#build"],
       "cache": false
     },
     "lint": {
@@ -24,9 +25,13 @@
       "cache": false
     },
     "start": {
-      "dependsOn": ["build"],
+      "dependsOn": ["graphql#build"],
       "cache": false,
       "persistent": true
+    },
+    "codegen": {
+      "dependsOn": ["graphql#build"],
+      "cache": false
     }
   }
 }

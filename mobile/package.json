@@ -19,7 +19,7 @@
     "vrt:report": "pnpm vrt; open ./vrt/public/report/index.html",
     "vrt:approve": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
     "expo:fix": "expo install --fix",
-    "codegen": "graphql-codegen",
+    "codegen": "cp ../graphql/.pylon/schema.graphql src/libs/graphql/schema.graphql && graphql-codegen",
     "licenses:generate": "node scripts/generate-licenses.mjs"
   },
   "dependencies": {

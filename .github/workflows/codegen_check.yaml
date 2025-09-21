@@ -1,11 +1,11 @@
-name: Schema Sync Check
+name: Codegen Check
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'graphql/**'
       - '!.github/workflows/**'
-      - '.github/workflows/schema_sync_check.yaml'
+      - '.github/workflows/codegen_check.yaml'
   push:
     branches:
       - main
@@ -23,18 +23,10 @@ jobs:
           package_json_file: package.json
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version-file: mobile/.node-version
+          node-version-file: .node-version
           cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
+          cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Install Dependencies (GraphQL)
-        run: cd graphql && pnpm install --frozen-lockfile
-      - name: Install Dependencies (Mobile)
-        run: cd mobile && pnpm install --frozen-lockfile
-      - name: Setup Environment
-        run: |
-          cd graphql
-          cp .env.sample .env
-      - name: Check Schema Diff
-        run: pnpm schema:check
+      - name: Check Codegen
+        run: pnpm codegen:check

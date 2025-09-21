@@ -34,6 +34,9 @@ const config: CodegenConfig = {
       plugins: ["typescript-operations", "typescript-msw"],
     },
   },
+  hooks: {
+    afterAllFileWrite: ["biome check --write src/libs/graphql/schema.graphql"],
+  }
 };
 
 export default config;
