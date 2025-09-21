@@ -22,6 +22,6 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Test
+      - name: Typecheck
         run: pnpm turbo typecheck --affected
 
