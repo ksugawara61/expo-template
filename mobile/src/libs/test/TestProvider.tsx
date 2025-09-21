@@ -25,6 +25,7 @@ const createUrqlClient = () =>
     url: "http://127.0.0.1:3000/graphql",
     exchanges: [cacheExchange, fetchExchange],
     requestPolicy: "network-only", // テストでは常に最新のデータを取得するため
+    suspense: true, // Suspenseモードを有効化
   });
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {

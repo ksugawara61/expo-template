@@ -38,7 +38,8 @@ export const Articles: FC = () => {
     variables: { page: 1 },
   });
 
-  if (result.fetching) return null;
+  // With suspense enabled, we don't need to check fetching state
+  // Suspense will handle loading states automatically
   if (result.error) throw result.error;
   if (!result.data) return null;
 
