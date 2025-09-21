@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
-import { useQuery } from "urql";
 import { graphql } from "@/libs/gql";
+import { useQuery } from "@/libs/urql";
 
 type Item = {
   id: string;
@@ -38,11 +38,8 @@ export const Articles: FC = () => {
     variables: { page: 1 },
   });
 
-  // With suspense enabled, we don't need to check fetching state
-  // Suspense will handle loading states automatically
-  if (result.error) throw result.error;
-  if (!result.data) return null;
-
+  // urql wrapper handles error throwing and data validation
+  // so we can directly destructure the data
   const { articles } = result.data;
 
   const renderItem = ({ item }: { item: Item }) => (
