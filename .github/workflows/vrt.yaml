@@ -37,7 +37,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Storybook VRT
-        run: cd mobile && pnpm vrt
+        run: pnpm --filter mobile vrt
 
       - uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3.1.0
         id: find-comment
