@@ -1,6 +1,11 @@
-import tsParser from "@typescript-eslint/parser";
 import jestPlugin from "eslint-plugin-jest";
-import { baseRules, jsRules, baseIgnores, baseTypeScriptConfig, baseJavaScriptConfig } from "./index.js";
+import {
+  baseIgnores,
+  baseJavaScriptConfig,
+  baseRules,
+  baseTypeScriptConfig,
+  jsRules,
+} from "./index.js";
 
 const graphqlIgnores = [
   ...baseIgnores,

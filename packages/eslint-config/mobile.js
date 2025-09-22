@@ -1,16 +1,16 @@
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import graphqlPlugin from "@graphql-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
 import jestPlugin from "eslint-plugin-jest";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import reactNativePlugin from "eslint-plugin-react-native";
 import testingLibraryPlugin from "eslint-plugin-testing-library";
-import { baseRules, jsRules, baseIgnores, baseTypeScriptConfig, baseJavaScriptConfig } from "./index.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import {
+  baseIgnores,
+  baseJavaScriptConfig,
+  baseRules,
+  baseTypeScriptConfig,
+  jsRules,
+} from "./index.js";
 
 const mobileSpecificRules = {
   // React Native固有のルール

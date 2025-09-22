@@ -12,6 +12,7 @@
       "**/src/**",
       "**/scripts/**",
       "**/graphql/**",
+      "**/packages/**",
       "!**/src/generated",
       "!**/src/libs/gql",
       "!**/src/**/*.msw.ts",
