@@ -1,6 +1,11 @@
 packages:
   - 'graphql'
   - 'mobile'
+  - 'packages/*'
+
+catalog:
+  eslint: '^9.34.0'
+
 nodeLinker: 'hoisted'
 hoistWorkspacePackages: false
 sharedWorkspaceLockfile: false
