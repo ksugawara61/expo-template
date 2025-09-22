@@ -9,6 +9,8 @@
     "build": "pnpm db:generate && pylon build",
     "test": "vitest",
     "test:changed": "vitest --changed main",
+    "lint": "eslint .",
+    "fmt": "eslint . --fix",
     "db:reset": "prisma migrate reset --force",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@getcronit/pylon-dev": "^1.0.0",
+    "@repo/eslint-config": "workspace:*",
     "@vitest/ui": "^3.2.4",
     "msw": "^2.3.1",
     "openapi-msw": "^1.2.0",
