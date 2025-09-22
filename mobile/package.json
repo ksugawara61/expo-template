@@ -34,7 +34,7 @@
     "expo-splash-screen": "~0.30.10",
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.11",
-    "expo-web-browser": "~14.2.0",
+    "expo-web-browser": "~15.0.7",
     "graphql": "^16.11.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
