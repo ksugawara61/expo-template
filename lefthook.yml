@@ -29,4 +29,4 @@ pre-commit:
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write --staged
     mobile-eslint-fmt:
       glob: "mobile/**/*.{js,ts,jsx,tsx}"
-      run: echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm --filter mobile eslint --fix
+      run: echo "{staged_files}" | sed 's|mobile/||g' | xargs pnpm --filter mobile exec eslint --fix
