@@ -58,6 +58,7 @@ updates:
       - dependency-name: "expo-status-bar"
       - dependency-name: "expo-system-ui"
       - dependency-name: "expo-sqlite"
+      - dependency-name: "react"
       - dependency-name: "react-native"
       - dependency-name: "react-native-gesture-handler"
       - dependency-name: "react-native-get-random-values"
