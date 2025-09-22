@@ -26,6 +26,7 @@
     "*.tsx": "${capture}.stories.tsx, ${capture}.test.tsx, ${capture}.mocks.ts, ${capture}.msw.ts"
   },
   "github.copilot.nextEditSuggestions.enabled": true,
-  "eslint.workingDirectories": ["graphql", "mobile"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "graphql"],
+  "eslint.workingDirectories": ["graphql", "mobile", { "pattern": "./packages/*/" }],
   "eslint.format.enable": true
 }
