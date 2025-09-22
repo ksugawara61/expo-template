@@ -38,6 +38,7 @@
     "graphql": "^16.11.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.62.0",
     "react-native": "0.79.5",
     "react-native-paper": "^5.14.5",
