@@ -1,6 +1,7 @@
 packages:
   - 'graphql'
   - 'mobile'
+  - 'packages/*'
 nodeLinker: 'hoisted'
 hoistWorkspacePackages: false
 sharedWorkspaceLockfile: false
