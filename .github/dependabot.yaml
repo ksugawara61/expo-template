@@ -23,6 +23,13 @@ updates:
       timezone: Asia/Tokyo
     cooldown:
       default-days: 3
+    allow:
+      - dependency-name: "@biomejs/biome"
+      - dependency-name: "@textlint-ja/textlint-rule-preset-ai-writing"
+      - dependency-name: "lefthook"
+      - dependency-name: "textlint"
+      - dependency-name: "textlint-rule-preset-ja-technical-writing"
+      - dependency-name: "turbo"
   - package-ecosystem: npm
     directory: /graphql
     schedule:
