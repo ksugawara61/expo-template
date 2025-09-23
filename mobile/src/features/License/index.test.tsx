@@ -54,7 +54,7 @@ describe("License", () => {
       const initialCountString = initialCountText.children[1]?.toString() || "";
       const initialCountMatch = initialCountString.match(/\d+/);
       const initialCount = initialCountMatch
-        ? Number.parseInt(initialCountMatch[0])
+        ? Number.parseInt(initialCountMatch[0], 10)
         : 0;
 
       const searchInput = screen.getByPlaceholderText(
@@ -70,7 +70,7 @@ describe("License", () => {
         filteredCountText.children[1]?.toString() || "";
       const filteredCountMatch = filteredCountString.match(/\d+/);
       const filteredCount = filteredCountMatch
-        ? Number.parseInt(filteredCountMatch[0])
+        ? Number.parseInt(filteredCountMatch[0], 10)
         : 0;
 
       expect(filteredCount).toBeLessThan(initialCount); // Count should decrease after filtering
