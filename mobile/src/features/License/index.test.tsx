@@ -47,6 +47,16 @@ describe("License", () => {
 
       // Act
       await render(<License />);
+
+      // Get initial package count
+      const initialCountText = screen.getByText(/総パッケージ数: \d+/);
+      // React Native Testing Library では children[1] に数字が格納される
+      const initialCountString = initialCountText.children[1]?.toString() || "";
+      const initialCountMatch = initialCountString.match(/\d+/);
+      const initialCount = initialCountMatch
+        ? Number.parseInt(initialCountMatch[0])
+        : 0;
+
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
@@ -54,11 +64,22 @@ describe("License", () => {
       await userEvent.type(searchInput, searchTerm);
 
       // Assert
-      // Package count should change when filtering
+      // 1. Package count should change when filtering
       const filteredCountText = screen.getByText(/総パッケージ数: \d+/);
-      expect(filteredCountText).toBeOnTheScreen();
+      const filteredCountString =
+        filteredCountText.children[1]?.toString() || "";
+      const filteredCountMatch = filteredCountString.match(/\d+/);
+      const filteredCount = filteredCountMatch
+        ? Number.parseInt(filteredCountMatch[0])
+        : 0;
 
-      // Search functionality should work - we test this by checking if package count updates
+      expect(filteredCount).toBeLessThan(initialCount); // Count should decrease after filtering
+      expect(filteredCount).toBeGreaterThan(0); // Should have some results for "react"
+
+      // 2. Check that specific packages containing "react" are displayed
+      // Look for any text containing "react" (case insensitive) in the package list
+      const reactPackages = screen.queryAllByText(/react/i);
+      expect(reactPackages.length).toBeGreaterThan(0); // Should find at least one package with "react"
     });
 
     it("should show all packages when search is cleared", async () => {
