@@ -26,20 +26,6 @@ export const renderHook = async <Result, Props>(
 };
 
 /** TestProvider で wrap した独自の render */
-export const render = async (component: React.ReactElement) => {
-  try {
-    await act(async () =>
-      originalRender(<TestProvider>{component}</TestProvider>),
-    );
-  } catch (error: unknown) {
-    // Fallback for production builds where act is not available
-    if (
-      error instanceof Error &&
-      error.message?.includes("act(...) is not supported in production builds")
-    ) {
-      originalRender(<TestProvider>{component}</TestProvider>);
-    } else {
-      throw error;
-    }
-  }
+export const render = (component: React.ReactElement) => {
+  return originalRender(<TestProvider>{component}</TestProvider>);
 };

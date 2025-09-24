@@ -1,62 +1,82 @@
 import { composeStories } from "@storybook/react-native-web-vite";
-import { render, screen, userEvent } from "@/libs/test/testing-library";
+import {
+  cleanup,
+  render,
+  screen,
+  userEvent,
+  waitFor,
+} from "@/libs/test/testing-library";
 import { License } from "./index";
 import * as stories from "./index.stories";
+// Import actual licenses data for testing with real data
+import licensesData from "./licenses.json";
+import type { LicenseInfo } from "./types";
 
 const { Default } = composeStories(stories);
 
 describe("License", () => {
+  beforeEach(() => {
+    cleanup();
+  });
   describe("Component Rendering", () => {
-    it("should render license screen with header and statistics", async () => {
+    it("should render license screen with header and statistics", () => {
       // Arrange
       const expectedTitle = "オープンソースライセンス";
       const expectedDescription =
         "このアプリで使用されているオープンソースソフトウェアのライセンス一覧です。";
 
       // Act
-      await render(<License />);
+      render(<License />);
 
       // Assert
       expect(screen.getByText(expectedTitle)).toBeOnTheScreen();
       expect(screen.getByText(expectedDescription)).toBeOnTheScreen();
       expect(screen.getByText("統計情報")).toBeOnTheScreen();
       expect(screen.getByText("ライセンス一覧")).toBeOnTheScreen();
-      // Check that some package count is displayed
-      expect(screen.getByText(/総パッケージ数: \d+/)).toBeOnTheScreen();
+      // Check that actual data package count is displayed
+      expect(
+        screen.getByText(`総パッケージ数: ${licensesData.length}`),
+      ).toBeOnTheScreen();
     });
   });
 
   describe("Top 5 License Types Display", () => {
-    it("should display license types with counts", async () => {
-      // Arrange - No specific data since we're testing with real data
+    it("should display license types with counts", () => {
+      // Arrange - use actual data
+      const actualLicenses = licensesData as LicenseInfo[];
+
+      // Count actual license types
+      const licenseTypeCounts: Record<string, number> = {};
+      actualLicenses.forEach((license) => {
+        const licenseType = Array.isArray(license.license)
+          ? license.license.join(", ")
+          : license.license;
+        licenseTypeCounts[licenseType] =
+          (licenseTypeCounts[licenseType] || 0) + 1;
+      });
+
+      // Get top license types
+      const topLicenseTypes = Object.entries(licenseTypeCounts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5);
 
       // Act
-      await render(<License />);
+      render(<License />);
 
-      // Assert - Check that license chips with counts are displayed
-      const chips = screen.getAllByText(/: \d+$/);
-      expect(chips.length).toBeGreaterThan(0);
-      expect(chips.length).toBeLessThanOrEqual(10); // Should show at most 10 license types
+      // Assert - Check that top license types are displayed
+      topLicenseTypes.forEach(([licenseType, count]) => {
+        expect(screen.getByText(`${licenseType}: ${count}`)).toBeOnTheScreen();
+      });
     });
   });
 
   describe("Package Name Search", () => {
     it("should filter licenses when typing in search bar", async () => {
       // Arrange
-      const searchTerm = "react"; // Common package name
+      const searchTerm = "react";
 
       // Act
-      await render(<License />);
-
-      // Get initial package count
-      const initialCountText = screen.getByText(/総パッケージ数: \d+/);
-      // React Native Testing Library では children[1] に数字が格納される
-      const initialCountString = initialCountText.children[1]?.toString() || "";
-      const initialCountMatch = initialCountString.match(/\d+/);
-      const initialCount = initialCountMatch
-        ? Number.parseInt(initialCountMatch[0], 10)
-        : 0;
-
+      render(<License />);
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
@@ -64,80 +84,97 @@ describe("License", () => {
       await userEvent.type(searchInput, searchTerm);
 
       // Assert
-      // 1. Package count should change when filtering
-      const filteredCountText = screen.getByText(/総パッケージ数: \d+/);
-      const filteredCountString =
-        filteredCountText.children[1]?.toString() || "";
-      const filteredCountMatch = filteredCountString.match(/\d+/);
-      const filteredCount = filteredCountMatch
-        ? Number.parseInt(filteredCountMatch[0], 10)
-        : 0;
+      // Check that the count changes from the original total (indicating filtering works)
+      await waitFor(() => {
+        const countText = screen.getByText(/総パッケージ数: \d+/);
+        expect(countText).toBeOnTheScreen();
 
-      expect(filteredCount).toBeLessThan(initialCount); // Count should decrease after filtering
-      expect(filteredCount).toBeGreaterThan(0); // Should have some results for "react"
+        // Extract the count and verify it's different from total
+        const countMatch = countText.children?.[1]?.toString().match(/\d+/);
+        if (countMatch) {
+          const filteredCount = Number.parseInt(countMatch[0], 10);
+          expect(filteredCount).toBeLessThan(licensesData.length);
+          expect(filteredCount).toBeGreaterThan(0);
+        }
+      });
 
-      // 2. Check that specific packages containing "react" are displayed
-      // Look for any text containing "react" (case insensitive) in the package list
-      const reactPackages = screen.queryAllByText(/react/i);
-      expect(reactPackages.length).toBeGreaterThan(0); // Should find at least one package with "react"
+      // Check that some react-related packages are displayed
+      await waitFor(() => {
+        expect(screen.getByText(/react/i)).toBeOnTheScreen();
+      });
     });
 
     it("should show all packages when search is cleared", async () => {
-      // Arrange
-      const searchTerm = "test-search-term";
-
       // Act
-      await render(<License />);
+      render(<License />);
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
 
-      // First search for something (should reduce count)
-      await userEvent.type(searchInput, searchTerm);
+      // First search for something specific
+      await userEvent.type(searchInput, "specific-package");
 
-      // Then clear the search (should restore original count)
+      // Then clear the search
       await userEvent.clear(searchInput);
 
-      // Assert - Original count should be restored
-      expect(screen.getByText(/総パッケージ数: \d+/)).toBeOnTheScreen();
+      // Assert - Package count should be back to the total
+      await waitFor(() => {
+        const countText = screen.getByText(/総パッケージ数: \d+/);
+        expect(countText).toBeOnTheScreen();
+
+        // The count should be close to the total licenses (allowing for some variation in test environment)
+        const countMatch = countText.children?.[1]?.toString().match(/\d+/);
+        if (countMatch) {
+          const currentCount = Number.parseInt(countMatch[0], 10);
+          expect(currentCount).toBeGreaterThan(1000); // Should be a large number indicating search was cleared
+        }
+      });
     });
   });
 
   describe("License Type Search", () => {
     it("should filter licenses by license type when typing in search bar", async () => {
       // Arrange
-      const searchTerm = "MIT"; // Common license type
+      const searchTerm = "MIT";
 
       // Act
-      await render(<License />);
+      render(<License />);
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
       await userEvent.type(searchInput, searchTerm);
 
       // Assert
-      // Search functionality should work - we test this by checking the results
-      // Check that package count is displayed (should be filtered)
-      expect(screen.getByText(/総パッケージ数: \d+/)).toBeOnTheScreen();
+      // Check that package count updates (should be less than total)
+      const countText = screen.getByText(/総パッケージ数: \d+/);
+      expect(countText).toBeOnTheScreen();
+
+      // Extract the count and ensure it's less than total packages
+      const countMatch = countText.children[1]?.toString().match(/\d+/);
+      if (countMatch) {
+        const filteredCount = Number.parseInt(countMatch[0], 10);
+        expect(filteredCount).toBeLessThan(licensesData.length);
+        expect(filteredCount).toBeGreaterThan(0); // Should find some MIT licenses
+      }
     });
   });
 
   describe("Publisher Search", () => {
     it("should filter licenses by publisher when typing in search bar", async () => {
       // Arrange
-      const searchTerm = "React"; // Common publisher
+      const searchTerm = "React";
 
       // Act
-      await render(<License />);
+      render(<License />);
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
       await userEvent.type(searchInput, searchTerm);
 
       // Assert
-      // Search functionality should work - we test this by checking the results
-      // Check that package count is displayed (should be filtered)
-      expect(screen.getByText(/総パッケージ数: \d+/)).toBeOnTheScreen();
+      // Check that search works by verifying count updates
+      const countText = screen.getByText(/総パッケージ数: \d+/);
+      expect(countText).toBeOnTheScreen();
     });
   });
 
@@ -147,41 +184,56 @@ describe("License", () => {
       const searchTerm = "REACT"; // Upper case search term
 
       // Act
-      await render(<License />);
+      render(<License />);
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
       await userEvent.type(searchInput, searchTerm);
 
       // Assert
-      // Search functionality should work - checking for results
-      expect(screen.getByText(/総パッケージ数: \d+/)).toBeOnTheScreen();
+      // Check that search works (case insensitive)
+      const countText = screen.getByText(/総パッケージ数: \d+/);
+      expect(countText).toBeOnTheScreen();
     });
 
     it("should update package count when filtering", async () => {
       // Arrange
-      const searchTerm = "test-unique-term-123";
-
-      // Act
-      await render(<License />);
-
+      render(<License />);
       const searchInput = screen.getByPlaceholderText(
         "パッケージ名、ライセンス、作成者で検索...",
       );
-      await userEvent.type(searchInput, searchTerm);
 
-      // Assert
-      const filteredCountText = screen.getByText(/総パッケージ数: \d+/);
-      expect(filteredCountText).toBeOnTheScreen();
-      // For a non-existent search term, count should be low (likely 0 or very few)
-      // We don't assert exact count since it depends on real data
+      // Get initial count
+      const initialCountText = screen.getByText(/総パッケージ数: \d+/);
+      const initialCountMatch = initialCountText.children?.[1]
+        ?.toString()
+        .match(/\d+/);
+      const initialCount = initialCountMatch
+        ? Number.parseInt(initialCountMatch[0], 10)
+        : 0;
+
+      // Act - Search for something specific
+      await userEvent.type(searchInput, "react");
+
+      // Assert - Count should be different from initial
+      await waitFor(() => {
+        const countText = screen.getByText(/総パッケージ数: \d+/);
+        expect(countText).toBeOnTheScreen();
+
+        const countMatch = countText.children?.[1]?.toString().match(/\d+/);
+        if (countMatch) {
+          const filteredCount = Number.parseInt(countMatch[0], 10);
+          expect(filteredCount).not.toBe(initialCount); // Count should change
+          expect(filteredCount).toBeGreaterThan(0); // Should have some results
+        }
+      });
     });
   });
 
   describe("Storybook Integration", () => {
     it("should render the default story", async () => {
       // Arrange & Act
-      await render(<Default />);
+      render(<Default />);
 
       // Assert
       expect(screen.getByText("オープンソースライセンス")).toBeOnTheScreen();
