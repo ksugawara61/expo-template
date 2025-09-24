@@ -1,9 +1,9 @@
 import {
+  act,
   render as originalRender,
   renderHook as originalRenderHook,
 } from "@testing-library/react-native";
 import type React from "react";
-import { act } from "react";
 import { type Middleware, SWRConfig } from "../swr";
 import { TestProvider } from "./TestProvider";
 
@@ -26,8 +26,6 @@ export const renderHook = async <Result, Props>(
 };
 
 /** TestProvider で wrap した独自の render */
-export const render = async (component: React.ReactElement) => {
-  await act(async () =>
-    originalRender(<TestProvider>{component}</TestProvider>),
-  );
+export const render = (component: React.ReactElement) => {
+  return originalRender(<TestProvider>{component}</TestProvider>);
 };
