@@ -14,7 +14,7 @@
     "build": "turbo build"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.2",
+    "@biomejs/biome": "^2.2.5",
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.0",
     "lefthook": "^1.13.6",
     "textlint": "^15.2.2",
