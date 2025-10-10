@@ -1,4 +1,5 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { print } from "graphql";
 
 const GRAPHQL_ENDPOINT = "http://127.0.0.1:3000/graphql";
 
@@ -16,7 +17,7 @@ export async function graphqlFetcher<TResult, TVariables>(
       Accept: "application/graphql-response+json",
     },
     body: JSON.stringify({
-      query: query.toString(),
+      query: print(query),
       variables,
     }),
   });
