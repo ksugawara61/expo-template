@@ -1,4 +1,3 @@
-import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import type { FC } from "react";
@@ -6,7 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
-import { GET_BOOKMARKS } from "../Bookmarks";
+import { graphqlMutate } from "@/libs/graphql/fetcher";
+import { useSWRConfig } from "@/libs/swr";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
 import {
   type CreateBookmarkInput,
@@ -47,6 +47,7 @@ type Props = {
 
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
+  const { mutate } = useSWRConfig();
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
@@ -62,14 +63,6 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
       url: bookmark?.url || "",
       description: bookmark?.description || "",
     },
-  });
-
-  const [createBookmark] = useMutation(CREATE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
-  });
-
-  const [updateBookmark] = useMutation(UPDATE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
   });
 
   const handleSuccess = () => {
@@ -89,9 +82,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await updateBookmark({
-          variables: { id: bookmark.id, input },
-        });
+        await graphqlMutate(UPDATE_BOOKMARK, { id: bookmark.id, input });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
@@ -101,14 +92,14 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await createBookmark({
-          variables: { input },
-        });
+        await graphqlMutate(CREATE_BOOKMARK, { input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
       }
 
+      // キャッシュを無効化して再取得
+      await mutate("GetBookmarks");
       handleSuccess();
     } catch {
       Alert.alert(

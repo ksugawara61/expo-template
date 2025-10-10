@@ -1,8 +1,9 @@
-import { useSuspenseQuery } from "@apollo/client";
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/gql";
+import { graphqlFetcher } from "@/libs/graphql/fetcher";
+import { useSWRSuspense } from "@/libs/swr";
 
 type Item = {
   id: string;
@@ -33,11 +34,9 @@ export const GetArticles = graphql(`
 `);
 
 export const Articles: FC = () => {
-  const {
-    data: { articles },
-  } = useSuspenseQuery(GetArticles, {
-    variables: { page: 1 },
-  });
+  const { data } = useSWRSuspense("GetArticles-1", () =>
+    graphqlFetcher(GetArticles, { page: 1 }),
+  );
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>
@@ -61,7 +60,7 @@ export const Articles: FC = () => {
 
   return (
     <FlatList
-      data={articles}
+      data={data.articles}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       style={{ height: "100%", width: "100%" }}

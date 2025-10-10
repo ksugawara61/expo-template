@@ -1,4 +1,3 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -7,6 +6,9 @@ import { SWRConfig } from "../swr";
 const testSwrConfig = {
   /** テスト間でキャッシュを利用しないようにするため設定 */
   provider: () => new Map(),
+  suspense: true,
+  revalidateOnFocus: false,
+  shouldRetryOnError: false,
 };
 
 /** テストでSafeAreaViewが消えてしまうことを防ぐために設定 */
@@ -17,36 +19,20 @@ const testInitialMetrics = {
 
 export const suspenseLoadingTestId = "suspenseLoading";
 
-/**
- * テスト間でキャッシュを共有しないようにするため createApolloClientを使用
- */
-const createApolloClient = () =>
-  new ApolloClient({
-    uri: "http://127.0.0.1:3000/graphql",
-    cache: new InMemoryCache(),
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: "network-only", // テストでは常に最新のデータを取得するため
-      },
-    },
-  });
-
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <ApolloProvider client={createApolloClient()}>
-      <SWRConfig value={testSwrConfig}>
-        <SafeAreaProvider initialMetrics={testInitialMetrics}>
-          <Suspense
-            fallback={
-              <View testID={suspenseLoadingTestId}>
-                <ActivityIndicator />
-              </View>
-            }
-          >
-            {children}
-          </Suspense>
-        </SafeAreaProvider>
-      </SWRConfig>
-    </ApolloProvider>
+    <SWRConfig value={testSwrConfig}>
+      <SafeAreaProvider initialMetrics={testInitialMetrics}>
+        <Suspense
+          fallback={
+            <View testID={suspenseLoadingTestId}>
+              <ActivityIndicator />
+            </View>
+          }
+        >
+          {children}
+        </Suspense>
+      </SafeAreaProvider>
+    </SWRConfig>
   );
 };

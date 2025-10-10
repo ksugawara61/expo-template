@@ -1,7 +1,7 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { SWRConfig } from "swr";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
-import { AppApolloProvider } from "./graphql/AppApolloProvider";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
 
 const handleError = (error: Error, errorInfo: ErrorInfo) => {
@@ -18,9 +18,30 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         console.log("ErrorBoundary reset");
       }}
     >
-      <AppApolloProvider>
+      <SWRConfig
+        value={{
+          suspense: true,
+          revalidateOnFocus: false,
+          shouldRetryOnError: true,
+          errorRetryCount: 3,
+          errorRetryInterval: 1000,
+          onErrorRetry: (error, _key, _config, revalidate, { retryCount }) => {
+            // ネットワークエラーまたは5xxエラーの場合のみリトライ
+            if (error?.status === 404) return;
+
+            // 最大リトライ回数に達した場合は停止
+            if (retryCount >= 3) return;
+
+            // 指数バックオフでリトライ
+            setTimeout(
+              () => revalidate({ retryCount }),
+              1000 * 2 ** retryCount,
+            );
+          },
+        }}
+      >
         <PaperProvider>{children}</PaperProvider>
-      </AppApolloProvider>
+      </SWRConfig>
     </ErrorBoundary>
   );
 };
