@@ -1,4 +1,3 @@
-import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { router } from "expo-router";
 import { type FC, Suspense } from "react";
 import { Alert, FlatList, View } from "react-native";
@@ -11,6 +10,8 @@ import {
   Text,
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
+import { graphqlFetcher, graphqlMutate } from "@/libs/graphql/fetcher";
+import { useSWRConfig, useSWRSuspense } from "@/libs/swr";
 import type { BookmarkFragment } from "./index.msw";
 
 type BookmarkItemProps = {
@@ -102,16 +103,16 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const {
-    data: { bookmarks },
-  } = useSuspenseQuery(GET_BOOKMARKS);
-  const [deleteBookmark] = useMutation(DELETE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
-  });
+  const { mutate } = useSWRConfig();
+  const { data } = useSWRSuspense("GetBookmarks", () =>
+    graphqlFetcher(GET_BOOKMARKS),
+  );
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteBookmark({ variables: { id } });
+      await graphqlMutate(DELETE_BOOKMARK, { id });
+      // キャッシュを無効化して再取得
+      await mutate("GetBookmarks");
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
@@ -131,7 +132,9 @@ export const Content: FC = () => {
   return (
     <>
       <FlatList
-        data={bookmarks.map((bookmark) => getFragmentData(BOOKMARK, bookmark))}
+        data={data.bookmarks.map((bookmark) =>
+          getFragmentData(BOOKMARK, bookmark),
+        )}
         style={{ height: "100%", width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
         renderItem={({ item }) => (
