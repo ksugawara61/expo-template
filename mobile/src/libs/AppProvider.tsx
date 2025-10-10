@@ -22,7 +22,22 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         value={{
           suspense: true,
           revalidateOnFocus: false,
-          shouldRetryOnError: false,
+          shouldRetryOnError: true,
+          errorRetryCount: 3,
+          errorRetryInterval: 1000,
+          onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+            // ネットワークエラーまたは5xxエラーの場合のみリトライ
+            if (error?.status === 404) return;
+
+            // 最大リトライ回数に達した場合は停止
+            if (retryCount >= 3) return;
+
+            // 指数バックオフでリトライ
+            setTimeout(
+              () => revalidate({ retryCount }),
+              1000 * 2 ** retryCount,
+            );
+          },
         }}
       >
         <PaperProvider>{children}</PaperProvider>
