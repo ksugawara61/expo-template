@@ -1,4 +1,3 @@
-import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { router } from "expo-router";
 import { type FC, Suspense } from "react";
 import { Alert, FlatList, View } from "react-native";
@@ -10,8 +9,17 @@ import {
   HelperText,
   Text,
 } from "react-native-paper";
-import { getFragmentData, graphql } from "@/libs/gql";
-import type { BookmarkFragment } from "./index.msw";
+import { graffleClient } from "@/libs/graphql/graffleClient";
+import { mutate, useSWRSuspense } from "@/libs/swr";
+
+export type BookmarkFragment = {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+};
 
 type BookmarkItemProps = {
   bookmark: BookmarkFragment;
@@ -57,30 +65,7 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
   );
 };
 
-export const BOOKMARK = graphql(`
-  fragment Bookmark on Bookmark {
-    created_at
-    description
-    id
-    title
-    updated_at
-    url
-  }
-`);
-
-export const GET_BOOKMARKS = graphql(`
-  query GetBookmarks {
-    bookmarks {
-      ...Bookmark
-    }
-  }
-`);
-
-export const DELETE_BOOKMARK = graphql(`
-  mutation DeleteBookmark($id: String!) {
-    deleteBookmark(id: $id)
-  }
-`);
+export const GET_BOOKMARKS_KEY = "bookmarks";
 
 export const Bookmarks: FC = () => {
   return (
@@ -102,16 +87,38 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const {
-    data: { bookmarks },
-  } = useSuspenseQuery(GET_BOOKMARKS);
-  const [deleteBookmark] = useMutation(DELETE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
+  const { data } = useSWRSuspense(GET_BOOKMARKS_KEY, async () => {
+    const result = await graffleClient.gql`
+      query GetBookmarks {
+        bookmarks {
+          created_at
+          description
+          id
+          title
+          updated_at
+          url
+        }
+      }
+    `.send();
+    return result;
   });
+
+  if (!data) {
+    throw new Error("Data is null");
+  }
+
+  const bookmarks = data.bookmarks;
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteBookmark({ variables: { id } });
+      await graffleClient.gql`
+        mutation DeleteBookmark($id: String!) {
+          deleteBookmark(id: $id)
+        }
+      `.send({ id });
+
+      // Refresh the bookmarks list
+      await mutate(GET_BOOKMARKS_KEY);
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
@@ -131,7 +138,7 @@ export const Content: FC = () => {
   return (
     <>
       <FlatList
-        data={bookmarks.map((bookmark) => getFragmentData(BOOKMARK, bookmark))}
+        data={bookmarks}
         style={{ height: "100%", width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
         renderItem={({ item }) => (

@@ -23,7 +23,6 @@
     "licenses:generate": "node scripts/generate-licenses.mjs"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.9",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@react-navigation/native": "^7.1.6",
@@ -35,6 +34,7 @@
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.11",
     "expo-web-browser": "~14.2.0",
+    "graffle": "8.0.0-next.175",
     "graphql": "^16.11.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
