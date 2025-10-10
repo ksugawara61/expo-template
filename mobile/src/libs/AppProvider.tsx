@@ -25,7 +25,7 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
           shouldRetryOnError: true,
           errorRetryCount: 3,
           errorRetryInterval: 1000,
-          onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+          onErrorRetry: (error, _key, _config, revalidate, { retryCount }) => {
             // ネットワークエラーまたは5xxエラーの場合のみリトライ
             if (error?.status === 404) return;
 
