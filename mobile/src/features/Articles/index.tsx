@@ -1,8 +1,8 @@
-import { useSuspenseQuery } from "@apollo/client";
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
-import { graphql } from "@/libs/gql";
+import { graffleClient } from "@/libs/graphql/graffleClient";
+import { useSWRSuspense } from "@/libs/swr";
 
 type Item = {
   id: string;
@@ -16,28 +16,31 @@ type Item = {
   }>;
 };
 
-export const GetArticles = graphql(`
-  query GetArticles($page: Number!) {
-    articles(page: $page) {
-      created_at
-      id
-      tags {
-        name
-      }
-      title
-      user {
-        name
-      }
-    }
-  }
-`);
-
 export const Articles: FC = () => {
-  const {
-    data: { articles },
-  } = useSuspenseQuery(GetArticles, {
-    variables: { page: 1 },
+  const { data } = useSWRSuspense(["articles", 1], async () => {
+    const result = await graffleClient.gql`
+        query GetArticles($page: Number!) {
+          articles(page: $page) {
+            created_at
+            id
+            tags {
+              name
+            }
+            title
+            user {
+              name
+            }
+          }
+        }
+      `.send({ page: 1 });
+    return result;
   });
+
+  if (!data) {
+    throw new Error("Data is null");
+  }
+
+  const articles = data.articles;
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>

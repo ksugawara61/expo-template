@@ -1,45 +1,18 @@
-import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
-import { graphql } from "@/libs/gql";
-import { GET_BOOKMARKS } from "../Bookmarks";
-import type { BookmarkFragment } from "../Bookmarks/index.msw";
+import { graffleClient } from "@/libs/graphql/graffleClient";
+import { mutate } from "@/libs/swr";
+import { type BookmarkFragment, GET_BOOKMARKS_KEY } from "../Bookmarks";
 import {
   type CreateBookmarkInput,
   createBookmarkSchema,
   type UpdateBookmarkInput,
   updateBookmarkSchema,
 } from "../Bookmarks/types";
-
-const CREATE_BOOKMARK = graphql(`
-  mutation CreateBookmark($input: CreateBookmarkInputInput!) {
-    createBookmark(input: $input) {
-      created_at
-      description
-      id
-      title
-      updated_at
-      url
-    }
-  }
-`);
-
-const UPDATE_BOOKMARK = graphql(`
-  mutation UpdateBookmark($id: String!, $input: UpdateBookmarkInputInput!) {
-    updateBookmark(id: $id, input: $input) {
-      created_at
-      description
-      id
-      title
-      updated_at
-      url
-    }
-  }
-`);
 
 type Props = {
   bookmark?: BookmarkFragment;
@@ -64,14 +37,6 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
     },
   });
 
-  const [createBookmark] = useMutation(CREATE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
-  });
-
-  const [updateBookmark] = useMutation(UPDATE_BOOKMARK, {
-    refetchQueries: [{ query: GET_BOOKMARKS }],
-  });
-
   const handleSuccess = () => {
     router.back();
   };
@@ -89,9 +54,18 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await updateBookmark({
-          variables: { id: bookmark.id, input },
-        });
+        await graffleClient.gql`
+          mutation UpdateBookmark($id: String!, $input: UpdateBookmarkInputInput!) {
+            updateBookmark(id: $id, input: $input) {
+              created_at
+              description
+              id
+              title
+              updated_at
+              url
+            }
+          }
+        `.send({ id: bookmark.id, input });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
@@ -101,14 +75,25 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await createBookmark({
-          variables: { input },
-        });
+        await graffleClient.gql`
+          mutation CreateBookmark($input: CreateBookmarkInputInput!) {
+            createBookmark(input: $input) {
+              created_at
+              description
+              id
+              title
+              updated_at
+              url
+            }
+          }
+        `.send({ input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
       }
 
+      // Refresh the bookmarks list
+      await mutate(GET_BOOKMARKS_KEY);
       handleSuccess();
     } catch {
       Alert.alert(

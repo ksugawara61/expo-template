@@ -1,7 +1,6 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
-import { AppApolloProvider } from "./graphql/AppApolloProvider";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
 
 const handleError = (error: Error, errorInfo: ErrorInfo) => {
@@ -18,9 +17,7 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         console.log("ErrorBoundary reset");
       }}
     >
-      <AppApolloProvider>
-        <PaperProvider>{children}</PaperProvider>
-      </AppApolloProvider>
+      <PaperProvider>{children}</PaperProvider>
     </ErrorBoundary>
   );
 };
