@@ -9,7 +9,7 @@ const { Primary } = composeStories(stories);
 describe("Articles", () => {
   it("複数の記事が正しく表示される", async () => {
     server.use(...handlers.Success);
-    render(<Primary />);
+    await render(<Primary />);
 
     expect(
       await screen.findByText("React NativeとExpoで始めるモバイルアプリ開発"),

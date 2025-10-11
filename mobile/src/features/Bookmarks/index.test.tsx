@@ -9,7 +9,7 @@ const { Success, Empty } = composeStories(stories);
 describe("Bookmarks", () => {
   it("ブックマークが正しく表示される", async () => {
     server.use(MocksBookmarks.success);
-    render(<Success />);
+    await render(<Success />);
 
     expect(
       await screen.findByText("React NativeとExpoで始めるモバイルアプリ開発"),
@@ -18,7 +18,7 @@ describe("Bookmarks", () => {
 
   it("ブックマークがない場合のメッセージが表示される", async () => {
     server.use(MocksBookmarks.empty);
-    render(<Empty />);
+    await render(<Empty />);
 
     expect(
       await screen.findByText("ブックマークがありません"),
