@@ -2,8 +2,7 @@ import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/gql";
-import { graphqlFetcher } from "@/libs/graphql/fetcher";
-import { useSWRSuspense } from "@/libs/swr";
+import { useTanStackQuerySuspense } from "@/libs/tanstack-query";
 
 type Item = {
   id: string;
@@ -34,9 +33,9 @@ export const GetArticles = graphql(`
 `);
 
 export const Articles: FC = () => {
-  const { data } = useSWRSuspense("GetArticles-1", () =>
-    graphqlFetcher(GetArticles, { page: 1 }),
-  );
+  const { data } = useTanStackQuerySuspense("GetArticles-1", GetArticles, {
+    page: 1,
+  });
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>

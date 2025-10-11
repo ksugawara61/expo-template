@@ -10,8 +10,11 @@ import {
   Text,
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
-import { graphqlFetcher, graphqlMutate } from "@/libs/graphql/fetcher";
-import { useSWRConfig, useSWRSuspense } from "@/libs/swr";
+import { graphqlMutate } from "@/libs/graphql/fetcher";
+import {
+  useQueryClient,
+  useTanStackQuerySuspense,
+} from "@/libs/tanstack-query";
 import type { BookmarkFragment } from "./index.msw";
 
 type BookmarkItemProps = {
@@ -103,16 +106,14 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const { mutate } = useSWRConfig();
-  const { data } = useSWRSuspense("GetBookmarks", () =>
-    graphqlFetcher(GET_BOOKMARKS),
-  );
+  const queryClient = useQueryClient();
+  const { data } = useTanStackQuerySuspense("GetBookmarks", GET_BOOKMARKS);
 
   const handleDelete = async (id: string) => {
     try {
       await graphqlMutate(DELETE_BOOKMARK, { id });
       // キャッシュを無効化して再取得
-      await mutate("GetBookmarks");
+      await queryClient.invalidateQueries({ queryKey: ["GetBookmarks"] });
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }

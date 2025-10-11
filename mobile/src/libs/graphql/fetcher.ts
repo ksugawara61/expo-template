@@ -5,11 +5,12 @@ const GRAPHQL_ENDPOINT = "http://127.0.0.1:3000/graphql";
 
 /**
  * GraphQL クエリを実行する fetcher 関数
- * タイムアウトとリトライはSWRの設定で管理されます
+ * TanStack QueryとSWRの両方で使用可能
  */
 export async function graphqlFetcher<TResult, TVariables>(
-  query: TypedDocumentNode<TResult, TVariables>,
+  query: TypedDocumentNode<TResult, TVariables> | string,
   variables?: TVariables,
+  headers?: RequestInit["headers"],
 ): Promise<TResult> {
   const controller = new AbortController();
 
@@ -22,9 +23,10 @@ export async function graphqlFetcher<TResult, TVariables>(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/graphql-response+json",
+        ...headers,
       },
       body: JSON.stringify({
-        query: print(query),
+        query: typeof query === "string" ? query : print(query),
         variables,
       }),
       signal: controller.signal,

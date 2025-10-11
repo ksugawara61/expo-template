@@ -23,6 +23,9 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.6
         version: 7.1.14(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@tanstack/react-query':
+        specifier: ^5.90.2
+        version: 5.90.2(react@19.0.0)
       expo:
         specifier: ~53.0.22
         version: 53.0.22(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0)))(graphql@16.11.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -80,9 +83,6 @@ importers:
       react-native-web:
         specifier: ~0.20.0
         version: 0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      swr:
-        specifier: ^2.3.6
-        version: 2.3.6(react@19.0.0)
       zod:
         specifier: ^4.1.9
         version: 4.1.9
@@ -102,6 +102,9 @@ importers:
       '@graphql-codegen/typescript-operations':
         specifier: ^4.6.1
         version: 4.6.1(graphql@16.11.0)
+      '@graphql-codegen/typescript-react-query':
+        specifier: ^6.1.1
+        version: 6.1.1(graphql@16.11.0)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../packages/eslint-config
@@ -1167,6 +1170,12 @@ packages:
       graphql-sock:
         optional: true
 
+  '@graphql-codegen/typescript-react-query@6.1.1':
+    resolution: {integrity: sha512-knSlUFmq7g7G2DIa5EGjOnwWtNfpU4k+sXWJkxdwJ7lU9nrw6pnDizJcjHCqKelRmk2xwfspVNzu0KoXP7LLsg==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+
   '@graphql-codegen/typescript@4.1.6':
     resolution: {integrity: sha512-vpw3sfwf9A7S+kIUjyFxuvrywGxd4lmwmyYnnDVjVE4kSQ6Td3DpqaPTy8aNQ6O96vFoi/bxbZS2BW49PwSUUA==}
     engines: {node: '>=16'}
@@ -1987,6 +1996,14 @@ packages:
     resolution: {integrity: sha512-GkPNBbbZmz+XRdrhMtkxPotCLOQ1BaGNp/gFZYdGDk2KmUWBKmvc5JxxOhtoXM2703IzNFlQHSSNnhrDZYuLlw==}
     peerDependencies:
       storybook: ^8.6.14
+
+  '@tanstack/query-core@5.90.2':
+    resolution: {integrity: sha512-k/TcR3YalnzibscALLwxeiLUub6jN5EDLwKDiO7q5f4ICEoptJ+n9+7vcEFy5/x/i6Q+Lb/tXrsKCggf5uQJXQ==}
+
+  '@tanstack/react-query@5.90.2':
+    resolution: {integrity: sha512-CLABiR+h5PYfOWr/z+vWFt5VsOA2ekQeRQBFSKlcoW6Ndx/f8rfyVmq4LbgOM4GG2qtxAxjLYLOpCNTYm4uKzw==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@testing-library/dom@10.4.0':
     resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
@@ -5832,11 +5849,6 @@ packages:
   swap-case@2.0.2:
     resolution: {integrity: sha512-kc6S2YS/2yXbtkSMunBtKdah4VFETZ8Oh6ONSmSd9bRxhqTrtARUCBUiWXH3xVPpvR7tz2CSnkuXVE42EcGnMw==}
 
-  swr@2.3.6:
-    resolution: {integrity: sha512-wfHRmHWk/isGNMwlLGlZX5Gzz/uTgo0o2IRuTMcf4CPuPFJZlq0rDaKUx+ozB5nBOReNV1kiOyzMfj+MBMikLw==}
-    peerDependencies:
-      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
 
@@ -7900,6 +7912,18 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  '@graphql-codegen/typescript-react-query@6.1.1(graphql@16.11.0)':
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 3.1.2(graphql@16.11.0)
+      '@graphql-codegen/visitor-plugin-common': 2.13.8(graphql@16.11.0)
+      auto-bind: 4.0.0
+      change-case-all: 1.0.15
+      graphql: 16.11.0
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
   '@graphql-codegen/typescript@4.1.6(graphql@16.11.0)':
     dependencies:
       '@graphql-codegen/plugin-helpers': 5.1.1(graphql@16.11.0)
@@ -9057,6 +9081,13 @@ snapshots:
       '@vitest/expect': 2.0.5
       '@vitest/spy': 2.0.5
       storybook: 9.1.10(@testing-library/dom@10.4.0)(msw@2.3.1(typescript@5.8.3))(prettier@3.6.2)(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.27.0)(terser@5.44.0)(yaml@2.8.0))
+
+  '@tanstack/query-core@5.90.2': {}
+
+  '@tanstack/react-query@5.90.2(react@19.0.0)':
+    dependencies:
+      '@tanstack/query-core': 5.90.2
+      react: 19.0.0
 
   '@testing-library/dom@10.4.0':
     dependencies:
@@ -13618,12 +13649,6 @@ snapshots:
   swap-case@2.0.2:
     dependencies:
       tslib: 2.8.1
-
-  swr@2.3.6(react@19.0.0):
-    dependencies:
-      dequal: 2.0.3
-      react: 19.0.0
-      use-sync-external-store: 1.5.0(react@19.0.0)
 
   symbol-tree@3.2.4: {}
 
