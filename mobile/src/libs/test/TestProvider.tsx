@@ -1,15 +1,18 @@
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { SWRConfig } from "../swr";
+import { Client, cacheExchange, fetchExchange, Provider } from "urql";
 
-const testSwrConfig = {
-  /** テスト間でキャッシュを利用しないようにするため設定 */
-  provider: () => new Map(),
-  suspense: true,
-  revalidateOnFocus: false,
-  shouldRetryOnError: false,
-};
+/**
+ * テスト間でキャッシュを共有しないようにするため createUrqlClientを使用
+ */
+const createUrqlClient = () =>
+  new Client({
+    url: "http://127.0.0.1:3000/graphql",
+    exchanges: [cacheExchange, fetchExchange],
+    requestPolicy: "network-only", // テストでは常に最新のデータを取得するため
+    suspense: true, // Suspenseモードを有効化
+  });
 
 /** テストでSafeAreaViewが消えてしまうことを防ぐために設定 */
 const testInitialMetrics = {
@@ -21,7 +24,7 @@ export const suspenseLoadingTestId = "suspenseLoading";
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <SWRConfig value={testSwrConfig}>
+    <Provider value={createUrqlClient()}>
       <SafeAreaProvider initialMetrics={testInitialMetrics}>
         <Suspense
           fallback={
@@ -33,6 +36,6 @@ export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
           {children}
         </Suspense>
       </SafeAreaProvider>
-    </SWRConfig>
+    </Provider>
   );
 };

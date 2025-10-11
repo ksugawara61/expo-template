@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { type FC, Suspense } from "react";
+import { type FC, Suspense, useMemo } from "react";
 import { Alert, FlatList, View } from "react-native";
 import {
   ActivityIndicator,
@@ -10,8 +10,7 @@ import {
   Text,
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
-import { graphqlFetcher, graphqlMutate } from "@/libs/graphql/fetcher";
-import { useSWRConfig, useSWRSuspense } from "@/libs/swr";
+import { useMutation, useSuspenseQuery } from "@/libs/urql";
 import type { BookmarkFragment } from "./index.msw";
 
 type BookmarkItemProps = {
@@ -103,16 +102,16 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const { mutate } = useSWRConfig();
-  const { data } = useSWRSuspense("GetBookmarks", () =>
-    graphqlFetcher(GET_BOOKMARKS),
-  );
+  const context = useMemo(() => ({ additionalTypenames: ["Bookmark"] }), []);
+  const [{ data }] = useSuspenseQuery({
+    query: GET_BOOKMARKS,
+    context,
+  });
 
+  const [, deleteBookmark] = useMutation(DELETE_BOOKMARK);
   const handleDelete = async (id: string) => {
     try {
-      await graphqlMutate(DELETE_BOOKMARK, { id });
-      // キャッシュを無効化して再取得
-      await mutate("GetBookmarks");
+      await deleteBookmark({ id }, { additionalTypenames: ["Bookmark"] });
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
