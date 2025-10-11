@@ -1,4 +1,4 @@
-import { type FC, useMemo } from "react";
+import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/gql";
@@ -33,11 +33,9 @@ export const GetArticles = graphql(`
 `);
 
 export const Articles: FC = () => {
-  const context = useMemo(() => ({ additionalTypenames: ["Bookmark"] }), []);
   const [{ data }] = useSuspenseQuery({
     query: GetArticles,
     variables: { page: 1 },
-    context,
   });
 
   const renderItem = ({ item }: { item: Item }) => (

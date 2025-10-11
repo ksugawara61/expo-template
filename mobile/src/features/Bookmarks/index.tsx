@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { type FC, Suspense } from "react";
+import { type FC, Suspense, useMemo } from "react";
 import { Alert, FlatList, View } from "react-native";
 import {
   ActivityIndicator,
@@ -102,8 +102,10 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
+  const context = useMemo(() => ({ additionalTypenames: ["Bookmark"] }), []);
   const [{ data }] = useSuspenseQuery({
     query: GET_BOOKMARKS,
+    context,
   });
 
   const [, deleteBookmark] = useMutation(DELETE_BOOKMARK);
