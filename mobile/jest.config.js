@@ -2,6 +2,12 @@ module.exports = {
   preset: 'jest-expo',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
+  globals: {
+    __DEV__: true,
+    'process.env': {
+      NODE_ENV: 'development',
+    },
+  },
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     // react-native-webviewでエラーになるのでワークアラウンド対応
