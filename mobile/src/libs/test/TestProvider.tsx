@@ -2,7 +2,6 @@ import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Client, cacheExchange, fetchExchange, Provider } from "urql";
-import { SWRConfig } from "../swr";
 
 /**
  * テスト間でキャッシュを共有しないようにするため createUrqlClientを使用
@@ -15,14 +14,6 @@ const createUrqlClient = () =>
     suspense: true, // Suspenseモードを有効化
   });
 
-const testSwrConfig = {
-  /** テスト間でキャッシュを利用しないようにするため設定 */
-  provider: () => new Map(),
-  suspense: true,
-  revalidateOnFocus: false,
-  shouldRetryOnError: false,
-};
-
 /** テストでSafeAreaViewが消えてしまうことを防ぐために設定 */
 const testInitialMetrics = {
   frame: { x: 0, y: 0, width: 0, height: 0 },
@@ -34,19 +25,17 @@ export const suspenseLoadingTestId = "suspenseLoading";
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <Provider value={createUrqlClient()}>
-      <SWRConfig value={testSwrConfig}>
-        <SafeAreaProvider initialMetrics={testInitialMetrics}>
-          <Suspense
-            fallback={
-              <View testID={suspenseLoadingTestId}>
-                <ActivityIndicator />
-              </View>
-            }
-          >
-            {children}
-          </Suspense>
-        </SafeAreaProvider>
-      </SWRConfig>
+      <SafeAreaProvider initialMetrics={testInitialMetrics}>
+        <Suspense
+          fallback={
+            <View testID={suspenseLoadingTestId}>
+              <ActivityIndicator />
+            </View>
+          }
+        >
+          {children}
+        </Suspense>
+      </SafeAreaProvider>
     </Provider>
   );
 };

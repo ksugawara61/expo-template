@@ -90,8 +90,8 @@ export default function createMobileConfig(projectRoot = process.cwd()) {
                 message: "Please use userEvent instead of fireEvent",
               },
               {
-                name: "swr",
-                message: "Please use @/libs/swr instead of swr.",
+                name: "urql",
+                message: "Please use @/libs/urql instead of urql.",
               },
             ],
           },
