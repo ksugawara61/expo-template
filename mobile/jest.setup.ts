@@ -1,7 +1,8 @@
+import { queryClient } from "@/libs/react-query";
 import { server } from "@/libs/test/server";
 
 // Force development mode for React to enable act()
-Object.defineProperty(process.env, 'NODE_ENV', { value: 'development' });
+Object.defineProperty(process.env, 'NODE_ENV', { value: 'development', writable: true });
 // @ts-ignore
 global.__DEV__ = true;
 
@@ -29,6 +30,8 @@ beforeEach(async () => {
 afterEach(async () => {
   server.resetHandlers();
   jest.useRealTimers();
+  // Clear React Query cache between tests
+  queryClient.clear();
 });
 
 afterAll(() => {

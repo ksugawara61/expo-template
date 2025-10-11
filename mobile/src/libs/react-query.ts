@@ -6,9 +6,9 @@ import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // フォーカス時の再取得を無効化（SWRの設定と合わせる）
+      // フォーカス時の再取得を無効化
       refetchOnWindowFocus: false,
-      // エラー時のリトライ設定（SWRの設定と合わせる）
+      // エラー時のリトライ設定
       retry: 3,
       retryDelay: (attemptIndex) => 1000 * 2 ** attemptIndex,
     },
@@ -24,7 +24,7 @@ export const queryClient = new QueryClient({
  */
 queryClient.setQueryDefaults(["query"], {
   retry: (failureCount, error) => {
-    // 404エラーの場合はリトライしない（SWRの設定と合わせる）
+    // 404エラーの場合はリトライしない
     if ((error as { status?: number })?.status === 404) {
       return false;
     }

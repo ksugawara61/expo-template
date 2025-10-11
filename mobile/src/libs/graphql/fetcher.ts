@@ -5,7 +5,7 @@ const GRAPHQL_ENDPOINT = "http://127.0.0.1:3000/graphql";
 
 /**
  * GraphQL クエリを実行する fetcher 関数
- * TanStack QueryとSWRの両方で使用可能
+ * TanStack Query で使用するためのGraphQLフェッチャー
  */
 export async function graphqlFetcher<TResult, TVariables>(
   query: TypedDocumentNode<TResult, TVariables> | string,

@@ -17,5 +17,6 @@ export const renderHook = <Result, Props>(
 
 /** TestProvider で wrap した独自の render */
 export const render = (component: React.ReactElement) => {
-  return originalRender(<TestProvider>{component}</TestProvider>);
+  const result = originalRender(<TestProvider>{component}</TestProvider>);
+  return result;
 };
