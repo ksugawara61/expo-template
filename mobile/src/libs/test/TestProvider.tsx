@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { FC, PropsWithChildren } from "react";
+import { type FC, type PropsWithChildren, Suspense } from "react";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const createTestQueryClient = () =>
@@ -31,7 +32,15 @@ export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <QueryClientProvider client={createTestQueryClient()}>
       <SafeAreaProvider initialMetrics={testInitialMetrics}>
-        {children}
+        <Suspense
+          fallback={
+            <View testID={suspenseLoadingTestId}>
+              <ActivityIndicator />
+            </View>
+          }
+        >
+          {children}
+        </Suspense>
       </SafeAreaProvider>
     </QueryClientProvider>
   );
