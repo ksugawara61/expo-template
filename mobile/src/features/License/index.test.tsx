@@ -6,7 +6,7 @@ const { Default } = composeStories(stories);
 
 describe("License", () => {
   it("should be rendered", async () => {
-    render(<Default />);
+    await render(<Default />);
 
     expect(screen.getByText("オープンソースライセンス")).toBeOnTheScreen();
   });
