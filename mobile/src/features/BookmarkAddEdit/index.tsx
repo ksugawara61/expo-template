@@ -5,8 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
-import { graphqlMutate } from "@/libs/graphql/fetcher";
-import { useSWRConfig } from "@/libs/swr";
+import { executeMutate } from "@/libs/graphql/fetcher";
+import { useQueryClient } from "@/libs/react-query";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
 import {
   type CreateBookmarkInput,
@@ -47,7 +47,7 @@ type Props = {
 
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
-  const { mutate } = useSWRConfig();
+  const { invalidateQueries } = useQueryClient();
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
@@ -82,7 +82,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await graphqlMutate(UPDATE_BOOKMARK, { id: bookmark.id, input });
+        await executeMutate(UPDATE_BOOKMARK, { id: bookmark.id, input });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
@@ -92,14 +92,14 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await graphqlMutate(CREATE_BOOKMARK, { input });
+        await executeMutate(CREATE_BOOKMARK, { input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
       }
 
       // キャッシュを無効化して再取得
-      await mutate("GetBookmarks");
+      await invalidateQueries({ queryKey: ["GetBookmarks"] });
       handleSuccess();
     } catch {
       Alert.alert(
