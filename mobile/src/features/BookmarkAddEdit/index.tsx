@@ -82,7 +82,10 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await graphqlMutate(UPDATE_BOOKMARK, { id: bookmark.id, input });
+        await graphqlMutate(UPDATE_BOOKMARK.toString(), {
+          id: bookmark.id,
+          input,
+        });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
@@ -92,7 +95,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await graphqlMutate(CREATE_BOOKMARK, { input });
+        await graphqlMutate(CREATE_BOOKMARK.toString(), { input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();

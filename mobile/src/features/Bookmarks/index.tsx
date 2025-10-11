@@ -112,7 +112,7 @@ export const Content: FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await graphqlMutate(DELETE_BOOKMARK, { id });
+      await graphqlMutate(DELETE_BOOKMARK.toString(), { id });
       // キャッシュを無効化して再取得
       await queryClient.invalidateQueries({ queryKey: ["GetBookmarks"] });
     } catch {

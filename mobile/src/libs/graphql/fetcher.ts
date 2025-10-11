@@ -52,7 +52,7 @@ export async function graphqlFetcher<TResult, TVariables>(
  * GraphQL ミューテーションを実行する関数
  */
 export async function graphqlMutate<TResult, TVariables>(
-  mutation: TypedDocumentNode<TResult, TVariables>,
+  mutation: TypedDocumentNode<TResult, TVariables> | string,
   variables: TVariables,
 ): Promise<TResult> {
   return graphqlFetcher(mutation, variables);
