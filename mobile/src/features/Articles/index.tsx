@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/gql";
-import { graphqlFetcher } from "@/libs/graphql/fetcher";
+import { executeQuery } from "@/libs/graphql/fetcher";
 import { useSuspenseQuery } from "@/libs/react-query";
 
 type Item = {
@@ -36,7 +36,7 @@ export const GetArticles = graphql(`
 export const Articles: FC = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["GetArticles-1"],
-    queryFn: () => graphqlFetcher(GetArticles, { page: 1 }),
+    queryFn: () => executeQuery(GetArticles, { page: 1 }),
   });
 
   const renderItem = ({ item }: { item: Item }) => (

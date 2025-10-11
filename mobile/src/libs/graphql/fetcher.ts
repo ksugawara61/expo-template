@@ -7,10 +7,10 @@ const GRAPHQL_ENDPOINT = "http://127.0.0.1:3000/graphql";
  * GraphQL クエリを実行する fetcher 関数
  * タイムアウトとリトライはSWRの設定で管理されます
  */
-export async function graphqlFetcher<TResult, TVariables>(
+export const executeQuery = async <TResult, TVariables>(
   query: TypedDocumentNode<TResult, TVariables>,
   variables?: TVariables,
-): Promise<TResult> {
+): Promise<TResult> => {
   const controller = new AbortController();
 
   // 30秒でタイムアウト
@@ -44,14 +44,14 @@ export async function graphqlFetcher<TResult, TVariables>(
   } finally {
     clearTimeout(timeoutId);
   }
-}
+};
 
 /**
  * GraphQL ミューテーションを実行する関数
  */
-export async function graphqlMutate<TResult, TVariables>(
+export const executeMutate = async <TResult, TVariables>(
   mutation: TypedDocumentNode<TResult, TVariables>,
   variables: TVariables,
-): Promise<TResult> {
-  return graphqlFetcher(mutation, variables);
-}
+): Promise<TResult> => {
+  return executeQuery(mutation, variables);
+};
