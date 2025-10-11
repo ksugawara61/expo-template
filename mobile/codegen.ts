@@ -20,9 +20,6 @@ const config: CodegenConfig = {
   generates: {
     "src/libs/gql/": {
       preset: "client",
-      config: {
-        documentMode: "string"
-      },
       presetConfig: {
         fragmentMasking: { unmaskFunctionName: 'getFragmentData' }
       }
