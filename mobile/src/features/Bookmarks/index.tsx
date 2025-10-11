@@ -1,3 +1,4 @@
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { type FC, Suspense } from "react";
 import { Alert, FlatList, View } from "react-native";
@@ -10,11 +11,8 @@ import {
   Text,
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
+import { execute } from "@/libs/gql/execute";
 import { graphqlMutate } from "@/libs/graphql/fetcher";
-import {
-  useQueryClient,
-  useTanStackQuerySuspense,
-} from "@/libs/tanstack-query";
 import type { BookmarkFragment } from "./index.msw";
 
 type BookmarkItemProps = {
@@ -107,7 +105,10 @@ export const Bookmarks: FC = () => {
 
 export const Content: FC = () => {
   const queryClient = useQueryClient();
-  const { data } = useTanStackQuerySuspense("GetBookmarks", GET_BOOKMARKS);
+  const { data } = useSuspenseQuery({
+    queryKey: ["GetBookmarks"],
+    queryFn: () => execute(GET_BOOKMARKS),
+  });
 
   const handleDelete = async (id: string) => {
     try {

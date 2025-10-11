@@ -20,6 +20,9 @@ const config: CodegenConfig = {
   generates: {
     "src/libs/gql/": {
       preset: "client",
+      config: {
+        documentMode: "string"
+      },
       presetConfig: {
         fragmentMasking: { unmaskFunctionName: 'getFragmentData' }
       }
@@ -32,28 +35,6 @@ const config: CodegenConfig = {
         importTypesNamespace: "Types",
       },
       plugins: ["typescript-operations", "typescript-msw"],
-    },
-    "src/libs/graphql/": {
-      preset: "near-operation-file",
-      presetConfig: {
-        extension: ".generated.ts",
-        baseTypesPath: "~@/libs/gql/graphql",
-        importTypesNamespace: "Types",
-      },
-      plugins: [
-        "typescript-operations",
-        {
-          "typescript-react-query": {
-            fetcher: {
-              func: "@/libs/graphql/fetcher#graphqlFetcher",
-              isReactHook: false
-            },
-            addSuspenseQuery: false,
-            exposeQueryKeys: true,
-            exposeFetcher: true,
-          }
-        }
-      ],
     },
   },
   hooks: {

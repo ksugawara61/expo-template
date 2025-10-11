@@ -54,7 +54,6 @@
     "@graphql-codegen/near-operation-file-preset": "^3.1.0",
     "@graphql-codegen/typescript-msw": "^3.0.1",
     "@graphql-codegen/typescript-operations": "^4.6.1",
-    "@graphql-codegen/typescript-react-query": "^6.1.1",
     "@repo/eslint-config": "workspace:*",
     "@storybook/addon-a11y": "^9.1.10",
     "@storybook/react-native-web-vite": "^9.1.10",

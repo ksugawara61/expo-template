@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -6,7 +7,6 @@ import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
 import { graphqlMutate } from "@/libs/graphql/fetcher";
-import { useQueryClient } from "@/libs/tanstack-query";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
 import {
   type CreateBookmarkInput,
