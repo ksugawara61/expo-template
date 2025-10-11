@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { type FC, Suspense } from "react";
+import { type FC, Suspense, useMemo } from "react";
 import { Alert, FlatList, View } from "react-native";
 import {
   ActivityIndicator,
@@ -11,6 +11,7 @@ import {
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
 import { useMutation, useSuspenseQuery } from "@/libs/urql";
+import { GET_BOOKMARKS_TYPENAMES } from "./GetBookmarksQueryTypenames.generated";
 import type { BookmarkFragment } from "./index.msw";
 
 type BookmarkItemProps = {
@@ -102,14 +103,22 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
+  const context = useMemo(
+    () => ({ additionalTypenames: [...GET_BOOKMARKS_TYPENAMES] }),
+    [],
+  );
   const [{ data }] = useSuspenseQuery({
     query: GET_BOOKMARKS,
+    context,
   });
 
   const [, deleteBookmark] = useMutation(DELETE_BOOKMARK);
   const handleDelete = async (id: string) => {
     try {
-      await deleteBookmark({ id }, { additionalTypenames: ["Bookmark"] });
+      await deleteBookmark(
+        { id },
+        { additionalTypenames: [...GET_BOOKMARKS_TYPENAMES] },
+      );
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
