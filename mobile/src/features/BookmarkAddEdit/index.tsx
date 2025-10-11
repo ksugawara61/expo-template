@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -6,7 +7,6 @@ import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
 import { graphqlMutate } from "@/libs/graphql/fetcher";
-import { useSWRConfig } from "@/libs/swr";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
 import {
   type CreateBookmarkInput,
@@ -47,7 +47,7 @@ type Props = {
 
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
-  const { mutate } = useSWRConfig();
+  const queryClient = useQueryClient();
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
@@ -82,7 +82,10 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await graphqlMutate(UPDATE_BOOKMARK, { id: bookmark.id, input });
+        await graphqlMutate(UPDATE_BOOKMARK, {
+          id: bookmark.id,
+          input,
+        });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
@@ -99,7 +102,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
       }
 
       // キャッシュを無効化して再取得
-      await mutate("GetBookmarks");
+      await queryClient.invalidateQueries({ queryKey: ["GetBookmarks"] });
       handleSuccess();
     } catch {
       Alert.alert(

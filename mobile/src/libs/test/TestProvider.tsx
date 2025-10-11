@@ -1,15 +1,24 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { SWRConfig } from "../swr";
 
-const testSwrConfig = {
-  /** テスト間でキャッシュを利用しないようにするため設定 */
-  provider: () => new Map(),
-  suspense: true,
-  revalidateOnFocus: false,
-  shouldRetryOnError: false,
-};
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        // テスト間でキャッシュを利用しないようにするため設定
+        refetchOnWindowFocus: false,
+        retry: false,
+        // テストでは即座に古いデータにする
+        staleTime: 0,
+        gcTime: 0, // cacheTime was renamed to gcTime in v5
+      },
+      mutations: {
+        retry: false,
+      },
+    },
+  });
 
 /** テストでSafeAreaViewが消えてしまうことを防ぐために設定 */
 const testInitialMetrics = {
@@ -21,7 +30,7 @@ export const suspenseLoadingTestId = "suspenseLoading";
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <SWRConfig value={testSwrConfig}>
+    <QueryClientProvider client={createTestQueryClient()}>
       <SafeAreaProvider initialMetrics={testInitialMetrics}>
         <Suspense
           fallback={
@@ -33,6 +42,6 @@ export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
           {children}
         </Suspense>
       </SafeAreaProvider>
-    </SWRConfig>
+    </QueryClientProvider>
   );
 };

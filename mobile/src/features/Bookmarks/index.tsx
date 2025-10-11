@@ -1,3 +1,4 @@
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { type FC, Suspense } from "react";
 import { Alert, FlatList, View } from "react-native";
@@ -10,8 +11,8 @@ import {
   Text,
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
-import { graphqlFetcher, graphqlMutate } from "@/libs/graphql/fetcher";
-import { useSWRConfig, useSWRSuspense } from "@/libs/swr";
+import { execute } from "@/libs/gql/execute";
+import { graphqlMutate } from "@/libs/graphql/fetcher";
 import type { BookmarkFragment } from "./index.msw";
 
 type BookmarkItemProps = {
@@ -103,16 +104,17 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const { mutate } = useSWRConfig();
-  const { data } = useSWRSuspense("GetBookmarks", () =>
-    graphqlFetcher(GET_BOOKMARKS),
-  );
+  const queryClient = useQueryClient();
+  const { data } = useSuspenseQuery({
+    queryKey: ["GetBookmarks"],
+    queryFn: () => execute(GET_BOOKMARKS),
+  });
 
   const handleDelete = async (id: string) => {
     try {
       await graphqlMutate(DELETE_BOOKMARK, { id });
       // キャッシュを無効化して再取得
-      await mutate("GetBookmarks");
+      await queryClient.invalidateQueries({ queryKey: ["GetBookmarks"] });
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
