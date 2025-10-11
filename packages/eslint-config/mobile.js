@@ -90,8 +90,9 @@ export default function createMobileConfig(projectRoot = process.cwd()) {
                 message: "Please use userEvent instead of fireEvent",
               },
               {
-                name: "swr",
-                message: "Please use @/libs/swr instead of swr.",
+                name: "@tanstack/react-query",
+                message:
+                  "Please use @/libs/react-query instead of @tanstack/react-query.",
               },
             ],
           },

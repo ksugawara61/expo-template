@@ -6,7 +6,7 @@ import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
 import { graphqlMutate } from "@/libs/graphql/fetcher";
-import { useSWRConfig } from "@/libs/swr";
+import { useQueryClient } from "@/libs/react-query";
 import type { BookmarkFragment } from "../Bookmarks/index.msw";
 import {
   type CreateBookmarkInput,
@@ -47,7 +47,7 @@ type Props = {
 
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
-  const { mutate } = useSWRConfig();
+  const { invalidateQueries } = useQueryClient();
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
@@ -99,7 +99,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
       }
 
       // キャッシュを無効化して再取得
-      await mutate("GetBookmarks");
+      await invalidateQueries({ queryKey: ["GetBookmarks"] });
       handleSuccess();
     } catch {
       Alert.alert(

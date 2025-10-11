@@ -1,8 +1,8 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { SWRConfig } from "swr";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
+import { QueryClientProvider, queryClient } from "./react-query";
 
 const handleError = (error: Error, errorInfo: ErrorInfo) => {
   console.error("Error caught by ErrorBoundary:", error, errorInfo);
@@ -18,30 +18,9 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         console.log("ErrorBoundary reset");
       }}
     >
-      <SWRConfig
-        value={{
-          suspense: true,
-          revalidateOnFocus: false,
-          shouldRetryOnError: true,
-          errorRetryCount: 3,
-          errorRetryInterval: 1000,
-          onErrorRetry: (error, _key, _config, revalidate, { retryCount }) => {
-            // ネットワークエラーまたは5xxエラーの場合のみリトライ
-            if (error?.status === 404) return;
-
-            // 最大リトライ回数に達した場合は停止
-            if (retryCount >= 3) return;
-
-            // 指数バックオフでリトライ
-            setTimeout(
-              () => revalidate({ retryCount }),
-              1000 * 2 ** retryCount,
-            );
-          },
-        }}
-      >
+      <QueryClientProvider client={queryClient}>
         <PaperProvider>{children}</PaperProvider>
-      </SWRConfig>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 };
