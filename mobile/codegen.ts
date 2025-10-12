@@ -27,7 +27,7 @@ const config: CodegenConfig = {
     "src/": {
       preset: "near-operation-file",
       presetConfig: {
-        extension: ".msw.ts",
+        extension: ".generated.ts",
         baseTypesPath: "~@/libs/gql/graphql",
         importTypesNamespace: "Types",
       },

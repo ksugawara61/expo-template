@@ -6,7 +6,7 @@ import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/gql";
 import { useMutation } from "@/libs/urql";
-import type { BookmarkFragment } from "../Bookmarks/index.msw";
+import type { BookmarkFragment } from "../Bookmarks/index.generated";
 import {
   type CreateBookmarkInput,
   createBookmarkSchema,

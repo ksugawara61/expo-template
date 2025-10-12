@@ -22,8 +22,8 @@
   },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "*.ts": "${capture}.mocks.ts, ${capture}.test.ts, ${capture}.msw.ts",
-    "*.tsx": "${capture}.stories.tsx, ${capture}.test.tsx, ${capture}.mocks.ts, ${capture}.msw.ts"
+    "*.ts": "${capture}.mocks.ts, ${capture}.test.ts, ${capture}.generated.ts",
+    "*.tsx": "${capture}.stories.tsx, ${capture}.test.tsx, ${capture}.mocks.ts, ${capture}.generated.ts"
   },
   "github.copilot.nextEditSuggestions.enabled": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "graphql"],

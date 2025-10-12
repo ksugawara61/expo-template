@@ -15,7 +15,7 @@
       "**/packages/**",
       "!**/src/generated",
       "!**/src/libs/gql",
-      "!**/src/**/*.msw.ts",
+      "!**/src/**/*.generated.ts",
       "!**/src/libs/openapi/schemas",
       "!**/android",
       "!**/ios",
