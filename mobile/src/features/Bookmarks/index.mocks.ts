@@ -1,5 +1,8 @@
 import { HttpResponse } from "msw";
-import { mockGetBookmarksQuery } from "./index.generated";
+import {
+  type GetBookmarksQuery,
+  mockGetBookmarksQuery,
+} from "@/libs/graphql/generated/graphql";
 
 const success = mockGetBookmarksQuery(({ variables: _ }) => {
   return HttpResponse.json({
@@ -27,7 +30,7 @@ const success = mockGetBookmarksQuery(({ variables: _ }) => {
         },
       ],
     },
-  });
+  } as GetBookmarksQuery);
 });
 
 const empty = mockGetBookmarksQuery(({ variables: _ }) => {

@@ -22,16 +22,8 @@ const config: CodegenConfig = {
       preset: "client",
       presetConfig: {
         fragmentMasking: { unmaskFunctionName: 'getFragmentData' }
-      }
-    },
-    "src/": {
-      preset: "near-operation-file",
-      presetConfig: {
-        extension: ".generated.ts",
-        baseTypesPath: "~@/libs/graphql/generated/graphql",
-        importTypesNamespace: "Types",
       },
-      plugins: ["typescript-operations", "typescript-msw"],
+      plugins: ["typescript-msw"],
     },
   },
   hooks: {

@@ -1,5 +1,5 @@
 import { HttpResponse } from "msw";
-import { mockGetArticlesQuery } from "./index.generated";
+import { mockGetArticlesQuery } from "@/libs/graphql/generated/graphql";
 
 const mockData = [
   {

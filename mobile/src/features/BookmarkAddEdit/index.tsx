@@ -5,8 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
 import { graphql } from "@/libs/graphql/generated";
+import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
 import { useMutation } from "@/libs/graphql/urql";
-import type { BookmarkFragment } from "../Bookmarks/index.generated";
 import {
   type CreateBookmarkInput,
   createBookmarkSchema,
