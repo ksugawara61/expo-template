@@ -20,7 +20,8 @@
     "vrt:approve": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
     "expo:fix": "expo install --fix",
     "codegen": "cp ../graphql/.pylon/schema.graphql src/libs/graphql/schema.graphql && graphql-codegen",
-    "licenses:generate": "node scripts/generate-licenses.mjs"
+    "licenses:generate": "node scripts/generate-licenses.mjs",
+    "gen:typenames": "pnpx tsx ./scripts/generate-typenames.ts"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -69,6 +70,8 @@
     "reg-cli": "^0.18.10",
     "storybook": "^9.1.10",
     "storycap": "^5.0.1",
+    "ts-morph": "^27.0.0",
+    "tsx": "^4.20.6",
     "typescript": "~5.8.3"
   },
   "packageManager": "pnpm@10.17.0+sha256.bd9ec5417641391e0acb3912b2912bd5b0385407a82da94744a7407b567fdb4f",
