@@ -1,4 +1,4 @@
-import * as Types from '@/libs/gql/graphql';
+import * as Types from '@/libs/graphql/generated/graphql';
 
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'
 export type BookmarkFragment = { __typename?: 'Bookmark', created_at: string, description?: string | null, id: string, title: string, updated_at: string, url: string };

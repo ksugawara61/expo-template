@@ -91,7 +91,7 @@ export default function createMobileConfig(projectRoot = process.cwd()) {
               },
               {
                 name: "urql",
-                message: "Please use @/libs/urql instead of urql.",
+                message: "Please use @/libs/graphql/urql instead of urql.",
               },
             ],
           },

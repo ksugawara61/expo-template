@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
-import { graphql } from "@/libs/gql";
-import { useSuspenseQuery } from "@/libs/urql";
+import { graphql } from "@/libs/graphql/generated";
+import { useSuspenseQuery } from "@/libs/graphql/urql";
 
 type Item = {
   id: string;

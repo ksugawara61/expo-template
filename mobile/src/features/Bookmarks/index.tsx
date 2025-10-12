@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { type FC, Suspense, useMemo } from "react";
+import { type FC, Suspense } from "react";
 import { Alert, FlatList, View } from "react-native";
 import {
   ActivityIndicator,
@@ -9,8 +9,8 @@ import {
   HelperText,
   Text,
 } from "react-native-paper";
-import { getFragmentData, graphql } from "@/libs/gql";
-import { useMutation, useSuspenseQuery } from "@/libs/urql";
+import { getFragmentData, graphql } from "@/libs/graphql/generated";
+import { useMutation, useSuspenseQuery } from "@/libs/graphql/urql";
 import type { BookmarkFragment } from "./index.generated";
 
 type BookmarkItemProps = {
@@ -102,11 +102,7 @@ export const Bookmarks: FC = () => {
 };
 
 export const Content: FC = () => {
-  const context = useMemo(() => ({ additionalTypenames: ["Bookmark"] }), []);
-  const [{ data }] = useSuspenseQuery({
-    query: GET_BOOKMARKS,
-    context,
-  });
+  const [{ data }] = useSuspenseQuery({ query: GET_BOOKMARKS });
 
   const [, deleteBookmark] = useMutation(DELETE_BOOKMARK);
   const handleDelete = async (id: string) => {

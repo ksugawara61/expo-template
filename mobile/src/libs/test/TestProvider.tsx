@@ -1,7 +1,12 @@
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Client, cacheExchange, fetchExchange, Provider } from "urql";
+import {
+  Client,
+  cacheExchange,
+  fetchExchange,
+  Provider,
+} from "../graphql/urql";
 
 /**
  * テスト間でキャッシュを共有しないようにするため createUrqlClientを使用

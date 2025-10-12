@@ -4,8 +4,8 @@ import type { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Card, HelperText, TextInput } from "react-native-paper";
-import { graphql } from "@/libs/gql";
-import { useMutation } from "@/libs/urql";
+import { graphql } from "@/libs/graphql/generated";
+import { useMutation } from "@/libs/graphql/urql";
 import type { BookmarkFragment } from "../Bookmarks/index.generated";
 import {
   type CreateBookmarkInput,
@@ -92,7 +92,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await createBookmark({ input }, { additionalTypenames: ["Bookmark"] });
+        await createBookmark({ input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
