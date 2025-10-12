@@ -51,6 +51,8 @@ function main() {
       const typeNode = source.getTypeAliasOrThrow(typeName);
       const typenames = extractTypenamesFromText(typeNode.getText())
         .sort()
+        // Query, Mutation 自体はすべてのQuery / Mutation に含まれるため除外する
+        .filter((v) => v !== "Query" && v !== "Mutation")
         // 念のため重複排除（二重安全）
         .filter((v, i, arr) => arr.indexOf(v) === i);
       if (typenames.length === 0) {
@@ -73,7 +75,6 @@ function main() {
 export const OPERATION_TYPENAMES = ${JSON.stringify(operationTypenameMap, null, 2)} as const;
 export type OperationTypenameMap = typeof OPERATION_TYPENAMES;
 export type OperationName = keyof OperationTypenameMap;
-export type TypenameOf<O extends OperationName> = OperationTypenameMap[O][number];
 `;
   writeFileSync(mapOutFile, mapFileContent, "utf8");
   console.log(`[OK] Generated aggregated map: ${mapOutFile}`);

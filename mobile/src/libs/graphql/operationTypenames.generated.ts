@@ -6,26 +6,19 @@
 export const OPERATION_TYPENAMES = {
   "GetArticlesQuery": [
     "Article",
-    "Query",
     "Tag",
     "User"
   ],
   "CreateBookmarkMutation": [
-    "Bookmark",
-    "Mutation"
+    "Bookmark"
   ],
   "UpdateBookmarkMutation": [
-    "Bookmark",
-    "Mutation"
+    "Bookmark"
   ],
   "GetBookmarksQuery": [
-    "Bookmark",
-    "Query"
+    "Bookmark"
   ],
-  "DeleteBookmarkMutation": [
-    "Mutation"
-  ]
+  "DeleteBookmarkMutation": []
 } as const;
 export type OperationTypenameMap = typeof OPERATION_TYPENAMES;
 export type OperationName = keyof OperationTypenameMap;
-export type TypenameOf<O extends OperationName> = OperationTypenameMap[O][number];
