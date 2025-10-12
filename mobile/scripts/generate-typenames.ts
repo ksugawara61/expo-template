@@ -7,7 +7,7 @@ import { Project } from "ts-morph";
  */
 const GRAPHQL_TYPES_FILE = resolve(
   __dirname,
-  "../src/libs/gql/graphql.ts", // 実際の生成ファイルパスに合わせて調整
+  "../src/libs/graphql/generated/graphql.ts", // 実際の生成ファイルパスに合わせて調整
 );
 const OUT_DIR = resolve(__dirname, "../src/libs/graphql");
 

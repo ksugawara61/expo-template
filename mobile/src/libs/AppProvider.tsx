@@ -1,9 +1,8 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Provider } from "urql";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
+import { Provider, urqlClient } from "./graphql/urql";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
-import { urqlClient } from "./urql";
 
 const handleError = (error: Error, errorInfo: ErrorInfo) => {
   console.error("Error caught by ErrorBoundary:", error, errorInfo);

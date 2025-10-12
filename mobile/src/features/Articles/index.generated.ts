@@ -1,4 +1,4 @@
-import * as Types from '@/libs/gql/graphql';
+import * as Types from '@/libs/graphql/generated/graphql';
 
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'
 export type GetArticlesQueryVariables = Types.Exact<{
