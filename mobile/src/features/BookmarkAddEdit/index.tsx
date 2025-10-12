@@ -92,7 +92,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           description: data.description?.trim() || undefined,
         };
 
-        await createBookmark({ input }, { additionalTypenames: ["Bookmark"] });
+        await createBookmark({ input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
