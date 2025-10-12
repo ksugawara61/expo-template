@@ -10,8 +10,8 @@ import {
   Text,
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/graphql/generated";
+import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
 import { useMutation, useSuspenseQuery } from "@/libs/graphql/urql";
-import type { BookmarkFragment } from "./index.generated";
 
 type BookmarkItemProps = {
   bookmark: BookmarkFragment;

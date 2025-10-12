@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { BookmarkAddEdit } from "@/features/BookmarkAddEdit";
-import type { BookmarkFragment } from "@/features/Bookmarks/index.generated";
+import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
 
 export default function BookmarkModal() {
   const params = useLocalSearchParams();
