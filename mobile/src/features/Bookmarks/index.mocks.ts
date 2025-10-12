@@ -1,10 +1,8 @@
 import { HttpResponse } from "msw";
-import {
-  type GetBookmarksQuery,
-  mockGetBookmarksQuery,
-} from "@/libs/graphql/generated/graphql";
+import { createMockQuery } from "@/libs/graphql/msw-utils";
+import { GET_BOOKMARKS } from "./index";
 
-const success = mockGetBookmarksQuery(({ variables: _ }) => {
+const success = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
   return HttpResponse.json({
     data: {
       bookmarks: [
@@ -30,10 +28,10 @@ const success = mockGetBookmarksQuery(({ variables: _ }) => {
         },
       ],
     },
-  } as GetBookmarksQuery);
+  } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 });
 
-const empty = mockGetBookmarksQuery(({ variables: _ }) => {
+const empty = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
   return HttpResponse.json({
     data: {
       bookmarks: [],

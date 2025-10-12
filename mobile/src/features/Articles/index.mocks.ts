@@ -1,5 +1,6 @@
 import { HttpResponse } from "msw";
-import { mockGetArticlesQuery } from "@/libs/graphql/generated/graphql";
+import { createMockQuery } from "@/libs/graphql/msw-utils";
+import { GetArticles } from "./index";
 
 const mockData = [
   {
@@ -30,7 +31,7 @@ const mockData = [
   },
 ];
 
-const success = mockGetArticlesQuery(({ variables: _ }) => {
+const success = createMockQuery(GetArticles, ({ variables: _ }) => {
   return HttpResponse.json({
     data: {
       articles: mockData,

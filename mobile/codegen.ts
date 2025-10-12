@@ -23,7 +23,6 @@ const config: CodegenConfig = {
       presetConfig: {
         fragmentMasking: { unmaskFunctionName: 'getFragmentData' }
       },
-      plugins: ["typescript-msw"],
     },
   },
   hooks: {
