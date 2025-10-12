@@ -7,7 +7,7 @@ const success = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
     data: {
       bookmarks: [
         {
-          __typename: "Bookmark",
+          __typename: "Bookmark" as const,
           id: "1",
           title: "React NativeとExpoで始めるモバイルアプリ開発",
           url: "https://qiita.com/qiita/items/c686397e4a0f4f11683d",
@@ -17,7 +17,7 @@ const success = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
           updated_at: "2024-01-15T09:00:00+09:00",
         },
         {
-          __typename: "Bookmark",
+          __typename: "Bookmark" as const,
           id: "2",
           title: "NativeWindでReact Nativeのスタイリングを効率化",
           url: "https://qiita.com/developer/items/d797508f5b1f5f22794e",
@@ -28,7 +28,7 @@ const success = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
         },
       ],
     },
-  } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+  });
 });
 
 const empty = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
