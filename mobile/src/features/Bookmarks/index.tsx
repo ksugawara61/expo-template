@@ -11,7 +11,7 @@ import {
 } from "react-native-paper";
 import { getFragmentData, graphql } from "@/libs/gql";
 import { useMutation, useSuspenseQuery } from "@/libs/urql";
-import type { BookmarkFragment } from "./index.msw";
+import type { BookmarkFragment } from "./index.generated";
 
 type BookmarkItemProps = {
   bookmark: BookmarkFragment;

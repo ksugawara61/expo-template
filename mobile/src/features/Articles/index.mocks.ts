@@ -1,5 +1,5 @@
 import { HttpResponse } from "msw";
-import { mockGetArticlesQuery } from "./index.msw";
+import { mockGetArticlesQuery } from "./index.generated";
 
 const mockData = [
   {

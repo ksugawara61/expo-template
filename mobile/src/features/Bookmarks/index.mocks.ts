@@ -1,5 +1,5 @@
 import { HttpResponse } from "msw";
-import { mockGetBookmarksQuery } from "./index.msw";
+import { mockGetBookmarksQuery } from "./index.generated";
 
 const success = mockGetBookmarksQuery(({ variables: _ }) => {
   return HttpResponse.json({
