@@ -1,5 +1,6 @@
 import graphqlPlugin from "@graphql-eslint/eslint-plugin";
 import jestPlugin from "eslint-plugin-jest";
+import preferArrowFunctionsPlugin from "eslint-plugin-prefer-arrow-functions";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import reactNativePlugin from "eslint-plugin-react-native";
@@ -40,6 +41,7 @@ const mobileIgnores = [
   "**/vrt/**",
   "**/.expo/**",
   "**/storybook-static/**",
+  "**/public/mockServiceWorker.js",
 ];
 
 export default function createMobileConfig(projectRoot = process.cwd()) {
@@ -60,6 +62,7 @@ export default function createMobileConfig(projectRoot = process.cwd()) {
         react: reactPlugin,
         "react-native": reactNativePlugin,
         "react-hooks": reactHooksPlugin,
+        "prefer-arrow-functions": preferArrowFunctionsPlugin,
       },
       settings: {
         react: { version: "detect" },
@@ -124,9 +127,11 @@ export default function createMobileConfig(projectRoot = process.cwd()) {
       ...baseJavaScriptConfig,
       ignores: mobileIgnores,
       plugins: {
+        ...baseJavaScriptConfig.plugins,
         react: reactPlugin,
         "react-native": reactNativePlugin,
         "react-hooks": reactHooksPlugin,
+        "prefer-arrow-functions": preferArrowFunctionsPlugin,
       },
       settings: {
         react: { version: "detect" },

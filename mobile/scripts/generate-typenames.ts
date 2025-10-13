@@ -14,7 +14,7 @@ const OUT_DIR = resolve(__dirname, "../src/libs/graphql");
 /**
  * __typename の文字列リテラルを抽出する（正規表現版）
  */
-function extractTypenamesFromText(typeText: string): string[] {
+const extractTypenamesFromText = (typeText: string): string[] => {
   const reg = /__typename\??:\s*['"`]([A-Za-z0-9_]+)['"`]/g;
   const set = new Set<string>();
   let m: RegExpExecArray | null;
@@ -23,7 +23,7 @@ function extractTypenamesFromText(typeText: string): string[] {
     set.add(m[1]);
   }
   return [...set];
-}
+};
 
 /**
  * AST を使って（必要なら厳密に）ネストを辿る拡張余地があるが、
@@ -32,7 +32,7 @@ function extractTypenamesFromText(typeText: string): string[] {
 // 以前: 個別 TypeAlias ごとにファイル生成する generateForTypeAlias() が存在したが
 // 集約ファイル生成方式へ変更したため削除。
 
-function main() {
+const main = () => {
   const project = new Project({
     tsConfigFilePath: resolve(__dirname, "../tsconfig.json"),
     skipAddingFilesFromTsConfig: false,
@@ -78,6 +78,6 @@ export type OperationName = keyof OperationTypenameMap;
 `;
   writeFileSync(mapOutFile, mapFileContent, "utf8");
   console.log(`[OK] Generated aggregated map: ${mapOutFile}`);
-}
+};
 
 main();
