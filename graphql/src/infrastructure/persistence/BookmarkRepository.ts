@@ -1,3 +1,13 @@
+import { createId } from "@paralleldrive/cuid2";
+import {
+  createBookmark,
+  createBookmarkTag,
+  deleteBookmark as deleteBookmarkSql,
+  deleteBookmarkTags,
+  findBookmarkById,
+  findManyBookmarks,
+  updateBookmark,
+} from "../../generated/prisma/sql.js";
 import { prisma } from "../../libs/prisma/client";
 import type {
   Bookmark,
@@ -6,66 +16,68 @@ import type {
 } from "../domain/Bookmark";
 import * as tagRepository from "./TagRepository";
 
-export const findMany = async (): Promise<Bookmark[]> => {
-  const bookmarks = await prisma.bookmark.findMany({
-    include: {
-      tags: {
-        include: {
-          tag: true,
-        },
-      },
-    },
-    orderBy: {
-      created_at: "desc",
-    },
-  });
+type BookmarkQueryResult = {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null;
+  created_at: Date;
+  updated_at: Date;
+  tag_id: string | null;
+  tag_name: string | null;
+  tag_created_at: Date | null;
+  tag_updated_at: Date | null;
+};
 
-  return bookmarks.map((bookmark) => ({
-    id: bookmark.id,
-    title: bookmark.title,
-    url: bookmark.url,
-    description: bookmark.description,
-    created_at: bookmark.created_at,
-    updated_at: bookmark.updated_at,
-    tags: bookmark.tags.map((bookmarkTag) => ({
-      id: bookmarkTag.tag.id,
-      name: bookmarkTag.tag.name,
-      created_at: bookmarkTag.tag.created_at,
-      updated_at: bookmarkTag.tag.updated_at,
-    })),
-  }));
+const mapBookmarkResults = (results: BookmarkQueryResult[]): Bookmark[] => {
+  const bookmarkMap = new Map<string, Bookmark>();
+
+  for (const row of results) {
+    if (!bookmarkMap.has(row.id)) {
+      bookmarkMap.set(row.id, {
+        id: row.id,
+        title: row.title,
+        url: row.url,
+        description: row.description,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        tags: [],
+      });
+    }
+
+    const bookmark = bookmarkMap.get(row.id)!;
+    if (
+      row.tag_id &&
+      row.tag_name &&
+      row.tag_created_at &&
+      row.tag_updated_at
+    ) {
+      bookmark.tags!.push({
+        id: row.tag_id,
+        name: row.tag_name,
+        created_at: row.tag_created_at,
+        updated_at: row.tag_updated_at,
+      });
+    }
+  }
+
+  return Array.from(bookmarkMap.values());
+};
+
+export const findMany = async (): Promise<Bookmark[]> => {
+  const results = await prisma.$queryRawTyped(findManyBookmarks());
+  return mapBookmarkResults(results);
 };
 
 export const findById = async (id: string): Promise<Bookmark | null> => {
-  const bookmark = await prisma.bookmark.findUnique({
-    where: { id },
-    include: {
-      tags: {
-        include: {
-          tag: true,
-        },
-      },
-    },
-  });
+  const results = await prisma.$queryRawTyped(findBookmarkById(id));
 
-  if (!bookmark) {
+  if (results.length === 0) {
     return null;
   }
 
-  return {
-    id: bookmark.id,
-    title: bookmark.title,
-    url: bookmark.url,
-    description: bookmark.description,
-    created_at: bookmark.created_at,
-    updated_at: bookmark.updated_at,
-    tags: bookmark.tags.map((bookmarkTag) => ({
-      id: bookmarkTag.tag.id,
-      name: bookmarkTag.tag.name,
-      created_at: bookmarkTag.tag.created_at,
-      updated_at: bookmarkTag.tag.updated_at,
-    })),
-  };
+  const bookmarks = mapBookmarkResults(results);
+  return bookmarks[0];
 };
 
 export const create = async (input: CreateBookmarkInput): Promise<Bookmark> => {
@@ -76,100 +88,83 @@ export const create = async (input: CreateBookmarkInput): Promise<Bookmark> => {
       )
     : [];
 
-  const bookmark = await prisma.bookmark.create({
-    data: {
-      title: input.title,
-      url: input.url,
-      description: input.description,
-      tags: {
-        create: tags.map((tag) => ({
-          tag_id: tag.id,
-        })),
-      },
-    },
-    include: {
-      tags: {
-        include: {
-          tag: true,
-        },
-      },
-    },
-  });
+  const bookmarkId = createId();
 
-  return {
-    id: bookmark.id,
-    title: bookmark.title,
-    url: bookmark.url,
-    description: bookmark.description,
-    created_at: bookmark.created_at,
-    updated_at: bookmark.updated_at,
-    tags: bookmark.tags.map((bookmarkTag) => ({
-      id: bookmarkTag.tag.id,
-      name: bookmarkTag.tag.name,
-      created_at: bookmarkTag.tag.created_at,
-      updated_at: bookmarkTag.tag.updated_at,
-    })),
-  };
+  return await prisma.$transaction(async (tx) => {
+    // Create bookmark
+    const bookmarkResults = await tx.$queryRawTyped(
+      createBookmark(
+        bookmarkId,
+        input.title,
+        input.url,
+        input.description || null,
+      ),
+    );
+
+    // Create tag relationships
+    for (const tag of tags) {
+      await tx.$queryRawTyped(createBookmarkTag(bookmarkId, tag.id));
+    }
+
+    // Fetch the complete bookmark with tags
+    const results = await tx.$queryRawTyped(findBookmarkById(bookmarkId));
+    const bookmarks = mapBookmarkResults(results);
+    return bookmarks[0];
+  });
 };
 
 export const update = async (
   id: string,
   input: UpdateBookmarkInput,
 ): Promise<Bookmark> => {
-  // Handle tags if provided
-  let tagsData = {};
-  if (input.tagNames !== undefined) {
-    const tags = await Promise.all(
-      input.tagNames.map((tagName) => tagRepository.findOrCreate(tagName)),
+  return await prisma.$transaction(async (tx) => {
+    // Check if bookmark exists first
+    const existingResults = await tx.$queryRawTyped(findBookmarkById(id));
+    if (existingResults.length === 0) {
+      throw new Error("Bookmark not found");
+    }
+    const existing = mapBookmarkResults(existingResults)[0];
+
+    // Update bookmark
+    const updateResults = await tx.$queryRawTyped(
+      updateBookmark(
+        id,
+        input.title !== undefined ? input.title : existing.title,
+        input.url !== undefined ? input.url : existing.url,
+        input.description !== undefined
+          ? input.description
+          : existing.description,
+      ),
     );
 
-    tagsData = {
-      tags: {
-        deleteMany: {}, // Remove existing relationships
-        create: tags.map((tag) => ({
-          tag_id: tag.id,
-        })),
-      },
-    };
-  }
+    // Handle tags if provided
+    if (input.tagNames !== undefined) {
+      const tags = await Promise.all(
+        input.tagNames.map((tagName) => tagRepository.findOrCreate(tagName)),
+      );
 
-  const bookmark = await prisma.bookmark.update({
-    where: { id },
-    data: {
-      ...(input.title !== undefined && { title: input.title }),
-      ...(input.url !== undefined && { url: input.url }),
-      ...(input.description !== undefined && {
-        description: input.description,
-      }),
-      ...tagsData,
-    },
-    include: {
-      tags: {
-        include: {
-          tag: true,
-        },
-      },
-    },
+      // Remove existing tag relationships
+      await tx.$queryRawTyped(deleteBookmarkTags(id));
+
+      // Create new tag relationships
+      for (const tag of tags) {
+        await tx.$queryRawTyped(createBookmarkTag(id, tag.id));
+      }
+    }
+
+    // Fetch the complete bookmark with tags
+    const results = await tx.$queryRawTyped(findBookmarkById(id));
+    const bookmarks = mapBookmarkResults(results);
+    return bookmarks[0];
   });
-
-  return {
-    id: bookmark.id,
-    title: bookmark.title,
-    url: bookmark.url,
-    description: bookmark.description,
-    created_at: bookmark.created_at,
-    updated_at: bookmark.updated_at,
-    tags: bookmark.tags.map((bookmarkTag) => ({
-      id: bookmarkTag.tag.id,
-      name: bookmarkTag.tag.name,
-      created_at: bookmarkTag.tag.created_at,
-      updated_at: bookmarkTag.tag.updated_at,
-    })),
-  };
 };
 
 export const deleteBookmark = async (id: string): Promise<void> => {
-  await prisma.bookmark.delete({
-    where: { id },
-  });
+  // Check if bookmark exists first
+  const existing = await findById(id);
+  if (!existing) {
+    throw new Error("Bookmark not found");
+  }
+
+  await prisma.$queryRawTyped(deleteBookmarkSql(id));
 };

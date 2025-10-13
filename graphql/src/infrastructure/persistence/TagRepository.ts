@@ -1,10 +1,17 @@
+import { createId } from "@paralleldrive/cuid2";
+import {
+  createTag,
+  deleteTag,
+  findAllTags,
+  findTagById,
+  findTagByName,
+  updateTag,
+} from "../../generated/prisma/sql.js";
 import { prisma } from "../../libs/prisma/client";
 import type { CreateTagInput, Tag, UpdateTagInput } from "../domain/Tag";
 
 export const findAll = async (): Promise<Tag[]> => {
-  const tags = await prisma.tag.findMany({
-    orderBy: { name: "asc" },
-  });
+  const tags = await prisma.$queryRawTyped(findAllTags());
 
   return tags.map((tag) => ({
     id: tag.id,
@@ -15,9 +22,8 @@ export const findAll = async (): Promise<Tag[]> => {
 };
 
 export const findById = async (id: string): Promise<Tag | null> => {
-  const tag = await prisma.tag.findUnique({
-    where: { id },
-  });
+  const tags = await prisma.$queryRawTyped(findTagById(id));
+  const tag = tags[0];
 
   if (!tag) {
     return null;
@@ -32,9 +38,8 @@ export const findById = async (id: string): Promise<Tag | null> => {
 };
 
 export const findByName = async (name: string): Promise<Tag | null> => {
-  const tag = await prisma.tag.findUnique({
-    where: { name },
-  });
+  const tags = await prisma.$queryRawTyped(findTagByName(name));
+  const tag = tags[0];
 
   if (!tag) {
     return null;
@@ -49,11 +54,9 @@ export const findByName = async (name: string): Promise<Tag | null> => {
 };
 
 export const create = async (input: CreateTagInput): Promise<Tag> => {
-  const tag = await prisma.tag.create({
-    data: {
-      name: input.name,
-    },
-  });
+  const id = createId();
+  const tags = await prisma.$queryRawTyped(createTag(id, input.name));
+  const tag = tags[0];
 
   return {
     id: tag.id,
@@ -76,10 +79,8 @@ export const update = async (
   id: string,
   input: UpdateTagInput,
 ): Promise<Tag> => {
-  const tag = await prisma.tag.update({
-    where: { id },
-    data: input,
-  });
+  const tags = await prisma.$queryRawTyped(updateTag(id, input.name || null));
+  const tag = tags[0];
 
   return {
     id: tag.id,
@@ -90,7 +91,5 @@ export const update = async (
 };
 
 export const remove = async (id: string): Promise<void> => {
-  await prisma.tag.delete({
-    where: { id },
-  });
+  await prisma.$queryRawTyped(deleteTag(id));
 };

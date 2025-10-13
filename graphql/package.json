@@ -13,13 +13,14 @@
     "fmt": "eslint . --fix",
     "db:reset": "prisma migrate reset --force",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate",
+    "db:generate": "prisma generate --sql",
     "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@getcronit/pylon": "^2.0.0",
     "@hono/node-server": "^1.18.2",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^6.14.0",
     "openapi-fetch": "^0.14.0",
     "prisma": "^6.14.0"
