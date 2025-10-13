@@ -5,12 +5,12 @@ const config: StorybookConfig = {
     {
       directory: "../src/components",
       titlePrefix: "Components",
-      files: "**/*.stories.?(ts|tsx|js|jsx)",
+      files: "**/{*.stories,stories}.?(ts|tsx|js|jsx)",
     },
     {
       directory: "../src/features",
       titlePrefix: "Features",
-      files: "**/*.stories.?(ts|tsx|js|jsx)",
+      files: "**/{*.stories,stories}.?(ts|tsx|js|jsx)",
     },
   ],
   addons: ["@storybook/addon-a11y", "storycap"],

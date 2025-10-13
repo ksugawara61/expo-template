@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
 import { BookmarkAddEdit } from ".";
+import { handlers } from "./mocks";
 
 const meta = {
   component: BookmarkAddEdit,
@@ -9,9 +10,20 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Create: Story = {
+  parameters: {
+    msw: {
+      handlers: handlers.Success,
+    },
+  },
+};
 
 export const Edit: Story = {
+  parameters: {
+    msw: {
+      handlers: handlers.Success,
+    },
+  },
   args: {
     bookmark: {
       id: "1",

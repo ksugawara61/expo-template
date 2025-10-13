@@ -278,3 +278,5 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
     </ScrollView>
   );
 };
+
+export { CREATE_BOOKMARK, UPDATE_BOOKMARK };

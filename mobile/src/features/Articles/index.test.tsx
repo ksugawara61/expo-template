@@ -1,8 +1,8 @@
 import { composeStories } from "@storybook/react";
 import { server } from "@/libs/test/server";
 import { render, screen } from "@/libs/test/testing-library";
-import { handlers } from "./index.mocks";
-import * as stories from "./index.stories";
+import { handlers } from "./mocks";
+import * as stories from "./stories";
 
 const { Primary } = composeStories(stories);
 
