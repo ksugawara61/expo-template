@@ -19,6 +19,17 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 void SplashScreen.preventAutoHideAsync();
 
+const RootLayoutNav = () => {
+  return (
+    <AppProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+      </Stack>
+    </AppProvider>
+  );
+};
+
 const RootLayout = () => {
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -41,17 +52,6 @@ const RootLayout = () => {
   }
 
   return <RootLayoutNav />;
-};
-
-const RootLayoutNav = () => {
-  return (
-    <AppProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-      </Stack>
-    </AppProvider>
-  );
 };
 
 export default RootLayout;

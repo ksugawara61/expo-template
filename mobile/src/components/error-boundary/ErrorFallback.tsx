@@ -7,42 +7,6 @@ export interface ErrorFallbackProps {
   resetErrorBoundary: () => void;
 }
 
-export const ErrorFallback: FC<ErrorFallbackProps> = ({
-  error,
-  resetErrorBoundary,
-}) => {
-  return (
-    <View style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text variant="headlineMedium" style={styles.title}>
-            エラーが発生しました
-          </Text>
-          <Text variant="bodyMedium" style={styles.description}>
-            申し訳ございませんが、アプリケーションでエラーが発生しました。
-            以下のボタンを押して再試行してください。
-          </Text>
-          {__DEV__ && (
-            <View style={styles.errorDetails}>
-              <Text variant="labelLarge" style={styles.errorTitle}>
-                エラー詳細（開発モードのみ）:
-              </Text>
-              <Text variant="bodySmall" style={styles.errorMessage}>
-                {error.message}
-              </Text>
-            </View>
-          )}
-        </Card.Content>
-        <Card.Actions>
-          <Button mode="contained" onPress={resetErrorBoundary}>
-            再試行
-          </Button>
-        </Card.Actions>
-      </Card>
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -79,3 +43,39 @@ const styles = StyleSheet.create({
     color: "#d32f2f",
   },
 });
+
+export const ErrorFallback: FC<ErrorFallbackProps> = ({
+  error,
+  resetErrorBoundary,
+}) => {
+  return (
+    <View style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <Text variant="headlineMedium" style={styles.title}>
+            エラーが発生しました
+          </Text>
+          <Text variant="bodyMedium" style={styles.description}>
+            申し訳ございませんが、アプリケーションでエラーが発生しました。
+            以下のボタンを押して再試行してください。
+          </Text>
+          {__DEV__ && (
+            <View style={styles.errorDetails}>
+              <Text variant="labelLarge" style={styles.errorTitle}>
+                エラー詳細（開発モードのみ）:
+              </Text>
+              <Text variant="bodySmall" style={styles.errorMessage}>
+                {error.message}
+              </Text>
+            </View>
+          )}
+        </Card.Content>
+        <Card.Actions>
+          <Button mode="contained" onPress={resetErrorBoundary}>
+            再試行
+          </Button>
+        </Card.Actions>
+      </Card>
+    </View>
+  );
+};
