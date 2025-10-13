@@ -24,7 +24,11 @@ const getOperationName = (document: TypedDocumentNode<any, any>): string => {
 export const createMockQuery = <
   TResult = any,
   TVariables extends GraphQLVariables = GraphQLVariables,
->(document: TypedDocumentNode<TResult, TVariables>, resolver: GraphQLResponseResolver<any, TVariables>, options?: RequestHandlerOptions) => {
+>(
+  document: TypedDocumentNode<TResult, TVariables>,
+  resolver: GraphQLResponseResolver<any, TVariables>,
+  options?: RequestHandlerOptions,
+) => {
   const operationName = getOperationName(document);
   return graphql.query<any, TVariables>(operationName, resolver, options);
 };
@@ -35,7 +39,11 @@ export const createMockQuery = <
 export const createMockMutation = <
   TResult = any,
   TVariables extends GraphQLVariables = GraphQLVariables,
->(document: TypedDocumentNode<TResult, TVariables>, resolver: GraphQLResponseResolver<any, TVariables>, options?: RequestHandlerOptions) => {
+>(
+  document: TypedDocumentNode<TResult, TVariables>,
+  resolver: GraphQLResponseResolver<any, TVariables>,
+  options?: RequestHandlerOptions,
+) => {
   const operationName = getOperationName(document);
   return graphql.mutation<any, TVariables>(operationName, resolver, options);
 };

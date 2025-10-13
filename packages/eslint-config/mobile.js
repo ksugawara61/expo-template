@@ -41,6 +41,7 @@ const mobileIgnores = [
   "**/vrt/**",
   "**/.expo/**",
   "**/storybook-static/**",
+  "**/public/mockServiceWorker.js",
 ];
 
 export default function createMobileConfig(projectRoot = process.cwd()) {
