@@ -10,62 +10,8 @@ import {
   HelperText,
   Text,
 } from "react-native-paper";
-import { getFragmentData, graphql } from "@/libs/graphql/generated";
-import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
+import { graphql, type ResultOf } from "@/libs/graphql/graphql";
 import { useMutation, useSuspenseQuery } from "@/libs/graphql/urql";
-
-type BookmarkItemProps = {
-  bookmark: BookmarkFragment;
-  onDelete: (id: string) => void;
-  onEdit: (bookmark: BookmarkFragment) => void;
-};
-
-const BookmarkItem: FC<BookmarkItemProps> = ({
-  bookmark,
-  onDelete,
-  onEdit,
-}) => {
-  const handleDelete = () => {
-    Alert.alert("ブックマークを削除", "このブックマークを削除しますか？", [
-      { text: "キャンセル", style: "cancel" },
-      {
-        text: "削除",
-        style: "destructive",
-        onPress: () => onDelete(bookmark.id),
-      },
-    ]);
-  };
-
-  return (
-    <Card mode="contained" contentStyle={{ padding: 8 }}>
-      <Card.Content style={{ gap: 16 }}>
-        <View style={{ gap: 8 }}>
-          <Text variant="titleMedium">{bookmark.title}</Text>
-          {bookmark.description && (
-            <HelperText type="info">{bookmark.description}</HelperText>
-          )}
-          {bookmark.tags && bookmark.tags.length > 0 && (
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>
-              {bookmark.tags.map((tag) => (
-                <Chip key={tag.id} compact>
-                  {tag.name}
-                </Chip>
-              ))}
-            </View>
-          )}
-        </View>
-        <View style={{ flexDirection: "row", gap: 8 }}>
-          <Button mode="outlined" onPress={() => onEdit(bookmark)}>
-            編集
-          </Button>
-          <Button mode="contained" onPress={handleDelete}>
-            削除
-          </Button>
-        </View>
-      </Card.Content>
-    </Card>
-  );
-};
 
 export const BOOKMARK = graphql(`
   fragment Bookmark on Bookmark {
@@ -82,10 +28,76 @@ export const BOOKMARK = graphql(`
   }
 `);
 
+type BookmarkItemProps = {
+  bookmark: ResultOf<typeof GET_BOOKMARKS>["bookmarks"][0];
+  onDelete: (id: string) => void;
+  onEdit: (
+    bookmarkData: ResultOf<typeof GET_BOOKMARKS>["bookmarks"][0],
+  ) => void;
+};
+
+const BookmarkItem: FC<BookmarkItemProps> = ({
+  bookmark,
+  onDelete,
+  onEdit,
+}) => {
+  const bookmarkData = bookmark;
+
+  const handleDelete = () => {
+    Alert.alert("ブックマークを削除", "このブックマークを削除しますか？", [
+      { text: "キャンセル", style: "cancel" },
+      {
+        text: "削除",
+        style: "destructive",
+        onPress: () => onDelete(bookmarkData.id),
+      },
+    ]);
+  };
+
+  return (
+    <Card mode="contained" contentStyle={{ padding: 8 }}>
+      <Card.Content style={{ gap: 16 }}>
+        <View style={{ gap: 8 }}>
+          <Text variant="titleMedium">{bookmarkData.title}</Text>
+          {bookmarkData.description && (
+            <HelperText type="info">{bookmarkData.description}</HelperText>
+          )}
+          {bookmarkData.tags && bookmarkData.tags.length > 0 && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>
+              {bookmarkData.tags.map((tag) => (
+                <Chip key={tag.id} compact>
+                  {tag.name}
+                </Chip>
+              ))}
+            </View>
+          )}
+        </View>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <Button mode="outlined" onPress={() => onEdit(bookmarkData)}>
+            編集
+          </Button>
+          <Button mode="contained" onPress={handleDelete}>
+            削除
+          </Button>
+        </View>
+      </Card.Content>
+    </Card>
+  );
+};
+
 export const GET_BOOKMARKS = graphql(`
   query GetBookmarks {
     bookmarks {
-      ...Bookmark
+      created_at
+      description
+      id
+      tags {
+        id
+        name
+      }
+      title
+      updated_at
+      url
     }
   }
 `);
@@ -108,10 +120,12 @@ export const Content: FC = () => {
     }
   };
 
-  const handleEdit = (bookmark: BookmarkFragment) => {
+  const handleEdit = (
+    bookmarkData: ResultOf<typeof GET_BOOKMARKS>["bookmarks"][0],
+  ) => {
     router.push({
       pathname: "/modal",
-      params: { bookmark: JSON.stringify(bookmark) },
+      params: { bookmark: JSON.stringify(bookmarkData) },
     });
   };
 
@@ -122,11 +136,10 @@ export const Content: FC = () => {
   return (
     <>
       <FlatList
-        data={data.bookmarks.map((bookmark) =>
-          getFragmentData(BOOKMARK, bookmark),
-        )}
+        data={data.bookmarks}
         style={{ height: "100%", width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <BookmarkItem
             bookmark={item}

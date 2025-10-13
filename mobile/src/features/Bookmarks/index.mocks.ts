@@ -15,6 +15,10 @@ const success = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
             "React NativeとExpoを使ったモバイルアプリ開発の入門記事です。",
           created_at: "2024-01-15T09:00:00+09:00",
           updated_at: "2024-01-15T09:00:00+09:00",
+          tags: [
+            { __typename: "Tag" as const, id: "1", name: "React Native" },
+            { __typename: "Tag" as const, id: "2", name: "Expo" },
+          ],
         },
         {
           __typename: "Bookmark" as const,
@@ -25,6 +29,10 @@ const success = createMockQuery(GET_BOOKMARKS, ({ variables: _ }) => {
             "NativeWindを使ってReact Nativeのスタイリングを効率化する方法を解説します。",
           created_at: "2024-01-10T14:30:00+09:00",
           updated_at: "2024-01-10T14:30:00+09:00",
+          tags: [
+            { __typename: "Tag" as const, id: "3", name: "NativeWind" },
+            { __typename: "Tag" as const, id: "4", name: "スタイリング" },
+          ],
         },
       ],
     },

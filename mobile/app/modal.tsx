@@ -1,12 +1,21 @@
 import { useLocalSearchParams } from "expo-router";
 import { BookmarkAddEdit } from "@/features/BookmarkAddEdit";
-import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
+
+type BookmarkData = {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+  tags: Array<{ id: string; name: string }> | null;
+};
 
 export default function BookmarkModal() {
   const params = useLocalSearchParams();
-  const bookmark = params.bookmark
-    ? (JSON.parse(params.bookmark as string) as BookmarkFragment)
+  const bookmarkData = params.bookmark
+    ? (JSON.parse(params.bookmark as string) as BookmarkData)
     : undefined;
 
-  return <BookmarkAddEdit bookmark={bookmark} />;
+  return <BookmarkAddEdit bookmark={bookmarkData} />;
 }

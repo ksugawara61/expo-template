@@ -20,6 +20,10 @@ export const Edit: Story = {
       description: "This is an example bookmark.",
       created_at: "2024-01-01T00:00:00+09:00",
       updated_at: "2024-01-01T00:00:00+09:00",
+      tags: [
+        { id: "1", name: "example" },
+        { id: "2", name: "test" },
+      ],
     },
   },
 };

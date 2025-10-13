@@ -7,7 +7,14 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "plugins": [
+      {
+        "name": "gql.tada/ts-plugin",
+        "schema": "./src/libs/graphql/schema.graphql",
+        "tadaOutputLocation": "./src/libs/graphql/graphql-env.d.ts"
+      }
+    ]
   },
   "include": [
     "**/*.ts",

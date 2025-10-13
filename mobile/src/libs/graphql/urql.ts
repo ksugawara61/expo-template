@@ -2,7 +2,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: for urql wrapper */
 import { useMemo } from "react";
 import * as Urql from "urql";
-import { OPERATION_TYPENAMES } from "@/libs/graphql/operationTypenames.generated";
 
 export * from "urql";
 
@@ -12,32 +11,16 @@ export const urqlClient = new Urql.Client({
   suspense: true,
 });
 
-/**
- * OperationDefinition の name から operation 名を抽出
- * graphql-codegen が生成する TypedDocumentNode は JSON 形式の AST を持つ
- * name が取得できない場合は自動追加をスキップ
- */
-const createAutoAdditionalTypenames = (query: Urql.DocumentInput) => {
-  const definitions: any[] | undefined = (query as any)?.definitions;
-  const opDef = definitions?.find((d) => d.kind === "OperationDefinition");
-  const opName = `${opDef?.name?.value}Query`;
-  if (!(opName in OPERATION_TYPENAMES)) {
-    return;
-  }
-  return [...OPERATION_TYPENAMES[opName as keyof typeof OPERATION_TYPENAMES]];
-};
-
 export const useSuspenseQuery = <
   Data = any,
   Variables extends Urql.AnyVariables = Urql.AnyVariables,
 >(
   args: Urql.UseQueryArgs<Variables, Data>,
 ) => {
-  const { query, context: argsContext } = args;
+  const { context: argsContext } = args;
   const additionalTypenames = useMemo(
-    () =>
-      argsContext?.additionalTypenames ?? createAutoAdditionalTypenames(query),
-    [query, argsContext?.additionalTypenames],
+    () => argsContext?.additionalTypenames,
+    [argsContext?.additionalTypenames],
   );
   const context = useMemo(
     () => ({ ...argsContext, additionalTypenames, suspense: true }),
@@ -64,11 +47,10 @@ export const useQuery = <
 >(
   args: Urql.UseQueryArgs<Variables, Data>,
 ) => {
-  const { query, context: argsContext } = args;
+  const { context: argsContext } = args;
   const additionalTypenames = useMemo(
-    () =>
-      argsContext?.additionalTypenames ?? createAutoAdditionalTypenames(query),
-    [query, argsContext?.additionalTypenames],
+    () => argsContext?.additionalTypenames,
+    [argsContext?.additionalTypenames],
   );
   const context = useMemo(
     // suspense モードを無効化して実行

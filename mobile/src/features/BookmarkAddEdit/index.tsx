@@ -12,8 +12,7 @@ import {
   Text,
   TextInput,
 } from "react-native-paper";
-import { graphql } from "@/libs/graphql/generated";
-import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
+import { graphql } from "@/libs/graphql/graphql";
 import { useMutation } from "@/libs/graphql/urql";
 import {
   type CreateBookmarkInput,
@@ -56,18 +55,30 @@ const UPDATE_BOOKMARK = graphql(`
   }
 `);
 
+type BookmarkData = {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+  tags: Array<{ id: string; name: string }> | null;
+};
+
 type Props = {
-  bookmark?: BookmarkFragment;
+  bookmark?: BookmarkData | null;
 };
 
 export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const isEditing = !!bookmark;
+  const bookmarkData = bookmark || null;
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
-  const [tags, setTags] = useState<string[]>(
-    bookmark?.tags?.map((tag) => tag.name) || [],
-  );
+  const [tags, setTags] = useState<string[]>(() => {
+    if (!bookmarkData?.tags) return [];
+    return bookmarkData.tags.map((tag: { name: string }) => tag.name);
+  });
   const [tagInput, setTagInput] = useState("");
 
   const {
@@ -78,10 +89,11 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   } = useForm<CreateBookmarkInput | UpdateBookmarkInput>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: bookmark?.title || "",
-      url: bookmark?.url || "",
-      description: bookmark?.description || "",
-      tagNames: bookmark?.tags?.map((tag) => tag.name) || [],
+      title: bookmarkData?.title ?? "",
+      url: bookmarkData?.url ?? "",
+      description: bookmarkData?.description ?? "",
+      tagNames:
+        bookmarkData?.tags?.map((tag: { name: string }) => tag.name) ?? [],
     },
   });
 
@@ -109,7 +121,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
   const [, createBookmark] = useMutation(CREATE_BOOKMARK);
   const onSubmit = async (data: CreateBookmarkInput | UpdateBookmarkInput) => {
     try {
-      if (isEditing && bookmark) {
+      if (isEditing && bookmarkData) {
         const input: UpdateBookmarkInput = {
           title: data.title?.trim(),
           url: data.url?.trim(),
@@ -117,7 +129,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           tagNames: tags,
         };
 
-        await updateBookmark({ id: bookmark.id, input });
+        await updateBookmark({ id: bookmarkData!.id, input });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {

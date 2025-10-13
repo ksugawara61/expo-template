@@ -1,20 +1,8 @@
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
-import { graphql } from "@/libs/graphql/generated";
+import { graphql, type ResultOf } from "@/libs/graphql/graphql";
 import { useSuspenseQuery } from "@/libs/graphql/urql";
-
-type Item = {
-  id: string;
-  title: string;
-  user: {
-    name?: string | null;
-  };
-  created_at: string;
-  tags: Array<{
-    name: string;
-  }>;
-};
 
 export const GetArticles = graphql(`
   query GetArticles($page: Number!) {
@@ -31,6 +19,8 @@ export const GetArticles = graphql(`
     }
   }
 `);
+
+type Item = ResultOf<typeof GetArticles>["articles"][0];
 
 export const Articles: FC = () => {
   const [{ data }] = useSuspenseQuery({
