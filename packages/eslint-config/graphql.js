@@ -1,4 +1,5 @@
 import jestPlugin from "eslint-plugin-jest";
+import preferArrowFunctionsPlugin from "eslint-plugin-prefer-arrow-functions";
 import {
   baseIgnores,
   baseJavaScriptConfig,

@@ -1,5 +1,6 @@
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import preferArrowFunctionsPlugin from "eslint-plugin-prefer-arrow-functions";
 
 export const baseRules = {
   // TypeScript
@@ -14,6 +15,19 @@ export const baseRules = {
   "@typescript-eslint/no-explicit-any": "error",
   "@typescript-eslint/no-floating-promises": "error",
   "@typescript-eslint/await-thenable": "error",
+
+  // Arrow functions
+  "func-style": ["error", "expression", { allowArrowFunctions: true }],
+  "prefer-arrow-functions/prefer-arrow-functions": [
+    "error",
+    {
+      allowNamedFunctions: false,
+      classPropertiesAllowed: false,
+      disallowPrototype: false,
+      returnStyle: "unchanged",
+      singleReturnOnly: false,
+    },
+  ],
 };
 
 export const jsRules = {
@@ -23,6 +37,19 @@ export const jsRules = {
       varsIgnorePattern: "^_",
       argsIgnorePattern: "^_",
       ignoreRestSiblings: true,
+    },
+  ],
+
+  // Arrow functions
+  "func-style": ["error", "expression", { allowArrowFunctions: true }],
+  "prefer-arrow-functions/prefer-arrow-functions": [
+    "error",
+    {
+      allowNamedFunctions: false,
+      classPropertiesAllowed: false,
+      disallowPrototype: false,
+      returnStyle: "unchanged",
+      singleReturnOnly: false,
     },
   ],
 };
@@ -45,6 +72,7 @@ export const baseTypeScriptConfig = {
   },
   plugins: {
     "@typescript-eslint": tsPlugin,
+    "prefer-arrow-functions": preferArrowFunctionsPlugin,
   },
   rules: {
     ...baseRules,
@@ -55,6 +83,9 @@ export const baseJavaScriptConfig = {
   files: ["**/*.{js,jsx}"],
   languageOptions: {
     sourceType: "module",
+  },
+  plugins: {
+    "prefer-arrow-functions": preferArrowFunctionsPlugin,
   },
   rules: {
     ...jsRules,
