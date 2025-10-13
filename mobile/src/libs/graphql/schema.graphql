@@ -2,16 +2,22 @@ input CreateBookmarkInputInput {
   title: String!
   url: String!
   description: String
+  tagNames: [String!]
 }
 input UpdateBookmarkInputInput {
   title: String
   url: String
   description: String
+  tagNames: [String!]
+}
+input CreateTagInputInput {
+  name: String!
 }
 type Query {
   articles(page: Number!): [Article!]!
   bookmarks: [Bookmark!]!
   bookmark(id: String!): Bookmark
+  tags: [Tag!]!
 }
 type Article {
   id: String!
@@ -19,14 +25,14 @@ type Article {
   body: String!
   url: String!
   user: User!
-  tags: [Tag!]!
+  tags: [Tag_1!]!
   created_at: String!
   updated_at: String!
 }
 type User {
   name: String
 }
-type Tag {
+type Tag_1 {
   name: String!
 }
 type Bookmark {
@@ -36,11 +42,19 @@ type Bookmark {
   description: String
   created_at: Date!
   updated_at: Date!
+  tags: [Tag!]
+}
+type Tag {
+  id: String!
+  name: String!
+  created_at: Date!
+  updated_at: Date!
 }
 type Mutation {
   createBookmark(input: CreateBookmarkInputInput!): Bookmark!
   updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
   deleteBookmark(id: String!): Boolean!
+  createTag(input: CreateTagInputInput!): Tag!
 }
 scalar ID
 scalar Int
