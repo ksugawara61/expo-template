@@ -18,7 +18,8 @@ export const OPERATION_TYPENAMES = {
     "Tag"
   ],
   "GetBookmarksQuery": [
-    "Bookmark"
+    "Bookmark",
+    "Tag"
   ],
   "DeleteBookmarkMutation": []
 } as const;
