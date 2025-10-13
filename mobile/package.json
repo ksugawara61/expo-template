@@ -19,7 +19,7 @@
     "vrt:report": "pnpm vrt; open ./vrt/public/report/index.html",
     "vrt:approve": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
     "expo:fix": "expo install --fix",
-    "codegen": "cp ../graphql/.pylon/schema.graphql src/libs/graphql/schema.graphql && gql-tada generate-output --output ./src/libs/graphql/graphql-env.d.ts",
+    "codegen": "cp ../graphql/.pylon/schema.graphql src/libs/graphql/schema.graphql && gql-tada generate-output --output ./src/libs/graphql/graphql-env.d.ts && pnpm typenames:generate && pnpm fmt",
     "gql:check": "gql-tada check",
     "gql:generate": "gql-tada generate-output --output ./src/libs/graphql/graphql-env.d.ts",
     "typenames:generate": "tsx ./scripts/generate-typenames.ts",
