@@ -129,7 +129,8 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           tagNames: tags,
         };
 
-        await updateBookmark({ id: bookmarkData!.id, input });
+        if (!bookmarkData?.id) return;
+        await updateBookmark({ id: bookmarkData.id, input });
 
         Alert.alert("成功", "ブックマークを更新しました");
       } else {
