@@ -9,7 +9,9 @@ describe("BookmarkAddEdit", () => {
     await render(<Create />);
 
     expect(screen.getByText("作成")).toBeOnTheScreen();
-    expect(screen.getByPlaceholderText("URLを入力")).toBeOnTheScreen();
+    expect(
+      screen.getByPlaceholderText("https://example.com"),
+    ).toBeOnTheScreen();
   });
 
   it("編集画面が正しく表示される", async () => {
