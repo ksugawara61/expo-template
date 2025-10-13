@@ -33,7 +33,7 @@ export const baseRules = {
   "@typescript-eslint/no-use-before-define": [
     "error",
     {
-      functions: false,
+      functions: true,
       classes: true,
       variables: true,
     },
@@ -67,7 +67,7 @@ export const jsRules = {
   "no-use-before-define": [
     "error",
     {
-      functions: false,
+      functions: true,
       classes: true,
       variables: true,
     },
