@@ -10,12 +10,18 @@ import {
   type UpdateBookmarkInput,
   updateBookmarkUseCase,
 } from "./application/bookmarks/UpdateBookmarkUseCase";
+import {
+  type CreateTagInput,
+  createTagUseCase,
+} from "./application/tags/CreateTagUseCase";
+import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
 
 export const server = {
   Query: {
     articles: async (page: number) => await fetchArticlesUseCase(page),
     bookmarks: async () => await fetchBookmarksUseCase(),
     bookmark: async (id: string) => await fetchBookmarkByIdUseCase(id),
+    tags: async () => await fetchTagsUseCase(),
   },
   Mutation: {
     createBookmark: async (input: CreateBookmarkInput) =>
@@ -23,5 +29,6 @@ export const server = {
     updateBookmark: async (id: string, input: UpdateBookmarkInput) =>
       await updateBookmarkUseCase(id, input),
     deleteBookmark: async (id: string) => await deleteBookmarkUseCase(id),
+    createTag: async (input: CreateTagInput) => await createTagUseCase(input),
   },
 };
