@@ -28,6 +28,16 @@ export const baseRules = {
       singleReturnOnly: false,
     },
   ],
+
+  // Function definition order
+  "@typescript-eslint/no-use-before-define": [
+    "error",
+    {
+      functions: true,
+      classes: true,
+      variables: true,
+    },
+  ],
 };
 
 export const jsRules = {
@@ -50,6 +60,16 @@ export const jsRules = {
       disallowPrototype: false,
       returnStyle: "unchanged",
       singleReturnOnly: false,
+    },
+  ],
+
+  // Function definition order
+  "no-use-before-define": [
+    "error",
+    {
+      functions: true,
+      classes: true,
+      variables: true,
     },
   ],
 };

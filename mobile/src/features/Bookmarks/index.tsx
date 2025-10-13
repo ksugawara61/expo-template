@@ -82,25 +82,6 @@ export const DELETE_BOOKMARK = graphql(`
   }
 `);
 
-export const Bookmarks: FC = () => {
-  return (
-    <Suspense
-      fallback={
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ActivityIndicator size="large" />
-          <Text variant="bodyMedium" style={{ marginTop: 16 }}>
-            ブックマークを読み込み中...
-          </Text>
-        </View>
-      }
-    >
-      <Content />
-    </Suspense>
-  );
-};
-
 export const Content: FC = () => {
   const [{ data }] = useSuspenseQuery({ query: GET_BOOKMARKS });
 
@@ -168,5 +149,24 @@ export const Content: FC = () => {
         }}
       />
     </>
+  );
+};
+
+export const Bookmarks: FC = () => {
+  return (
+    <Suspense
+      fallback={
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" />
+          <Text variant="bodyMedium" style={{ marginTop: 16 }}>
+            ブックマークを読み込み中...
+          </Text>
+        </View>
+      }
+    >
+      <Content />
+    </Suspense>
   );
 };
