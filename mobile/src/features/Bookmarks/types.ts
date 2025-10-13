@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export type Tag = {
+  id: string;
+  name: string;
+};
+
 export type Bookmark = {
   id: string;
   title: string;
@@ -7,6 +12,7 @@ export type Bookmark = {
   description?: string;
   created_at: string;
   updated_at: string;
+  tags?: Tag[];
 };
 
 export const createBookmarkSchema = z.object({
@@ -26,6 +32,7 @@ export const createBookmarkSchema = z.object({
     .max(500, "説明は500文字以内で入力してください")
     .optional()
     .or(z.literal("")),
+  tagNames: z.array(z.string().trim().min(1, "タグ名は必須です")).optional(),
 });
 
 export const updateBookmarkSchema = z.object({
@@ -47,6 +54,7 @@ export const updateBookmarkSchema = z.object({
     .max(500, "説明は500文字以内で入力してください")
     .optional()
     .or(z.literal("")),
+  tagNames: z.array(z.string().trim().min(1, "タグ名は必須です")).optional(),
 });
 
 export type CreateBookmarkInput = z.infer<typeof createBookmarkSchema>;
