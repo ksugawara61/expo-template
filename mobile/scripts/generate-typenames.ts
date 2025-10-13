@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { Project } from "ts-morph";
+import { Project, type SourceFile } from "ts-morph";
 
 /**
  * 設定
@@ -26,6 +26,60 @@ const extractTypenamesFromText = (typeText: string): string[] => {
 };
 
 /**
+ * Fragment内の__typenameも含めて抽出する
+ */
+const extractTypenamesWithFragments = (
+  source: SourceFile,
+  typeName: string,
+): string[] => {
+  const typeNode = source.getTypeAliasOrThrow(typeName);
+  const typeText = typeNode.getText();
+
+  // 直接的な__typenameを抽出
+  const directTypenames = extractTypenamesFromText(typeText);
+
+  // Fragment参照を探す
+  const fragmentRefRegex =
+    /\{\s*'\s*\$fragmentRefs'\?:\s*\{\s*'([^']+)':\s*([A-Za-z0-9_]+)\s*\}\s*\}/g;
+  const fragmentTypenames = new Set<string>();
+  let match: RegExpExecArray | null;
+
+  // biome-ignore lint/suspicious/noAssignInExpressions: Fragment参照を抽出するため必要
+  while ((match = fragmentRefRegex.exec(typeText))) {
+    const fragmentName = match[1];
+    const fragmentTypeName = match[2].trim();
+
+    // Fragment型定義を取得
+    try {
+      const fragmentTypeNode = source.getTypeAlias(fragmentTypeName);
+      if (fragmentTypeNode) {
+        const fragmentText = fragmentTypeNode.getText();
+        const fragmentTypenamesArray = extractTypenamesFromText(fragmentText);
+        for (const typename of fragmentTypenamesArray) {
+          fragmentTypenames.add(typename);
+        }
+      }
+    } catch {
+      console.warn(
+        `[WARN] Fragment type ${fragmentTypeName} not found for ${fragmentName}`,
+      );
+    }
+  }
+
+  // 直接的なtypenameとFragment内のtypenameを結合
+  const allTypenames = [...new Set([...directTypenames, ...fragmentTypenames])];
+
+  return (
+    allTypenames
+      .sort()
+      // Query, Mutation 自体はすべてのQuery / Mutation に含まれるため除外する
+      .filter((v) => v !== "Query" && v !== "Mutation")
+      // 念のため重複排除（二重安全）
+      .filter((v, i, arr) => arr.indexOf(v) === i)
+  );
+};
+
+/**
  * AST を使って（必要なら厳密に）ネストを辿る拡張余地があるが、
  * まずは型全体テキストを解析
  */
@@ -48,13 +102,7 @@ const main = () => {
 
   const operationTypenameMap = targetTypes.reduce<Record<string, string[]>>(
     (acc, typeName) => {
-      const typeNode = source.getTypeAliasOrThrow(typeName);
-      const typenames = extractTypenamesFromText(typeNode.getText())
-        .sort()
-        // Query, Mutation 自体はすべてのQuery / Mutation に含まれるため除外する
-        .filter((v) => v !== "Query" && v !== "Mutation")
-        // 念のため重複排除（二重安全）
-        .filter((v, i, arr) => arr.indexOf(v) === i);
+      const typenames = extractTypenamesWithFragments(source, typeName);
       if (typenames.length === 0) {
         console.warn(`[WARN] ${typeName}: __typename が見つかりませんでした`);
       }
