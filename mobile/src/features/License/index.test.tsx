@@ -1,6 +1,6 @@
 import { composeStories } from "@storybook/react-native-web-vite";
 import { render, screen } from "@/libs/test/testing-library";
-import * as stories from "./index.stories";
+import * as stories from "./stories";
 
 const { Default } = composeStories(stories);
 

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
 import { screen } from "@storybook/test";
 import { Bookmarks } from ".";
-import { MocksBookmarks } from "./index.mocks";
+import { MocksBookmarks } from "./mocks";
 
 const meta = {
   component: Bookmarks,
