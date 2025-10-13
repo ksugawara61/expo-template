@@ -22,7 +22,7 @@ pre-push:
       run: pnpm turbo test:changed --affected
     codegen-check:
       glob: "graphql/**/*.{ts,js,prisma,graphql}"
-      run: pnpm --filter mobile codegen:check
+      run: pnpm codegen:check
 
 pre-commit:
   parallel: true
