@@ -114,7 +114,7 @@ export const Content: FC = () => {
   const [, deleteBookmark] = useMutation(DELETE_BOOKMARK);
   const handleDelete = async (id: string) => {
     try {
-      await deleteBookmark({ id }, { additionalTypenames: ["Bookmark"] });
+      await deleteBookmark({ id });
     } catch {
       Alert.alert("エラー", "ブックマークの削除に失敗しました");
     }
