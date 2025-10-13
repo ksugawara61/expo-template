@@ -10,10 +10,12 @@ export const OPERATION_TYPENAMES = {
     "User"
   ],
   "CreateBookmarkMutation": [
-    "Bookmark"
+    "Bookmark",
+    "Tag"
   ],
   "UpdateBookmarkMutation": [
-    "Bookmark"
+    "Bookmark",
+    "Tag"
   ],
   "GetBookmarksQuery": [
     "Bookmark"

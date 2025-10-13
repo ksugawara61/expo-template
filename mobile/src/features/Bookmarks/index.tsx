@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Button,
   Card,
+  Chip,
   FAB,
   HelperText,
   Text,
@@ -43,6 +44,15 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
           {bookmark.description && (
             <HelperText type="info">{bookmark.description}</HelperText>
           )}
+          {bookmark.tags && bookmark.tags.length > 0 && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>
+              {bookmark.tags.map((tag) => (
+                <Chip key={tag.id} compact>
+                  {tag.name}
+                </Chip>
+              ))}
+            </View>
+          )}
         </View>
         <View style={{ flexDirection: "row", gap: 8 }}>
           <Button mode="outlined" onPress={() => onEdit(bookmark)}>
@@ -62,6 +72,10 @@ export const BOOKMARK = graphql(`
     created_at
     description
     id
+    tags {
+      id
+      name
+    }
     title
     updated_at
     url

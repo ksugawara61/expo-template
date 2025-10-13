@@ -1,9 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import type { FC } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
-import { Button, Card, HelperText, TextInput } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Chip,
+  HelperText,
+  Text,
+  TextInput,
+} from "react-native-paper";
 import { graphql } from "@/libs/graphql/generated";
 import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
 import { useMutation } from "@/libs/graphql/urql";
@@ -20,6 +28,10 @@ const CREATE_BOOKMARK = graphql(`
       created_at
       description
       id
+      tags {
+        id
+        name
+      }
       title
       updated_at
       url
@@ -33,6 +45,10 @@ const UPDATE_BOOKMARK = graphql(`
       created_at
       description
       id
+      tags {
+        id
+        name
+      }
       title
       updated_at
       url
@@ -49,6 +65,11 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
+  const [tags, setTags] = useState<string[]>(
+    bookmark?.tags?.map((tag) => tag.name) || [],
+  );
+  const [tagInput, setTagInput] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -60,6 +81,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
       title: bookmark?.title || "",
       url: bookmark?.url || "",
       description: bookmark?.description || "",
+      tagNames: bookmark?.tags?.map((tag) => tag.name) || [],
     },
   });
 
@@ -71,6 +93,18 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
     router.back();
   };
 
+  const addTag = () => {
+    const trimmedTag = tagInput.trim();
+    if (trimmedTag && !tags.includes(trimmedTag)) {
+      setTags([...tags, trimmedTag]);
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
   const [, updateBookmark] = useMutation(UPDATE_BOOKMARK);
   const [, createBookmark] = useMutation(CREATE_BOOKMARK);
   const onSubmit = async (data: CreateBookmarkInput | UpdateBookmarkInput) => {
@@ -80,6 +114,7 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           title: data.title?.trim(),
           url: data.url?.trim(),
           description: data.description?.trim() || undefined,
+          tagNames: tags,
         };
 
         await updateBookmark({ id: bookmark.id, input });
@@ -90,12 +125,14 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
           title: data.title as string,
           url: data.url as string,
           description: data.description?.trim() || undefined,
+          tagNames: tags,
         };
 
         await createBookmark({ input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
+        setTags([]);
       }
 
       handleSuccess();
@@ -177,6 +214,43 @@ export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
                 <HelperText type="error">
                   {errors.description.message}
                 </HelperText>
+              )}
+            </View>
+
+            <View>
+              <Text variant="labelLarge" style={{ marginBottom: 8 }}>
+                タグ
+              </Text>
+              <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}>
+                <TextInput
+                  value={tagInput}
+                  onChangeText={setTagInput}
+                  placeholder="タグ名を入力"
+                  style={{ flex: 1 }}
+                  onSubmitEditing={addTag}
+                />
+                <Button
+                  mode="outlined"
+                  onPress={addTag}
+                  disabled={!tagInput.trim()}
+                >
+                  追加
+                </Button>
+              </View>
+              {tags.length > 0 && (
+                <View
+                  style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}
+                >
+                  {tags.map((tag) => (
+                    <Chip
+                      key={tag}
+                      onClose={() => removeTag(tag)}
+                      closeIcon="close"
+                    >
+                      {tag}
+                    </Chip>
+                  ))}
+                </View>
               )}
             </View>
 
