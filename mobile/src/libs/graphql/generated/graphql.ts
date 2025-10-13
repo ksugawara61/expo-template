@@ -28,7 +28,7 @@ export type Article = {
   body: Scalars['String']['output'];
   created_at: Scalars['String']['output'];
   id: Scalars['String']['output'];
-  tags: Array<Tag>;
+  tags: Array<Tag_1>;
   title: Scalars['String']['output'];
   updated_at: Scalars['String']['output'];
   url: Scalars['String']['output'];
@@ -40,6 +40,7 @@ export type Bookmark = {
   created_at: Scalars['Date']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['String']['output'];
+  tags?: Maybe<Array<Tag>>;
   title: Scalars['String']['output'];
   updated_at: Scalars['Date']['output'];
   url: Scalars['String']['output'];
@@ -47,13 +48,19 @@ export type Bookmark = {
 
 export type CreateBookmarkInputInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  tagNames?: InputMaybe<Array<Scalars['String']['input']>>;
   title: Scalars['String']['input'];
   url: Scalars['String']['input'];
+};
+
+export type CreateTagInputInput = {
+  name: Scalars['String']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createBookmark: Bookmark;
+  createTag: Tag;
   deleteBookmark: Scalars['Boolean']['output'];
   updateBookmark: Bookmark;
 };
@@ -61,6 +68,11 @@ export type Mutation = {
 
 export type MutationCreateBookmarkArgs = {
   input: CreateBookmarkInputInput;
+};
+
+
+export type MutationCreateTagArgs = {
+  input: CreateTagInputInput;
 };
 
 
@@ -79,6 +91,7 @@ export type Query = {
   articles: Array<Article>;
   bookmark?: Maybe<Bookmark>;
   bookmarks: Array<Bookmark>;
+  tags: Array<Tag>;
 };
 
 
@@ -93,11 +106,20 @@ export type QueryBookmarkArgs = {
 
 export type Tag = {
   __typename?: 'Tag';
+  created_at: Scalars['Date']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  updated_at: Scalars['Date']['output'];
+};
+
+export type Tag_1 = {
+  __typename?: 'Tag_1';
   name: Scalars['String']['output'];
 };
 
 export type UpdateBookmarkInputInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  tagNames?: InputMaybe<Array<Scalars['String']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;
 };
@@ -112,7 +134,7 @@ export type GetArticlesQueryVariables = Exact<{
 }>;
 
 
-export type GetArticlesQuery = { __typename?: 'Query', articles: Array<{ __typename?: 'Article', created_at: string, id: string, title: string, tags: Array<{ __typename?: 'Tag', name: string }>, user: { __typename?: 'User', name?: string | null } }> };
+export type GetArticlesQuery = { __typename?: 'Query', articles: Array<{ __typename?: 'Article', created_at: string, id: string, title: string, tags: Array<{ __typename?: 'Tag_1', name: string }>, user: { __typename?: 'User', name?: string | null } }> };
 
 export type CreateBookmarkMutationVariables = Exact<{
   input: CreateBookmarkInputInput;

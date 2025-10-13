@@ -6,7 +6,7 @@
 export const OPERATION_TYPENAMES = {
   "GetArticlesQuery": [
     "Article",
-    "Tag",
+    "Tag_1",
     "User"
   ],
   "CreateBookmarkMutation": [
