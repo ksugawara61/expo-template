@@ -8,14 +8,14 @@ describe("BookmarkAddEdit", () => {
   it("新規作成画面が正しく表示される", async () => {
     await render(<Create />);
 
-    expect(screen.getByText("ブックマークを作成")).toBeOnTheScreen();
+    expect(screen.getByText("作成")).toBeOnTheScreen();
     expect(screen.getByPlaceholderText("URLを入力")).toBeOnTheScreen();
   });
 
   it("編集画面が正しく表示される", async () => {
     await render(<Edit />);
 
-    expect(screen.getByText("ブックマークを編集")).toBeOnTheScreen();
+    expect(screen.getByText("更新")).toBeOnTheScreen();
     expect(screen.getByDisplayValue("https://example.com")).toBeOnTheScreen();
   });
 });
