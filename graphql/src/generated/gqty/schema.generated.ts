@@ -47,12 +47,18 @@ export interface Scalars {
 
 export interface CreateBookmarkInputInput {
   description?: InputMaybe<Scalars["String"]["input"]>;
+  tagNames?: InputMaybe<Array<Scalars["String"]["input"]>>;
   title: Scalars["String"]["input"];
   url: Scalars["String"]["input"];
 }
 
+export interface CreateTagInputInput {
+  name: Scalars["String"]["input"];
+}
+
 export interface UpdateBookmarkInputInput {
   description?: InputMaybe<Scalars["String"]["input"]>;
+  tagNames?: InputMaybe<Array<Scalars["String"]["input"]>>;
   title?: InputMaybe<Scalars["String"]["input"]>;
   url?: InputMaybe<Scalars["String"]["input"]>;
 }
@@ -74,7 +80,7 @@ export const generatedSchema = {
     body: { __type: "String!" },
     created_at: { __type: "String!" },
     id: { __type: "String!" },
-    tags: { __type: "[Tag!]!" },
+    tags: { __type: "[Tag_1!]!" },
     title: { __type: "String!" },
     updated_at: { __type: "String!" },
     url: { __type: "String!" },
@@ -85,18 +91,29 @@ export const generatedSchema = {
     created_at: { __type: "DateTimeISO!" },
     description: { __type: "String" },
     id: { __type: "String!" },
+    tags: { __type: "[Tag!]" },
     title: { __type: "String!" },
     updated_at: { __type: "DateTimeISO!" },
     url: { __type: "String!" },
   },
   CreateBookmarkInputInput: {
     description: { __type: "String" },
+    tagNames: { __type: "[String!]" },
     title: { __type: "String!" },
     url: { __type: "String!" },
   },
-  Tag: { __typename: { __type: "String!" }, name: { __type: "String!" } },
+  CreateTagInputInput: { name: { __type: "String!" } },
+  Tag: {
+    __typename: { __type: "String!" },
+    created_at: { __type: "DateTimeISO!" },
+    id: { __type: "String!" },
+    name: { __type: "String!" },
+    updated_at: { __type: "DateTimeISO!" },
+  },
+  Tag_1: { __typename: { __type: "String!" }, name: { __type: "String!" } },
   UpdateBookmarkInputInput: {
     description: { __type: "String" },
+    tagNames: { __type: "[String!]" },
     title: { __type: "String" },
     url: { __type: "String" },
   },
@@ -107,6 +124,7 @@ export const generatedSchema = {
       __type: "Bookmark!",
       __args: { input: "CreateBookmarkInputInput!" },
     },
+    createTag: { __type: "Tag!", __args: { input: "CreateTagInputInput!" } },
     deleteBookmark: { __type: "Boolean!", __args: { id: "String!" } },
     updateBookmark: {
       __type: "Bookmark!",
@@ -118,6 +136,7 @@ export const generatedSchema = {
     articles: { __type: "[Article!]!", __args: { page: "Number!" } },
     bookmark: { __type: "Bookmark", __args: { id: "String!" } },
     bookmarks: { __type: "[Bookmark!]!" },
+    tags: { __type: "[Tag!]!" },
   },
   subscription: {},
 } as const;
@@ -127,7 +146,7 @@ export interface Article {
   body: ScalarsEnums["String"];
   created_at: ScalarsEnums["String"];
   id: ScalarsEnums["String"];
-  tags: Array<Tag>;
+  tags: Array<Tag_1>;
   title: ScalarsEnums["String"];
   updated_at: ScalarsEnums["String"];
   url: ScalarsEnums["String"];
@@ -139,6 +158,7 @@ export interface Bookmark {
   created_at: ScalarsEnums["DateTimeISO"];
   description?: Maybe<ScalarsEnums["String"]>;
   id: ScalarsEnums["String"];
+  tags?: Maybe<Array<Tag>>;
   title: ScalarsEnums["String"];
   updated_at: ScalarsEnums["DateTimeISO"];
   url: ScalarsEnums["String"];
@@ -146,6 +166,14 @@ export interface Bookmark {
 
 export interface Tag {
   __typename?: "Tag";
+  created_at: ScalarsEnums["DateTimeISO"];
+  id: ScalarsEnums["String"];
+  name: ScalarsEnums["String"];
+  updated_at: ScalarsEnums["DateTimeISO"];
+}
+
+export interface Tag_1 {
+  __typename?: "Tag_1";
   name: ScalarsEnums["String"];
 }
 
@@ -157,6 +185,7 @@ export interface User {
 export interface Mutation {
   __typename?: "Mutation";
   createBookmark: (args: { input: CreateBookmarkInputInput }) => Bookmark;
+  createTag: (args: { input: CreateTagInputInput }) => Tag;
   deleteBookmark: (args: {
     id: ScalarsEnums["String"];
   }) => ScalarsEnums["Boolean"];
@@ -171,6 +200,7 @@ export interface Query {
   articles: (args: { page: ScalarsEnums["Number"] }) => Array<Article>;
   bookmark: (args: { id: ScalarsEnums["String"] }) => Maybe<Bookmark>;
   bookmarks: Array<Bookmark>;
+  tags: Array<Tag>;
 }
 
 export interface Subscription {
