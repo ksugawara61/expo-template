@@ -25,7 +25,8 @@
       "!**/tmp",
       "!**/pnpm-lock.yaml",
       "!**/*.local.json",
-      "!**/.pylon"
+      "!**/.pylon",
+      "!**/src/**/gql-tada/graphql-*.d.ts"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },

@@ -6,6 +6,7 @@ const createBookmarkSuccess = createMockMutation(CREATE_BOOKMARK, () => {
   return HttpResponse.json({
     data: {
       createBookmark: {
+        __typename: "Bookmark",
         id: "1",
         title: "テストブックマーク",
         url: "https://example.com",
@@ -25,6 +26,7 @@ const updateBookmarkSuccess = createMockMutation(UPDATE_BOOKMARK, () => {
   return HttpResponse.json({
     data: {
       updateBookmark: {
+        __typename: "Bookmark",
         id: "1",
         title: "更新されたブックマーク",
         url: "https://example.com",

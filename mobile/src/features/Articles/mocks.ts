@@ -4,6 +4,7 @@ import { GetArticles } from "./index";
 
 const mockData = [
   {
+    __typename: "Article" as const,
     id: "c686397e4a0f4f11683d",
     title: "React NativeとExpoで始めるモバイルアプリ開発",
     body: "# React NativeとExpoで始めるモバイルアプリ開発\n\n...",
@@ -15,6 +16,7 @@ const mockData = [
     created_at: "2024-01-15T09:00:00+09:00",
   },
   {
+    __typename: "Article" as const,
     id: "d797508f5b1f5f22794e",
     title: "NativeWindでReact Nativeのスタイリングを効率化",
     body: "# NativeWindでReact Nativeのスタイリングを効率化\n\n...",
@@ -39,6 +41,15 @@ const success = createMockQuery(GetArticles, ({ variables: _ }) => {
   });
 });
 
+const empty = createMockQuery(GetArticles, ({ variables: _ }) => {
+  return HttpResponse.json({
+    data: {
+      articles: [],
+    },
+  });
+});
+
 export const handlers = {
   Success: [success],
+  Empty: [empty],
 };

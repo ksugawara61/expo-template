@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import type { TadaDocumentNode } from "gql.tada";
+
 import {
+  type GraphQLQuery,
   type GraphQLResponseResolver,
   type GraphQLVariables,
   graphql,
@@ -10,7 +11,12 @@ import {
 /**
  * TypedDocumentNodeからGraphQL操作名を抽出
  */
-const getOperationName = (document: TypedDocumentNode<any, any>): string => {
+const getOperationName = <
+  TResult extends GraphQLQuery = GraphQLQuery,
+  TVariables extends GraphQLVariables = GraphQLVariables,
+>(
+  document: TadaDocumentNode<TResult, TVariables>,
+): string => {
   const definition = document.definitions?.[0];
   if (definition?.kind === "OperationDefinition" && definition.name?.value) {
     return definition.name.value;
@@ -22,28 +28,32 @@ const getOperationName = (document: TypedDocumentNode<any, any>): string => {
  * GraphQLクエリ用のMSWハンドラーを作成
  */
 export const createMockQuery = <
-  TResult = any,
+  TResult extends GraphQLQuery = GraphQLQuery,
   TVariables extends GraphQLVariables = GraphQLVariables,
 >(
-  document: TypedDocumentNode<TResult, TVariables>,
-  resolver: GraphQLResponseResolver<any, TVariables>,
+  document: TadaDocumentNode<TResult, TVariables>,
+  resolver: GraphQLResponseResolver<TResult, TVariables>,
   options?: RequestHandlerOptions,
 ) => {
   const operationName = getOperationName(document);
-  return graphql.query<any, TVariables>(operationName, resolver, options);
+  return graphql.query<TResult, TVariables>(operationName, resolver, options);
 };
 
 /**
  * GraphQLミューテーション用のMSWハンドラーを作成
  */
 export const createMockMutation = <
-  TResult = any,
+  TResult extends GraphQLQuery = GraphQLQuery,
   TVariables extends GraphQLVariables = GraphQLVariables,
 >(
-  document: TypedDocumentNode<TResult, TVariables>,
-  resolver: GraphQLResponseResolver<any, TVariables>,
+  document: TadaDocumentNode<TResult, TVariables>,
+  resolver: GraphQLResponseResolver<TResult, TVariables>,
   options?: RequestHandlerOptions,
 ) => {
   const operationName = getOperationName(document);
-  return graphql.mutation<any, TVariables>(operationName, resolver, options);
+  return graphql.mutation<TResult, TVariables>(
+    operationName,
+    resolver,
+    options,
+  );
 };

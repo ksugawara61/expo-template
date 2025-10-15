@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
-import { graphql } from "@/libs/graphql/generated";
+import { graphql } from "@/libs/graphql/gql-tada";
 import { useSuspenseQuery } from "@/libs/graphql/urql";
 
 type Item = {
@@ -19,6 +19,7 @@ type Item = {
 export const GetArticles = graphql(`
   query GetArticles($page: Number!) {
     articles(page: $page) {
+      __typename
       created_at
       id
       tags {
