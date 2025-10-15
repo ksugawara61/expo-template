@@ -19,6 +19,7 @@ import { useMutation, useSuspenseQuery } from "@/libs/graphql/urql";
 
 export const BOOKMARK = graphql(`
   fragment Bookmark on Bookmark {
+    __typename
     created_at
     description
     id

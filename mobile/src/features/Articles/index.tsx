@@ -19,6 +19,7 @@ type Item = {
 export const GetArticles = graphql(`
   query GetArticles($page: Number!) {
     articles(page: $page) {
+      __typename
       created_at
       id
       tags {

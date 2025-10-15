@@ -48,3 +48,5 @@ vrt/public/report/diff/*
 !vrt/public/report/diff/.gitkeep
 vrt/public/report/reg.json
 vrt/public/report/index.html
+
+graphql-cache.d.ts
