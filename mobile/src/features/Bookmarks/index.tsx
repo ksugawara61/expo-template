@@ -24,6 +24,7 @@ export const BOOKMARK = graphql(`
     description
     id
     tags {
+      __typename
       id
       name
     }

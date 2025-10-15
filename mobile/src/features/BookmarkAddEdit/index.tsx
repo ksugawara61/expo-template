@@ -34,6 +34,7 @@ const CREATE_BOOKMARK = graphql(`
       description
       id
       tags {
+        __typename
         id
         name
       }
@@ -52,6 +53,7 @@ const UPDATE_BOOKMARK = graphql(`
       description
       id
       tags {
+        __typename
         id
         name
       }

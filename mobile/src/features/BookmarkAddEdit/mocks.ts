@@ -12,8 +12,8 @@ const createBookmarkSuccess = createMockMutation(CREATE_BOOKMARK, () => {
         url: "https://example.com",
         description: "テスト用の説明",
         tags: [
-          { id: "1", name: "test" },
-          { id: "2", name: "example" },
+          { __typename: "Tag", id: "1", name: "test" },
+          { __typename: "Tag", id: "2", name: "example" },
         ],
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -32,8 +32,8 @@ const updateBookmarkSuccess = createMockMutation(UPDATE_BOOKMARK, () => {
         url: "https://example.com",
         description: "更新された説明",
         tags: [
-          { id: "1", name: "updated" },
-          { id: "2", name: "example" },
+          { __typename: "Tag", id: "1", name: "updated" },
+          { __typename: "Tag", id: "2", name: "example" },
         ],
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),

@@ -8,7 +8,8 @@ export const OPERATION_TYPENAMES = {
     "Article"
   ],
   "GetBookmarksQuery": [
-    "Bookmark"
+    "Bookmark",
+    "Tag"
   ],
   "DeleteBookmarkMutation": [],
   "CreateBookmarkMutation": [
