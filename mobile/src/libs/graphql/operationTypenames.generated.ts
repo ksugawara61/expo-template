@@ -13,10 +13,12 @@ export const OPERATION_TYPENAMES = {
   ],
   "DeleteBookmarkMutation": [],
   "CreateBookmarkMutation": [
-    "Bookmark"
+    "Bookmark",
+    "Tag"
   ],
   "UpdateBookmarkMutation": [
-    "Bookmark"
+    "Bookmark",
+    "Tag"
   ]
 } as const;
 export type OperationTypenameMap = typeof OPERATION_TYPENAMES;
