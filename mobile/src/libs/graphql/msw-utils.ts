@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TadaDocumentNode } from "gql.tada";
 
 import {
@@ -12,7 +11,12 @@ import {
 /**
  * TypedDocumentNodeからGraphQL操作名を抽出
  */
-const getOperationName = (document: TadaDocumentNode<any, any>): string => {
+const getOperationName = <
+  TResult extends GraphQLQuery = GraphQLQuery,
+  TVariables extends GraphQLVariables = GraphQLVariables,
+>(
+  document: TadaDocumentNode<TResult, TVariables>,
+): string => {
   const definition = document.definitions?.[0];
   if (definition?.kind === "OperationDefinition" && definition.name?.value) {
     return definition.name.value;
@@ -24,7 +28,7 @@ const getOperationName = (document: TadaDocumentNode<any, any>): string => {
  * GraphQLクエリ用のMSWハンドラーを作成
  */
 export const createMockQuery = <
-  TResult extends GraphQLQuery = any,
+  TResult extends GraphQLQuery = GraphQLQuery,
   TVariables extends GraphQLVariables = GraphQLVariables,
 >(
   document: TadaDocumentNode<TResult, TVariables>,
@@ -39,7 +43,7 @@ export const createMockQuery = <
  * GraphQLミューテーション用のMSWハンドラーを作成
  */
 export const createMockMutation = <
-  TResult extends GraphQLQuery = any,
+  TResult extends GraphQLQuery = GraphQLQuery,
   TVariables extends GraphQLVariables = GraphQLVariables,
 >(
   document: TadaDocumentNode<TResult, TVariables>,
