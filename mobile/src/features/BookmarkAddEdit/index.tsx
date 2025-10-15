@@ -12,9 +12,13 @@ import {
   Text,
   TextInput,
 } from "react-native-paper";
-import { graphql } from "@/libs/graphql/generated";
-import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
+import {
+  type FragmentOf,
+  graphql,
+  readFragment,
+} from "@/libs/graphql/gql-tada";
 import { useMutation } from "@/libs/graphql/urql";
+import { BOOKMARK } from "../Bookmarks";
 import {
   type CreateBookmarkInput,
   createBookmarkSchema,
@@ -57,10 +61,11 @@ const UPDATE_BOOKMARK = graphql(`
 `);
 
 type Props = {
-  bookmark?: BookmarkFragment;
+  bookmark?: FragmentOf<typeof BOOKMARK>;
 };
 
-export const BookmarkAddEdit: FC<Props> = ({ bookmark }) => {
+export const BookmarkAddEdit: FC<Props> = (props) => {
+  const bookmark = readFragment(BOOKMARK, props.bookmark);
   const isEditing = !!bookmark;
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;

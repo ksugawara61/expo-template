@@ -20,6 +20,7 @@
     "vrt:approve": "pnpm storybook:capture && pnpm reg-cli ./vrt/public/report/actual ./vrt/public/report/expected ./vrt/public/report/diff -R ./vrt/public/report/index.html -J ./vrt/public/report/reg.json -T 0.0001 -U -E",
     "expo:fix": "expo install --fix",
     "codegen": "cp ../graphql/.pylon/schema.graphql src/libs/graphql/schema.graphql && graphql-codegen && pnpm typenames:generate",
+    "codegen2": "cp ../graphql/.pylon/schema.graphql src/libs/graphql/schema.graphql && gql-tada generate output && biome check --write src/libs/graphql/schema.graphql && pnpm typenames:generate",
     "typenames:generate": "tsx ./scripts/generate-typenames.ts",
     "licenses:generate": "node scripts/generate-licenses.mjs"
   },
@@ -35,6 +36,7 @@
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.11",
     "expo-web-browser": "~14.2.0",
+    "gql.tada": "^1.8.13",
     "graphql": "^16.11.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",

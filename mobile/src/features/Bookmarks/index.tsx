@@ -10,21 +10,36 @@ import {
   HelperText,
   Text,
 } from "react-native-paper";
-import { getFragmentData, graphql } from "@/libs/graphql/generated";
-import type { BookmarkFragment } from "@/libs/graphql/generated/graphql";
+import {
+  type FragmentOf,
+  graphql,
+  readFragment,
+} from "@/libs/graphql/gql-tada";
 import { useMutation, useSuspenseQuery } from "@/libs/graphql/urql";
 
+export const BOOKMARK = graphql(`
+  fragment Bookmark on Bookmark {
+    created_at
+    description
+    id
+    tags {
+      id
+      name
+    }
+    title
+    updated_at
+    url
+  }
+`);
+
 type BookmarkItemProps = {
-  bookmark: BookmarkFragment;
+  bookmark: FragmentOf<typeof BOOKMARK>;
   onDelete: (id: string) => void;
-  onEdit: (bookmark: BookmarkFragment) => void;
+  onEdit: (bookmark: FragmentOf<typeof BOOKMARK>) => void;
 };
 
-const BookmarkItem: FC<BookmarkItemProps> = ({
-  bookmark,
-  onDelete,
-  onEdit,
-}) => {
+const BookmarkItem: FC<BookmarkItemProps> = ({ onDelete, onEdit, ...rest }) => {
+  const bookmark = readFragment(BOOKMARK, rest.bookmark);
   const handleDelete = () => {
     Alert.alert("ブックマークを削除", "このブックマークを削除しますか？", [
       { text: "キャンセル", style: "cancel" },
@@ -55,7 +70,7 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
           )}
         </View>
         <View style={{ flexDirection: "row", gap: 8 }}>
-          <Button mode="outlined" onPress={() => onEdit(bookmark)}>
+          <Button mode="outlined" onPress={() => onEdit(rest.bookmark)}>
             編集
           </Button>
           <Button mode="contained" onPress={handleDelete}>
@@ -67,28 +82,16 @@ const BookmarkItem: FC<BookmarkItemProps> = ({
   );
 };
 
-export const BOOKMARK = graphql(`
-  fragment Bookmark on Bookmark {
-    created_at
-    description
-    id
-    tags {
-      id
-      name
-    }
-    title
-    updated_at
-    url
-  }
-`);
-
-export const GET_BOOKMARKS = graphql(`
+export const GET_BOOKMARKS = graphql(
+  `
   query GetBookmarks {
     bookmarks {
       ...Bookmark
     }
   }
-`);
+`,
+  [BOOKMARK],
+);
 
 export const DELETE_BOOKMARK = graphql(`
   mutation DeleteBookmark($id: String!) {
@@ -108,10 +111,10 @@ export const Content: FC = () => {
     }
   };
 
-  const handleEdit = (bookmark: BookmarkFragment) => {
+  const handleEdit = (bookmark: FragmentOf<typeof BOOKMARK>) => {
     router.push({
       pathname: "/modal",
-      params: { bookmark: JSON.stringify(bookmark) },
+      params: { bookmark: JSON.stringify(readFragment(BOOKMARK, bookmark)) },
     });
   };
 
@@ -122,18 +125,18 @@ export const Content: FC = () => {
   return (
     <>
       <FlatList
-        data={data.bookmarks.map((bookmark) =>
-          getFragmentData(BOOKMARK, bookmark),
-        )}
+        data={data.bookmarks}
         style={{ height: "100%", width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
-        renderItem={({ item }) => (
-          <BookmarkItem
-            bookmark={item}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-        )}
+        renderItem={({ item }) => {
+          return (
+            <BookmarkItem
+              bookmark={item}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          );
+        }}
         ListEmptyComponent={() => (
           <View
             style={{

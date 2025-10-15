@@ -25,7 +25,8 @@
       "!**/tmp",
       "!**/pnpm-lock.yaml",
       "!**/*.local.json",
-      "!**/.pylon"
+      "!**/.pylon",
+      "!**/src/**/graphql-env.d.ts"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
