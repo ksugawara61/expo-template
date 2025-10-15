@@ -1,116 +1,158 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { Project, type SourceFile } from "ts-morph";
 
 /**
  * 設定
  */
-const GRAPHQL_TYPES_FILE = resolve(
+const GRAPHQL_CACHE_FILE = resolve(
   __dirname,
-  "../src/libs/graphql/generated/graphql.ts", // 実際の生成ファイルパスに合わせて調整
+  "../src/libs/graphql/gql-tada/graphql-cache.d.ts", // gql.tada のキャッシュファイル
 );
 const OUT_DIR = resolve(__dirname, "../src/libs/graphql");
 
 /**
- * __typename の文字列リテラルを抽出する（正規表現版）
+ * 単一の操作を処理して型名を抽出する
  */
-const extractTypenamesFromText = (typeText: string): string[] => {
-  const reg = /__typename\??:\s*['"`]([A-Za-z0-9_]+)['"`]/g;
-  const set = new Set<string>();
-  let m: RegExpExecArray | null;
-  // biome-ignore lint/suspicious/noAssignInExpressions: TODO: 別の方法を考える
-  while ((m = reg.exec(typeText))) {
-    set.add(m[1]);
+const processOperation = (
+  operationString: string,
+  operationTypenameMap: Record<string, string[]>,
+  setupCacheContent: string,
+) => {
+  // 操作名を抽出（query/mutation/fragment の次にある名前）
+  const operationMatch = operationString.match(
+    /(?:query|mutation|fragment)\s+(\w+)/,
+  );
+  if (!operationMatch) {
+    return;
   }
-  return [...set];
+
+  const operationName = operationMatch[1];
+
+  // Query/Mutation/Fragment の判定と名前の正規化
+  let normalizedName: string;
+  if (operationString.includes("query ")) {
+    normalizedName = `${operationName}Query`;
+  } else if (operationString.includes("mutation ")) {
+    normalizedName = `${operationName}Mutation`;
+  } else if (operationString.includes("fragment ")) {
+    // Fragment は除外（操作として扱わない）
+    return;
+  } else {
+    return;
+  }
+
+  // 操作文字列をエスケープしてTadaDocumentNode定義を探す
+  const escapedOperationString = operationString.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&",
+  );
+  const operationDefRegex = new RegExp(
+    `"${escapedOperationString}":\\s*TadaDocumentNode<([^>]+(?:>[^>]*)*)>`,
+  );
+  const defMatch = setupCacheContent.match(operationDefRegex);
+
+  if (!defMatch) {
+    return;
+  }
+
+  const documentType = defMatch[1];
+
+  // documentType から __typename を抽出
+  const typenameRegex = /__typename:\s*"([^"]+)"/g;
+  const typenames = new Set<string>();
+  let typenameMatch: RegExpExecArray | null;
+
+  // biome-ignore lint/suspicious/noAssignInExpressions: __typename の値を順次抽出するため必要
+  while ((typenameMatch = typenameRegex.exec(documentType))) {
+    const typename = typenameMatch[1];
+    // Query, Mutation 自体は除外
+    if (typename !== "Query" && typename !== "Mutation") {
+      typenames.add(typename);
+    }
+  }
+
+  // Fragment参照も確認
+  const fragmentRefRegex = /\[\$tada\.fragmentRefs\]:\s*\{\s*([^}]+)\s*\}/g;
+  let fragmentMatch: RegExpExecArray | null;
+
+  // biome-ignore lint/suspicious/noAssignInExpressions: Fragment参照を順次処理するため必要
+  while ((fragmentMatch = fragmentRefRegex.exec(documentType))) {
+    // Fragment参照がある場合、Fragment定義から __typename を探す
+    const fragmentRefs = fragmentMatch[1];
+    const fragmentNameMatch = fragmentRefs.match(/(\w+):\s*"(\w+)"/);
+    if (fragmentNameMatch) {
+      const fragmentName = fragmentNameMatch[2];
+
+      // Fragment定義を検索
+      const fragmentDefRegex = new RegExp(
+        `"[^"]*fragment\\s+${fragmentName}[^"]*":\\s*TadaDocumentNode<([^>]*(?:>[^>]*)*?)>`,
+      );
+      const fragmentDefMatch = setupCacheContent.match(fragmentDefRegex);
+
+      if (fragmentDefMatch) {
+        const fragmentDocumentType = fragmentDefMatch[1];
+        let fragmentTypenameMatch: RegExpExecArray | null;
+
+        // Fragment内の __typename を抽出
+        fragmentTypenameMatch = typenameRegex.exec(fragmentDocumentType);
+        while (fragmentTypenameMatch) {
+          const typename = fragmentTypenameMatch[1];
+          if (typename !== "Query" && typename !== "Mutation") {
+            typenames.add(typename);
+          }
+          fragmentTypenameMatch = typenameRegex.exec(fragmentDocumentType);
+        }
+      }
+    }
+  }
+
+  operationTypenameMap[normalizedName] = [...typenames].sort();
 };
 
 /**
- * Fragment内の__typenameも含めて抽出する
+ * gql.tada のキャッシュファイルから __typename を抽出する
  */
-const extractTypenamesWithFragments = (
-  source: SourceFile,
-  typeName: string,
-): string[] => {
-  const typeNode = source.getTypeAliasOrThrow(typeName);
-  const typeText = typeNode.getText();
+const extractTypenamesFromGqlTadaCache = (
+  cacheFileContent: string,
+): Record<string, string[]> => {
+  const operationTypenameMap: Record<string, string[]> = {};
 
-  // 直接的な__typenameを抽出
-  const directTypenames = extractTypenamesFromText(typeText);
+  // setupCache interface の中身を抽出（ネストした括弧に対応）
+  const setupCacheMatch = cacheFileContent.match(
+    /interface setupCache \{([\s\S]*?)\n\s*\}/,
+  );
+  if (!setupCacheMatch) {
+    throw new Error("setupCache interface not found in gql.tada cache file");
+  }
 
-  // Fragment参照を探す
-  const fragmentRefRegex =
-    /\{\s*'\s*\$fragmentRefs'\?:\s*\{\s*'([^']+)':\s*([A-Za-z0-9_]+)\s*\}\s*\}/g;
-  const fragmentTypenames = new Set<string>();
-  let match: RegExpExecArray | null;
+  const setupCacheContent = setupCacheMatch[1];
+  // TadaDocumentNode で分割して各操作を抽出
+  const parts = setupCacheContent.split("TadaDocumentNode");
 
-  // biome-ignore lint/suspicious/noAssignInExpressions: Fragment参照を抽出するため必要
-  while ((match = fragmentRefRegex.exec(typeText))) {
-    const fragmentName = match[1];
-    const fragmentTypeName = match[2].trim();
-
-    // Fragment型定義を取得
-    try {
-      const fragmentTypeNode = source.getTypeAlias(fragmentTypeName);
-      if (fragmentTypeNode) {
-        const fragmentText = fragmentTypeNode.getText();
-        const fragmentTypenamesArray = extractTypenamesFromText(fragmentText);
-        for (const typename of fragmentTypenamesArray) {
-          fragmentTypenames.add(typename);
-        }
-      }
-    } catch {
-      console.warn(
-        `[WARN] Fragment type ${fragmentTypeName} not found for ${fragmentName}`,
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i];
+    // 最後の引用符までを取得
+    const quoteMatch = part.match(/"([^"]*)":\s*$/);
+    if (quoteMatch) {
+      const operationString = quoteMatch[1];
+      processOperation(
+        operationString,
+        operationTypenameMap,
+        setupCacheContent,
       );
     }
   }
 
-  // 直接的なtypenameとFragment内のtypenameを結合
-  const allTypenames = [...new Set([...directTypenames, ...fragmentTypenames])];
-
-  return (
-    allTypenames
-      .sort()
-      // Query, Mutation 自体はすべてのQuery / Mutation に含まれるため除外する
-      .filter((v) => v !== "Query" && v !== "Mutation")
-      // 念のため重複排除（二重安全）
-      .filter((v, i, arr) => arr.indexOf(v) === i)
-  );
+  return operationTypenameMap;
 };
 
-/**
- * AST を使って（必要なら厳密に）ネストを辿る拡張余地があるが、
- * まずは型全体テキストを解析
- */
-// 以前: 個別 TypeAlias ごとにファイル生成する generateForTypeAlias() が存在したが
-// 集約ファイル生成方式へ変更したため削除。
-
 const main = () => {
-  const project = new Project({
-    tsConfigFilePath: resolve(__dirname, "../tsconfig.json"),
-    skipAddingFilesFromTsConfig: false,
-  });
+  // gql.tada のキャッシュファイルを読み込み
+  const cacheFileContent = readFileSync(GRAPHQL_CACHE_FILE, "utf8");
 
-  // 対象ファイルを明示的に追加（tsconfig に含まれるなら不要）
-  const source = project.getSourceFileOrThrow(GRAPHQL_TYPES_FILE);
-  const targetTypes = source
-    .getTypeAliases()
-    .map((t) => t.getName())
-    .filter((name) => name.endsWith("Query") || name.endsWith("Mutation"))
-    .filter((name) => name !== "Mutation" && name !== "Query");
-
-  const operationTypenameMap = targetTypes.reduce<Record<string, string[]>>(
-    (acc, typeName) => {
-      const typenames = extractTypenamesWithFragments(source, typeName);
-      if (typenames.length === 0) {
-        console.warn(`[WARN] ${typeName}: __typename が見つかりませんでした`);
-      }
-      acc[typeName] = typenames;
-      return acc;
-    },
-    {},
-  );
+  // __typename を抽出
+  const operationTypenameMap =
+    extractTypenamesFromGqlTadaCache(cacheFileContent);
 
   // 出力先確保
   mkdirSync(OUT_DIR, { recursive: true });
@@ -126,6 +168,9 @@ export type OperationName = keyof OperationTypenameMap;
 `;
   writeFileSync(mapOutFile, mapFileContent, "utf8");
   console.log(`[OK] Generated aggregated map: ${mapOutFile}`);
+  console.log(
+    `[INFO] Operations found: ${Object.keys(operationTypenameMap).join(", ")}`,
+  );
 };
 
 main();
