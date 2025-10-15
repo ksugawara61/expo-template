@@ -5,15 +5,12 @@
 
 export const OPERATION_TYPENAMES = {
   "GetArticlesQuery": [
-    "Article",
-    "Bookmark"
+    "Article"
   ],
   "GetBookmarksQuery": [
     "Bookmark"
   ],
-  "DeleteBookmarkMutation": [
-    "Bookmark"
-  ],
+  "DeleteBookmarkMutation": [],
   "CreateBookmarkMutation": [
     "Bookmark"
   ],

@@ -11,22 +11,31 @@ const GRAPHQL_CACHE_FILE = resolve(
 const OUT_DIR = resolve(__dirname, "../src/libs/graphql");
 
 /**
- * 単一の操作を処理して型名を抽出する
+ * GraphQL操作とその型定義のペアを処理する
  */
-const processOperation = (
-  operationString: string,
+const processOperationPair = (
+  operationLine: string,
+  tadaDocumentLine: string,
   operationTypenameMap: Record<string, string[]>,
   setupCacheContent: string,
 ) => {
-  // 操作名を抽出（query/mutation/fragment の次にある名前）
-  const operationMatch = operationString.match(
-    /(?:query|mutation|fragment)\s+(\w+)/,
-  );
+  // 操作文字列を抽出
+  const operationMatch = operationLine.match(/^"([^"]*)":/);
   if (!operationMatch) {
     return;
   }
 
-  const operationName = operationMatch[1];
+  const operationString = operationMatch[1];
+
+  // 操作名を抽出（query/mutation/fragment の次にある名前）
+  const operationNameMatch = operationString.match(
+    /(?:query|mutation|fragment)\s+(\w+)/,
+  );
+  if (!operationNameMatch) {
+    return;
+  }
+
+  const operationName = operationNameMatch[1];
 
   // Query/Mutation/Fragment の判定と名前の正規化
   let normalizedName: string;
@@ -41,29 +50,59 @@ const processOperation = (
     return;
   }
 
-  // 操作文字列をエスケープしてTadaDocumentNode定義を探す
-  const escapedOperationString = operationString.replace(
-    /[.*+?^${}()|[\]\\]/g,
-    "\\$&",
-  );
-  const operationDefRegex = new RegExp(
-    `"${escapedOperationString}":\\s*TadaDocumentNode<([^>]+(?:>[^>]*)*)>`,
-  );
-  const defMatch = setupCacheContent.match(operationDefRegex);
-
-  if (!defMatch) {
+  // TadaDocumentNodeの最初の型パラメータを抽出（ネストした括弧に対応）
+  const tadaStart = tadaDocumentLine.indexOf("TadaDocumentNode<");
+  if (tadaStart === -1) {
     return;
   }
 
-  const documentType = defMatch[1];
+  let bracketCount = 0;
+  const typeStart = tadaStart + "TadaDocumentNode<".length;
+  let typeEnd = typeStart;
+  let inString = false;
+  let stringChar = "";
 
-  // documentType から __typename を抽出
+  for (let i = typeStart; i < tadaDocumentLine.length; i++) {
+    const char = tadaDocumentLine[i];
+
+    if (!inString) {
+      if (char === '"' || char === "'") {
+        inString = true;
+        stringChar = char;
+      } else if (char === "{") {
+        bracketCount++;
+      } else if (char === "}") {
+        bracketCount--;
+      } else if (char === "," && bracketCount === 0) {
+        // 最初のコンマで停止（最初の型パラメータのみを取得）
+        typeEnd = i;
+        break;
+      }
+    } else {
+      if (
+        char === stringChar &&
+        (i === 0 || tadaDocumentLine[i - 1] !== "\\")
+      ) {
+        inString = false;
+      }
+    }
+
+    // 型パラメータが最後まで続く場合は最後の位置を記録
+    typeEnd = i + 1;
+  }
+
+  const firstTypeParam = tadaDocumentLine.substring(typeStart, typeEnd).trim();
+  if (!firstTypeParam) {
+    return;
+  }
+
+  // __typename を抽出
   const typenameRegex = /__typename:\s*"([^"]+)"/g;
   const typenames = new Set<string>();
   let typenameMatch: RegExpExecArray | null;
 
   // biome-ignore lint/suspicious/noAssignInExpressions: __typename の値を順次抽出するため必要
-  while ((typenameMatch = typenameRegex.exec(documentType))) {
+  while ((typenameMatch = typenameRegex.exec(firstTypeParam))) {
     const typename = typenameMatch[1];
     // Query, Mutation 自体は除外
     if (typename !== "Query" && typename !== "Mutation") {
@@ -76,31 +115,50 @@ const processOperation = (
   let fragmentMatch: RegExpExecArray | null;
 
   // biome-ignore lint/suspicious/noAssignInExpressions: Fragment参照を順次処理するため必要
-  while ((fragmentMatch = fragmentRefRegex.exec(documentType))) {
+  while ((fragmentMatch = fragmentRefRegex.exec(firstTypeParam))) {
     // Fragment参照がある場合、Fragment定義から __typename を探す
     const fragmentRefs = fragmentMatch[1];
     const fragmentNameMatch = fragmentRefs.match(/(\w+):\s*"(\w+)"/);
     if (fragmentNameMatch) {
       const fragmentName = fragmentNameMatch[2];
 
-      // Fragment定義を検索
-      const fragmentDefRegex = new RegExp(
-        `"[^"]*fragment\\s+${fragmentName}[^"]*":\\s*TadaDocumentNode<([^>]*(?:>[^>]*)*?)>`,
-      );
-      const fragmentDefMatch = setupCacheContent.match(fragmentDefRegex);
+      // setupCacheContent全体でFragment定義を検索（より正確な方法）
+      const lines = setupCacheContent
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line);
 
-      if (fragmentDefMatch) {
-        const fragmentDocumentType = fragmentDefMatch[1];
-        let fragmentTypenameMatch: RegExpExecArray | null;
+      for (let i = 0; i < lines.length - 1; i++) {
+        const line = lines[i];
+        const nextLine = lines[i + 1];
 
-        // Fragment内の __typename を抽出
-        fragmentTypenameMatch = typenameRegex.exec(fragmentDocumentType);
-        while (fragmentTypenameMatch) {
-          const typename = fragmentTypenameMatch[1];
-          if (typename !== "Query" && typename !== "Mutation") {
-            typenames.add(typename);
+        // Fragment定義の行を探す
+        if (
+          line.startsWith('"') &&
+          line.includes(`fragment ${fragmentName}`) &&
+          line.endsWith(":")
+        ) {
+          if (nextLine.includes("TadaDocumentNode<")) {
+            // Fragment のTadaDocumentNodeの最初の型パラメータを抽出
+            const fragmentTadaMatch = nextLine.match(
+              /TadaDocumentNode<([^,}]+(?:\{[^}]*\}[^,}]*)*)/,
+            );
+            if (fragmentTadaMatch) {
+              const fragmentTypeParam = fragmentTadaMatch[1].trim();
+
+              // Fragment内の __typename を抽出
+              let fragmentTypenameMatch: RegExpExecArray | null;
+              fragmentTypenameMatch = typenameRegex.exec(fragmentTypeParam);
+              while (fragmentTypenameMatch) {
+                const typename = fragmentTypenameMatch[1];
+                if (typename !== "Query" && typename !== "Mutation") {
+                  typenames.add(typename);
+                }
+                fragmentTypenameMatch = typenameRegex.exec(fragmentTypeParam);
+              }
+            }
+            break;
           }
-          fragmentTypenameMatch = typenameRegex.exec(fragmentDocumentType);
         }
       }
     }
@@ -126,20 +184,28 @@ const extractTypenamesFromGqlTadaCache = (
   }
 
   const setupCacheContent = setupCacheMatch[1];
-  // TadaDocumentNode で分割して各操作を抽出
-  const parts = setupCacheContent.split("TadaDocumentNode");
 
-  for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i];
-    // 最後の引用符までを取得
-    const quoteMatch = part.match(/"([^"]*)":\s*$/);
-    if (quoteMatch) {
-      const operationString = quoteMatch[1];
-      processOperation(
-        operationString,
-        operationTypenameMap,
-        setupCacheContent,
-      );
+  // 行ごとに処理して、GraphQL操作とその型定義をペアで見つける
+  const lines = setupCacheContent
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line);
+
+  for (let i = 0; i < lines.length - 1; i++) {
+    const line = lines[i];
+    const nextLine = lines[i + 1];
+
+    // GraphQL操作の行（"で始まり":"で終わる）
+    if (line.startsWith('"') && line.endsWith(":")) {
+      // 対応するTadaDocumentNode行
+      if (nextLine.includes("TadaDocumentNode<")) {
+        processOperationPair(
+          line,
+          nextLine,
+          operationTypenameMap,
+          setupCacheContent,
+        );
+      }
     }
   }
 
