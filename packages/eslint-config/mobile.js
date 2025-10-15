@@ -96,6 +96,11 @@ export default function createMobileConfig(projectRoot = process.cwd()) {
                 name: "urql",
                 message: "Please use @/libs/graphql/urql instead of urql.",
               },
+              {
+                name: "gql.tada",
+                message:
+                  "Please use @/libs/graphql/gql-tada instead of gql.tada.",
+              },
             ],
           },
         ],

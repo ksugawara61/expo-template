@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
-import type { FragmentOf } from "gql.tada";
 import { BookmarkAddEdit } from "@/features/BookmarkAddEdit";
 import type { BOOKMARK } from "@/features/Bookmarks";
+import type { FragmentOf } from "@/libs/graphql/gql-tada";
 
 export default function BookmarkModal() {
   const params = useLocalSearchParams();
