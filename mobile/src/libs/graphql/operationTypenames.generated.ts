@@ -5,10 +5,13 @@
 
 export const OPERATION_TYPENAMES = {
   "GetArticlesQuery": [
-    "Article",
-    "Tag_1",
-    "User"
+    "Article"
   ],
+  "GetBookmarksQuery": [
+    "Bookmark",
+    "Tag"
+  ],
+  "DeleteBookmarkMutation": [],
   "CreateBookmarkMutation": [
     "Bookmark",
     "Tag"
@@ -16,12 +19,7 @@ export const OPERATION_TYPENAMES = {
   "UpdateBookmarkMutation": [
     "Bookmark",
     "Tag"
-  ],
-  "GetBookmarksQuery": [
-    "Bookmark",
-    "Tag"
-  ],
-  "DeleteBookmarkMutation": []
+  ]
 } as const;
 export type OperationTypenameMap = typeof OPERATION_TYPENAMES;
 export type OperationName = keyof OperationTypenameMap;
