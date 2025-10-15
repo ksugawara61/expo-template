@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-native-web-vite";
+import { maskFragments } from "@/libs/graphql/gql-tada";
+import { BOOKMARK } from "../Bookmarks";
 import { BookmarkAddEdit } from ".";
 import { handlers } from "./mocks";
 
@@ -18,6 +20,17 @@ export const Create: Story = {
   },
 };
 
+const bookmark = maskFragments([BOOKMARK], {
+  __typename: "Bookmark",
+  id: "1",
+  title: "Example Bookmark",
+  url: "https://example.com",
+  description: "This is an example bookmark.",
+  created_at: "2024-01-01T00:00:00+09:00",
+  updated_at: "2024-01-01T00:00:00+09:00",
+  tags: [],
+});
+
 export const Edit: Story = {
   parameters: {
     msw: {
@@ -25,13 +38,6 @@ export const Edit: Story = {
     },
   },
   args: {
-    bookmark: {
-      id: "1",
-      title: "Example Bookmark",
-      url: "https://example.com",
-      description: "This is an example bookmark.",
-      created_at: "2024-01-01T00:00:00+09:00",
-      updated_at: "2024-01-01T00:00:00+09:00",
-    },
+    bookmark,
   },
 };
