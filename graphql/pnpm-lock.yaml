@@ -27,8 +27,8 @@ importers:
         specifier: ^6.17.0
         version: 6.17.0
       '@prisma/client':
-        specifier: ^6.17.0
-        version: 6.17.0(prisma@6.14.0(typescript@5.8.3))(typescript@5.8.3)
+        specifier: ^6.17.1
+        version: 6.17.1(prisma@6.14.0(typescript@5.8.3))(typescript@5.8.3)
       openapi-fetch:
         specifier: ^0.14.0
         version: 0.14.0
@@ -1130,8 +1130,8 @@ packages:
   '@prisma/adapter-libsql@6.17.0':
     resolution: {integrity: sha512-N1Ul83IYe7xnprWYoaw54HfQDgIT458XzNYUkfT0WSBJbtJaXRbQOuFs28nwjWc3CgTqMCByzdOr3OQc5Rw9mQ==}
 
-  '@prisma/client@6.17.0':
-    resolution: {integrity: sha512-b42mTLOdLEZ6e/igu8CLdccAUX9AwHknQQ1+pHOftnzDP2QoyZyFvcANqSLs5ockimFKJnV7Ljf+qrhNYf6oAg==}
+  '@prisma/client@6.17.1':
+    resolution: {integrity: sha512-zL58jbLzYamjnNnmNA51IOZdbk5ci03KviXCuB0Tydc9btH2kDWsi1pQm2VecviRTM7jGia0OPPkgpGnT3nKvw==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -4145,7 +4145,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@prisma/client@6.17.0(prisma@6.14.0(typescript@5.8.3))(typescript@5.8.3)':
+  '@prisma/client@6.17.1(prisma@6.14.0(typescript@5.8.3))(typescript@5.8.3)':
     optionalDependencies:
       prisma: 6.14.0(typescript@5.8.3)
       typescript: 5.8.3
