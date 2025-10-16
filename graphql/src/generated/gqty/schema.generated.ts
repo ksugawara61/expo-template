@@ -133,7 +133,10 @@ export const generatedSchema = {
   },
   query: {
     __typename: { __type: "String!" },
-    articles: { __type: "[Article!]!", __args: { page: "Number!" } },
+    articles: {
+      __type: "[Article!]!",
+      __args: { limit: "Number", offset: "Number" },
+    },
     bookmark: { __type: "Bookmark", __args: { id: "String!" } },
     bookmarks: { __type: "[Bookmark!]!" },
     tags: { __type: "[Tag!]!" },
@@ -197,7 +200,10 @@ export interface Mutation {
 
 export interface Query {
   __typename?: "Query";
-  articles: (args: { page: ScalarsEnums["Number"] }) => Array<Article>;
+  articles: (args?: {
+    limit?: Maybe<ScalarsEnums["Number"]>;
+    offset?: Maybe<ScalarsEnums["Number"]>;
+  }) => Array<Article>;
   bookmark: (args: { id: ScalarsEnums["String"] }) => Maybe<Bookmark>;
   bookmarks: Array<Bookmark>;
   tags: Array<Tag>;

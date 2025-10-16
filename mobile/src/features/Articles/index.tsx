@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/graphql/gql-tada";
-import { useQuery } from "@/libs/graphql/urql";
+import { useLazyQuery } from "@/libs/graphql/urql";
 
 type Item = {
   id: string;
@@ -34,44 +34,27 @@ export const GetArticles = graphql(`
   }
 `);
 
+const LIMIT = 20;
+
 export const Articles: FC = () => {
-  const LIMIT = 20;
   const [allArticles, setAllArticles] = useState<Item[]>([]);
-  const [offset, setOffset] = useState(0);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMoreData, setHasMoreData] = useState(true);
 
-  const [{ data, fetching, error }] = useQuery({
-    query: GetArticles,
-    variables: { offset, limit: LIMIT },
-  });
+  const [{ error, fetching }, executeQuery] = useLazyQuery(GetArticles);
+  const isAllFetchedRef = useRef(false);
+  const handleLoadMore = useCallback(async () => {
+    if (isAllFetchedRef.current || fetching) return;
 
-  // Update articles when new data is fetched
-  useEffect(() => {
-    if (data?.articles) {
-      if (offset === 0) {
-        // First load
-        setAllArticles(data.articles);
-      } else {
-        // Append new articles
-        setAllArticles((prev) => [...prev, ...data.articles]);
-      }
-
-      // Check if we have more data
-      if (data.articles.length < LIMIT) {
-        setHasMoreData(false);
-      }
-
-      setIsLoadingMore(false);
+    const { data } = await executeQuery({
+      offset: allArticles.length,
+      limit: LIMIT,
+    });
+    if (!data?.articles) {
+      isAllFetchedRef.current = true;
+      return;
     }
-  }, [data, offset]);
-
-  const loadMore = useCallback(() => {
-    if (!isLoadingMore && hasMoreData && !fetching) {
-      setIsLoadingMore(true);
-      setOffset((prev) => prev + LIMIT);
-    }
-  }, [isLoadingMore, hasMoreData, fetching]);
+    isAllFetchedRef.current = data.articles.length < LIMIT;
+    setAllArticles((prev) => [...prev, ...data.articles]);
+  }, [allArticles.length, executeQuery, fetching]);
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>
@@ -94,7 +77,7 @@ export const Articles: FC = () => {
   );
 
   const renderFooter = () => {
-    if (!isLoadingMore) return null;
+    if (!fetching) return null;
     return (
       <View style={{ padding: 16, alignItems: "center" }}>
         <ActivityIndicator size="small" />
@@ -117,7 +100,7 @@ export const Articles: FC = () => {
       keyExtractor={(item) => item.id}
       style={{ height: "100%", width: "100%" }}
       contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
-      onEndReached={loadMore}
+      onEndReached={handleLoadMore}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
     />
