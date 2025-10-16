@@ -7,8 +7,9 @@ describe("FetchArticlesUseCase", () => {
   it("should return an array of articles", async () => {
     mockServer.use(...ArticleMocks.Success);
 
-    const page = 1;
-    const result = await fetchArticlesUseCase(page);
+    const offset = 0;
+    const limit = 20;
+    const result = await fetchArticlesUseCase(offset, limit);
 
     expect(result.length).toBeGreaterThan(0);
     for (const article of result) {

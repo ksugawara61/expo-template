@@ -14,7 +14,7 @@ input CreateTagInputInput {
   name: String!
 }
 type Query {
-  articles(page: Number!): [Article!]!
+  articles(offset: Number, limit: Number): [Article!]!
   bookmarks: [Bookmark!]!
   bookmark(id: String!): Bookmark
   tags: [Tag!]!

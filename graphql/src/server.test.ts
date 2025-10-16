@@ -8,8 +8,9 @@ describe("GraphQL Resolvers", () => {
     describe("articles", () => {
       it("should return an array of articles", async () => {
         mockServer.use(...ArticleMocks.Success);
-        const page = 1;
-        const result = await server.Query.articles(page);
+        const offset = 0;
+        const limit = 20;
+        const result = await server.Query.articles(offset, limit);
 
         expect(result.length).toBeGreaterThan(0);
         for (const article of result) {
