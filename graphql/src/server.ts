@@ -18,7 +18,8 @@ import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
 
 export const server = {
   Query: {
-    articles: async (page: number) => await fetchArticlesUseCase(page),
+    articles: async (offset?: number, limit?: number) =>
+      await fetchArticlesUseCase(offset, limit),
     bookmarks: async () => await fetchBookmarksUseCase(),
     bookmark: async (id: string) => await fetchBookmarkByIdUseCase(id),
     tags: async () => await fetchTagsUseCase(),

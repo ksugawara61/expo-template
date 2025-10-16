@@ -17,8 +17,8 @@ type Item = {
 };
 
 export const GetArticles = graphql(`
-  query GetArticles($page: Number!) {
-    articles(page: $page) {
+  query GetArticles($offset: Number, $limit: Number) {
+    articles(offset: $offset, limit: $limit) {
       __typename
       created_at
       id
@@ -36,7 +36,7 @@ export const GetArticles = graphql(`
 export const Articles: FC = () => {
   const [{ data }] = useSuspenseQuery({
     query: GetArticles,
-    variables: { page: 1 },
+    variables: { offset: 0, limit: 20 },
   });
 
   const renderItem = ({ item }: { item: Item }) => (
