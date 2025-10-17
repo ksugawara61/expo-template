@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /** biome-ignore-all lint/suspicious/noExplicitAny: for urql wrapper */
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import * as Urql from "urql";
 import { OPERATION_TYPENAMES } from "@/libs/graphql/operationTypenames.generated";
 
@@ -58,6 +58,10 @@ export const useSuspenseQuery = <
   return [{ ...result, data: result.data as Data }, executeQuery] as const;
 };
 
+type LazyQueryState<Data, Variables extends Urql.AnyVariables> = {
+  fetching: boolean;
+} & Partial<Urql.OperationResult<Data, Variables>>;
+
 export const useQuery = <
   Data = any,
   Variables extends Urql.AnyVariables = Urql.AnyVariables,
@@ -76,4 +80,32 @@ export const useQuery = <
     [argsContext, additionalTypenames],
   );
   return Urql.useQuery({ ...args, context });
+};
+
+export const useLazyQuery = <
+  Data = any,
+  Variables extends Urql.AnyVariables = Urql.AnyVariables,
+>(
+  query: Urql.DocumentInput<Data, Variables>,
+) => {
+  const client = Urql.useClient();
+  const [data, setData] = useState<LazyQueryState<Data, Variables>>({
+    data: undefined,
+    error: undefined,
+    fetching: false,
+  });
+
+  const executeQuery = useCallback(
+    async (
+      variables: Variables,
+    ): Promise<Urql.OperationResult<Data, Variables>> => {
+      setData((prev) => ({ ...prev, fetching: true }));
+      const response = await client.query(query, variables).toPromise();
+      setData({ ...response, fetching: false });
+      return response;
+    },
+    [client, query],
+  );
+
+  return [data, executeQuery] as const;
 };

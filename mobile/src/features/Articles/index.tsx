@@ -1,8 +1,9 @@
 import type { FC } from "react";
-import { FlatList, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/graphql/gql-tada";
-import { useSuspenseQuery } from "@/libs/graphql/urql";
+import { useLazyQuery } from "@/libs/graphql/urql";
 
 type Item = {
   id: string;
@@ -33,11 +34,39 @@ export const GetArticles = graphql(`
   }
 `);
 
+const LIMIT = 20;
+
 export const Articles: FC = () => {
-  const [{ data }] = useSuspenseQuery({
-    query: GetArticles,
-    variables: { offset: 0, limit: 20 },
-  });
+  const [allArticles, setAllArticles] = useState<Item[]>([]);
+
+  const [{ error, fetching }, executeQuery] = useLazyQuery(GetArticles);
+  const isAllFetchedRef = useRef(true);
+  useEffect(() => {
+    void executeQuery({
+      offset: 0,
+      limit: LIMIT,
+    }).then(({ data }) => {
+      if (data?.articles) {
+        setAllArticles((prev) => [...prev, ...data.articles]);
+        isAllFetchedRef.current = data.articles.length < LIMIT;
+      }
+    });
+  }, [executeQuery]);
+
+  const handleLoadMore = useCallback(async () => {
+    if (isAllFetchedRef.current || fetching) return;
+
+    const { data } = await executeQuery({
+      offset: allArticles.length,
+      limit: LIMIT,
+    });
+    if (!data?.articles) {
+      isAllFetchedRef.current = true;
+      return;
+    }
+    isAllFetchedRef.current = data.articles.length < LIMIT;
+    setAllArticles((prev) => [...prev, ...data.articles]);
+  }, [allArticles.length, executeQuery, fetching]);
 
   const renderItem = ({ item }: { item: Item }) => (
     <Card style={{ padding: 8 }}>
@@ -59,13 +88,33 @@ export const Articles: FC = () => {
     </Card>
   );
 
+  const renderFooter = () => {
+    if (!fetching) return null;
+    return (
+      <View style={{ padding: 16, alignItems: "center" }}>
+        <ActivityIndicator size="small" />
+      </View>
+    );
+  };
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Error loading articles: {error.message}</Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
-      data={data.articles}
+      data={allArticles}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       style={{ height: "100%", width: "100%" }}
       contentContainerStyle={{ flexGrow: 1, padding: 16, gap: 16 }}
+      onEndReached={handleLoadMore}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={renderFooter}
     />
   );
 };
