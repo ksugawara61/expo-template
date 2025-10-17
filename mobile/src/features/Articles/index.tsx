@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 import { graphql } from "@/libs/graphql/gql-tada";
@@ -40,7 +40,19 @@ export const Articles: FC = () => {
   const [allArticles, setAllArticles] = useState<Item[]>([]);
 
   const [{ error, fetching }, executeQuery] = useLazyQuery(GetArticles);
-  const isAllFetchedRef = useRef(false);
+  const isAllFetchedRef = useRef(true);
+  useEffect(() => {
+    void executeQuery({
+      offset: 0,
+      limit: LIMIT,
+    }).then(({ data }) => {
+      if (data?.articles) {
+        setAllArticles((prev) => [...prev, ...data.articles]);
+        isAllFetchedRef.current = data.articles.length < LIMIT;
+      }
+    });
+  }, [executeQuery]);
+
   const handleLoadMore = useCallback(async () => {
     if (isAllFetchedRef.current || fetching) return;
 
