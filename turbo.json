@@ -32,6 +32,12 @@
     "codegen": {
       "dependsOn": ["graphql#build"],
       "cache": false
+    },
+    "web": {
+      "with": ["graphql#start"],
+      "dependsOn": ["graphql#build"],
+      "cache": false,
+      "persistent": true
     }
   }
 }

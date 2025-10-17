@@ -3,6 +3,7 @@
   "files": {
     "includes": [
       "biome.json",
+      "turbo.json",
       "**/package.json",
       "**/.mcp.json",
       "**/.textlintrc.json",

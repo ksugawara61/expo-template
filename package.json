@@ -11,6 +11,7 @@
     "test": "turbo test",
     "test:changed": "turbo test:changed",
     "start": "turbo start",
+    "web": "turbo web",
     "build": "turbo build"
   },
   "devDependencies": {
