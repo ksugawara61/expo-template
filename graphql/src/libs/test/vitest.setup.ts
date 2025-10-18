@@ -4,20 +4,19 @@ import { db } from "../drizzle/client";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  // Clear tables with foreign key constraints disabled
-  try {
-    await db.run(sql`PRAGMA foreign_keys = OFF`);
-    await db.run(sql`DELETE FROM bookmark_tags`);
-    await db.run(sql`DELETE FROM bookmarks`);
-    await db.run(sql`DELETE FROM tags`);
-    await db.run(sql`PRAGMA foreign_keys = ON`);
-  } catch (error) {
-    console.warn("Table clearing warning:", error);
-    // Make sure foreign keys are re-enabled even if clearing fails
+  const tables = await db.all<{ name: string }>(
+    sql`SELECT name FROM sqlite_master WHERE type='table'`,
+  );
+
+  const tableNames = tables
+    .filter((table) => table.name !== "__drizzle_migrations")
+    .map((table) => table.name);
+
+  for (const tableName of tableNames) {
     try {
-      await db.run(sql`PRAGMA foreign_keys = ON`);
+      await db.run(sql.raw(`DELETE FROM ${tableName}`));
     } catch {
-      // Ignore
+      // Ignore if table doesn't exist or other errors
     }
   }
 };
