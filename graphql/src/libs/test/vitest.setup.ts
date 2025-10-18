@@ -1,10 +1,11 @@
 import { execSync } from "node:child_process";
 import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { db } from "../drizzle/client";
+import { getTestDb, resetTestDb } from "../drizzle/testClient";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
+  const db = getTestDb();
   // Get all table names from the database
   const tables = await db.all<{ name: string }>(
     sql`SELECT name FROM sqlite_master WHERE type='table'`,
@@ -49,6 +50,9 @@ beforeAll(async () => {
   } catch (error) {
     console.warn("Database setup warning:", error);
   }
+
+  // Reset the test database client to use the new environment variables
+  resetTestDb();
 
   mockServer.listen();
 });
