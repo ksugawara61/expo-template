@@ -12,5 +12,11 @@ export default defineConfig({
         singleFork: true,
       },
     },
+    sequence: {
+      concurrent: false,
+    },
+    env: {
+      NODE_ENV: "test",
+    },
   },
 });

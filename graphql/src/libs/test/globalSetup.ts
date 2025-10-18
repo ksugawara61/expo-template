@@ -1,12 +1,19 @@
 import { execSync } from "node:child_process";
 
-const setUp = () => {
-  process.env.DATABASE_URL = "file:./test.db";
-  process.env.TURSO_DATABASE_URL = "";
-  console.log("Database migration starting...");
+const testDbFile = "./test-database.db";
+
+export const setup = async () => {
+  process.env.TURSO_DATABASE_URL = `file:${testDbFile}`;
+
+  console.log("Setting up test database...");
   execSync("pnpm db:generate", { stdio: "inherit" });
   execSync("pnpm db:migrate", { stdio: "inherit" });
-  console.log("Database migration completed.");
+  console.log("Test database setup completed.");
 };
 
-export default setUp;
+export const teardown = async () => {
+  // Clean up the test database
+  if (process.env.TURSO_DATABASE_URL?.startsWith(`file:${testDbFile}`)) {
+    execSync(`rm ${testDbFile}`, { stdio: "inherit" });
+  }
+};

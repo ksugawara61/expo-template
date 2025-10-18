@@ -1,16 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
+import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
 import { updateBookmarkUseCase } from "./UpdateBookmarkUseCase";
 
 describe("UpdateBookmarkUseCase", () => {
   describe("正常系", () => {
     it("should update a bookmark successfully", async () => {
-      const bookmark = await prisma.bookmark.create({
-        data: {
-          title: "Original Title",
-          url: "https://example.com",
-          description: "Original description",
-        },
+      const bookmark = await bookmarkRepository.create({
+        title: "Original Title",
+        url: "https://example.com",
+        description: "Original description",
       });
 
       const updateInput = {
@@ -30,12 +28,10 @@ describe("UpdateBookmarkUseCase", () => {
     });
 
     it("should update partial fields only", async () => {
-      const bookmark = await prisma.bookmark.create({
-        data: {
-          title: "Original Title",
-          url: "https://example.com",
-          description: "Original description",
-        },
+      const bookmark = await bookmarkRepository.create({
+        title: "Original Title",
+        url: "https://example.com",
+        description: "Original description",
       });
 
       const updateInput = {
@@ -67,8 +63,4 @@ describe("UpdateBookmarkUseCase", () => {
       );
     });
   });
-});
-
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
 });

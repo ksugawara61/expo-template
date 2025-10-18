@@ -1,14 +1,23 @@
+import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { prisma } from "../prisma/client";
+import { db } from "../drizzle/client";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  const tablenames = await prisma.$queryRaw<
-    Array<{ name: string }>
-  >`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_prisma_migrations';`;
+  const tables = await db.all<{ name: string }>(
+    sql`SELECT name FROM sqlite_master WHERE type='table'`,
+  );
 
-  for (const { name } of tablenames) {
-    await prisma.$executeRawUnsafe(`DELETE FROM "${name}";`);
+  const tableNames = tables
+    .filter((table) => table.name !== "__drizzle_migrations")
+    .map((table) => table.name);
+
+  for (const tableName of tableNames) {
+    try {
+      await db.run(sql.raw(`DELETE FROM ${tableName}`));
+    } catch {
+      // Ignore if table doesn't exist or other errors
+    }
   }
 };
 
@@ -23,5 +32,4 @@ afterEach(async () => {
 
 afterAll(async () => {
   mockServer.close();
-  await prisma.$disconnect();
 });
