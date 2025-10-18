@@ -22,7 +22,7 @@ const clearAllTables = async () => {
   for (const tableName of orderedTables) {
     try {
       await db.run(sql.raw(`DELETE FROM ${tableName}`));
-    } catch (e) {
+    } catch {
       // Ignore if table doesn't exist or other errors
     }
   }
