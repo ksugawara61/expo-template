@@ -1,9 +1,10 @@
 import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { db } from "../drizzle/client";
+import { createDb } from "../drizzle/client";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
+  const db = createDb();
   const tables = await db.all<{ name: string }>(
     sql`SELECT name FROM sqlite_master WHERE type='table'`,
   );

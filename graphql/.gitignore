@@ -179,3 +179,6 @@ dist
 # SQLite database files
 *.db
 *.db-journal
+
+.dev/*
+!.dev/.gitkeep

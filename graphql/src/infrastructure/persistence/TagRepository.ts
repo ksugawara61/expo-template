@@ -1,10 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
-import { db } from "../../libs/drizzle/client";
+import { createDb } from "../../libs/drizzle/client";
 import { tags } from "../../libs/drizzle/schema";
 import type { CreateTagInput, Tag, UpdateTagInput } from "../domain/Tag";
 
 export const findAll = async (): Promise<Tag[]> => {
+  const db = createDb();
   const result = await db.select().from(tags).orderBy(tags.name);
 
   return result.map((tag) => ({
@@ -16,6 +17,7 @@ export const findAll = async (): Promise<Tag[]> => {
 };
 
 export const findById = async (id: string): Promise<Tag | null> => {
+  const db = createDb();
   const result = await db.select().from(tags).where(eq(tags.id, id)).limit(1);
 
   if (result.length === 0) {
@@ -32,6 +34,7 @@ export const findById = async (id: string): Promise<Tag | null> => {
 };
 
 export const findByName = async (name: string): Promise<Tag | null> => {
+  const db = createDb();
   const result = await db
     .select()
     .from(tags)
@@ -52,6 +55,7 @@ export const findByName = async (name: string): Promise<Tag | null> => {
 };
 
 export const create = async (input: CreateTagInput): Promise<Tag> => {
+  const db = createDb();
   const [tag] = await db
     .insert(tags)
     .values({ id: createId(), name: input.name })
@@ -79,6 +83,7 @@ export const update = async (
   input: UpdateTagInput,
 ): Promise<Tag> => {
   const updateData = { ...input, updated_at: new Date().toISOString() };
+  const db = createDb();
   const [tag] = await db
     .update(tags)
     .set(updateData)
@@ -94,5 +99,6 @@ export const update = async (
 };
 
 export const remove = async (id: string): Promise<void> => {
+  const db = createDb();
   await db.delete(tags).where(eq(tags.id, id));
 };

@@ -1,10 +1,11 @@
 import { app } from "@getcronit/pylon";
-import { serve } from "@hono/node-server";
 
 import { server } from "./server";
 
+// to opt-out pylon telemetry data
+// ref: https://pylon.cronit.io/docs/telemetry
+process.env.PYLON_TELEMETRY_DISABLED = "1";
+
 export const graphql = server;
 
-serve(app, (info) => {
-  console.log(`Server running at ${info.port}`);
-});
+export default app;
