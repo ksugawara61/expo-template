@@ -12,6 +12,7 @@
     "test:changed": "vitest --changed main",
     "lint": "eslint .",
     "fmt": "eslint . --fix",
+    "db:local": "turso dev -f .dev/dev.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
