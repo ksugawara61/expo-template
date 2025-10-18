@@ -150,4 +150,111 @@ describe("BookmarkRepository", () => {
       ).rejects.toThrow();
     });
   });
+
+  describe("tags functionality", () => {
+    it("should create bookmark with tags", async () => {
+      const input = {
+        title: "Test Bookmark",
+        url: "https://example.com",
+        description: "A test bookmark",
+        tagNames: ["tag1", "tag2", "tag3"],
+      };
+
+      const result = await bookmarkRepository.create(input);
+
+      expect(result).toHaveProperty("id");
+      expect(result.title).toBe(input.title);
+      expect(result.tags).toHaveLength(3);
+      expect(result.tags?.map((tag) => tag.name).sort()).toEqual([
+        "tag1",
+        "tag2",
+        "tag3",
+      ]);
+    });
+
+    it("should find bookmark with tags", async () => {
+      const created = await bookmarkRepository.create({
+        title: "Test Bookmark",
+        url: "https://example.com",
+        tagNames: ["findTag1", "findTag2"],
+      });
+
+      const found = await bookmarkRepository.findById(created.id);
+
+      expect(found).not.toBeNull();
+      expect(found?.tags).toHaveLength(2);
+      expect(found?.tags?.map((tag) => tag.name).sort()).toEqual([
+        "findTag1",
+        "findTag2",
+      ]);
+    });
+
+    it("should update bookmark tags", async () => {
+      const created = await bookmarkRepository.create({
+        title: "Test Bookmark",
+        url: "https://example.com",
+        tagNames: ["oldTag1", "oldTag2"],
+      });
+
+      const updated = await bookmarkRepository.update(created.id, {
+        tagNames: ["newTag1", "newTag2", "newTag3"],
+      });
+
+      expect(updated.tags).toHaveLength(3);
+      expect(updated.tags?.map((tag) => tag.name).sort()).toEqual([
+        "newTag1",
+        "newTag2",
+        "newTag3",
+      ]);
+    });
+
+    it("should preserve existing tags when updating other fields", async () => {
+      const created = await bookmarkRepository.create({
+        title: "Original Title",
+        url: "https://example.com",
+        tagNames: ["preserveTag1", "preserveTag2"],
+      });
+
+      const updated = await bookmarkRepository.update(created.id, {
+        title: "Updated Title",
+      });
+
+      expect(updated.title).toBe("Updated Title");
+      expect(updated.tags).toHaveLength(2);
+      expect(updated.tags?.map((tag) => tag.name).sort()).toEqual([
+        "preserveTag1",
+        "preserveTag2",
+      ]);
+    });
+
+    it("should handle empty tag array", async () => {
+      const created = await bookmarkRepository.create({
+        title: "Test Bookmark",
+        url: "https://example.com",
+        tagNames: ["tag1", "tag2"],
+      });
+
+      const updated = await bookmarkRepository.update(created.id, {
+        tagNames: [],
+      });
+
+      expect(updated.tags).toHaveLength(0);
+    });
+
+    it("should handle duplicate tag names", async () => {
+      const input = {
+        title: "Test Bookmark",
+        url: "https://example.com",
+        tagNames: ["duplicate", "duplicate", "unique"],
+      };
+
+      const result = await bookmarkRepository.create(input);
+
+      expect(result.tags).toHaveLength(2);
+      expect(result.tags?.map((tag) => tag.name).sort()).toEqual([
+        "duplicate",
+        "unique",
+      ]);
+    });
+  });
 });

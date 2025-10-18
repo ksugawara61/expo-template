@@ -1,6 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
+import type * as schema from "../../libs/drizzle/schema";
 import { tags } from "../../libs/drizzle/schema";
 import type { CreateTagInput, Tag, UpdateTagInput } from "../domain/Tag";
 
@@ -76,6 +78,41 @@ export const findOrCreate = async (name: string): Promise<Tag> => {
   }
 
   return await create({ name });
+};
+
+export const findOrCreateWithTx = async (
+  name: string,
+  tx: Parameters<
+    Parameters<LibSQLDatabase<typeof schema>["transaction"]>[0]
+  >[0],
+): Promise<Tag> => {
+  const existingTag = await tx
+    .select()
+    .from(tags)
+    .where(eq(tags.name, name))
+    .limit(1);
+
+  if (existingTag.length > 0) {
+    const tag = existingTag[0];
+    return {
+      id: tag.id,
+      name: tag.name,
+      created_at: new Date(tag.created_at),
+      updated_at: new Date(tag.updated_at),
+    };
+  }
+
+  const [tag] = await tx
+    .insert(tags)
+    .values({ id: createId(), name })
+    .returning();
+
+  return {
+    id: tag.id,
+    name: tag.name,
+    created_at: new Date(tag.created_at),
+    updated_at: new Date(tag.updated_at),
+  };
 };
 
 export const update = async (
