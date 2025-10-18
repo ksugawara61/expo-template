@@ -1,23 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
+import * as tagRepository from "../../infrastructure/persistence/TagRepository";
 import { fetchTagsUseCase } from "./FetchTagsUseCase";
 
 describe("FetchTagsUseCase", () => {
   describe("正常系", () => {
     it("should return array of tags", async () => {
-      await prisma.tag.createMany({
-        data: [
-          {
-            name: "Frontend",
-          },
-          {
-            name: "Backend",
-          },
-          {
-            name: "Database",
-          },
-        ],
-      });
+      await Promise.all([
+        tagRepository.create({ name: "Frontend" }),
+        tagRepository.create({ name: "Backend" }),
+        tagRepository.create({ name: "Database" }),
+      ]);
 
       const result = await fetchTagsUseCase();
 
@@ -39,8 +31,4 @@ describe("FetchTagsUseCase", () => {
       expect(result).toHaveLength(0);
     });
   });
-});
-
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
 });

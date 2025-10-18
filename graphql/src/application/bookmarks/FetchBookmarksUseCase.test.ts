@@ -1,24 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
+import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
 import { fetchBookmarksUseCase } from "./FetchBookmarksUseCase";
 
 describe("FetchBookmarksUseCase", () => {
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
-      await prisma.bookmark.createMany({
-        data: [
-          {
-            title: "Test Bookmark 1",
-            url: "https://example1.com",
-            description: "First test bookmark",
-          },
-          {
-            title: "Test Bookmark 2",
-            url: "https://example2.com",
-            description: null,
-          },
-        ],
-      });
+      await Promise.all([
+        bookmarkRepository.create({
+          title: "Test Bookmark 1",
+          url: "https://example1.com",
+          description: "First test bookmark",
+        }),
+        bookmarkRepository.create({
+          title: "Test Bookmark 2",
+          url: "https://example2.com",
+          description: undefined,
+        }),
+      ]);
 
       const result = await fetchBookmarksUseCase();
 
@@ -37,8 +35,4 @@ describe("FetchBookmarksUseCase", () => {
       expect(result).toHaveLength(0);
     });
   });
-});
-
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
 });

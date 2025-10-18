@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
 import { createTagUseCase } from "./CreateTagUseCase";
 
 describe("CreateTagUseCase", () => {
@@ -31,6 +30,3 @@ describe("CreateTagUseCase", () => {
   });
 });
 
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
-});

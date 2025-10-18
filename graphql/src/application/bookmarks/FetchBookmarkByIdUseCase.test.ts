@@ -1,16 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
+import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
 import { fetchBookmarkByIdUseCase } from "./FetchBookmarkByIdUseCase";
 
 describe("FetchBookmarkByIdUseCase", () => {
   describe("正常系", () => {
     it("should return bookmark when found", async () => {
-      const bookmark = await prisma.bookmark.create({
-        data: {
-          title: "Test Bookmark",
-          url: "https://example.com",
-          description: "A test bookmark",
-        },
+      const bookmark = await bookmarkRepository.create({
+        title: "Test Bookmark",
+        url: "https://example.com",
+        description: "A test bookmark",
       });
 
       const result = await fetchBookmarkByIdUseCase(bookmark.id);
@@ -30,8 +28,4 @@ describe("FetchBookmarkByIdUseCase", () => {
       expect(result).toBeNull();
     });
   });
-});
-
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
 });

@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
 import * as bookmarkRepository from "./BookmarkRepository";
 
 describe("BookmarkRepository", () => {
@@ -153,6 +152,3 @@ describe("BookmarkRepository", () => {
   });
 });
 
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
-});

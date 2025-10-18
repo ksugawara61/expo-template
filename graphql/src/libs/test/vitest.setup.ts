@@ -1,15 +1,12 @@
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { prisma } from "../prisma/client";
+import { db } from "../drizzle/client";
+import { bookmarks, bookmarkTags, tags } from "../drizzle/schema";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  const tablenames = await prisma.$queryRaw<
-    Array<{ name: string }>
-  >`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_prisma_migrations';`;
-
-  for (const { name } of tablenames) {
-    await prisma.$executeRawUnsafe(`DELETE FROM "${name}";`);
-  }
+  await db.delete(bookmarkTags);
+  await db.delete(bookmarks);
+  await db.delete(tags);
 };
 
 beforeAll(async () => {
@@ -23,5 +20,4 @@ afterEach(async () => {
 
 afterAll(async () => {
   mockServer.close();
-  await prisma.$disconnect();
 });

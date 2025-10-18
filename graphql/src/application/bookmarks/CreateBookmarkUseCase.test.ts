@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { prisma } from "../../libs/prisma/client";
 import { createBookmarkUseCase } from "./CreateBookmarkUseCase";
 
 describe("CreateBookmarkUseCase", () => {
@@ -37,8 +36,4 @@ describe("CreateBookmarkUseCase", () => {
       expect(result).toHaveProperty("updated_at");
     });
   });
-});
-
-process.on("beforeExit", async () => {
-  await prisma.$disconnect();
 });

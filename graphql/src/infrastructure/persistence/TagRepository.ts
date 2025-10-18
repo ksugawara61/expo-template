@@ -1,65 +1,67 @@
-import { prisma } from "../../libs/prisma/client";
+import { createId } from "@paralleldrive/cuid2";
+import { eq } from "drizzle-orm";
+import { db } from "../../libs/drizzle/client";
+import { tags } from "../../libs/drizzle/schema";
 import type { CreateTagInput, Tag, UpdateTagInput } from "../domain/Tag";
 
 export const findAll = async (): Promise<Tag[]> => {
-  const tags = await prisma.tag.findMany({
-    orderBy: { name: "asc" },
-  });
+  const result = await db.select().from(tags).orderBy(tags.name);
 
-  return tags.map((tag) => ({
+  return result.map((tag) => ({
     id: tag.id,
     name: tag.name,
-    created_at: tag.created_at,
-    updated_at: tag.updated_at,
+    created_at: new Date(tag.created_at),
+    updated_at: new Date(tag.updated_at),
   }));
 };
 
 export const findById = async (id: string): Promise<Tag | null> => {
-  const tag = await prisma.tag.findUnique({
-    where: { id },
-  });
+  const result = await db.select().from(tags).where(eq(tags.id, id)).limit(1);
 
-  if (!tag) {
+  if (result.length === 0) {
     return null;
   }
 
+  const tag = result[0];
   return {
     id: tag.id,
     name: tag.name,
-    created_at: tag.created_at,
-    updated_at: tag.updated_at,
+    created_at: new Date(tag.created_at),
+    updated_at: new Date(tag.updated_at),
   };
 };
 
 export const findByName = async (name: string): Promise<Tag | null> => {
-  const tag = await prisma.tag.findUnique({
-    where: { name },
-  });
+  const result = await db
+    .select()
+    .from(tags)
+    .where(eq(tags.name, name))
+    .limit(1);
 
-  if (!tag) {
+  if (result.length === 0) {
     return null;
   }
 
+  const tag = result[0];
   return {
     id: tag.id,
     name: tag.name,
-    created_at: tag.created_at,
-    updated_at: tag.updated_at,
+    created_at: new Date(tag.created_at),
+    updated_at: new Date(tag.updated_at),
   };
 };
 
 export const create = async (input: CreateTagInput): Promise<Tag> => {
-  const tag = await prisma.tag.create({
-    data: {
-      name: input.name,
-    },
-  });
+  const [tag] = await db
+    .insert(tags)
+    .values({ id: createId(), name: input.name })
+    .returning();
 
   return {
     id: tag.id,
     name: tag.name,
-    created_at: tag.created_at,
-    updated_at: tag.updated_at,
+    created_at: new Date(tag.created_at),
+    updated_at: new Date(tag.updated_at),
   };
 };
 
@@ -76,21 +78,21 @@ export const update = async (
   id: string,
   input: UpdateTagInput,
 ): Promise<Tag> => {
-  const tag = await prisma.tag.update({
-    where: { id },
-    data: input,
-  });
+  const updateData = { ...input, updated_at: new Date().toISOString() };
+  const [tag] = await db
+    .update(tags)
+    .set(updateData)
+    .where(eq(tags.id, id))
+    .returning();
 
   return {
     id: tag.id,
     name: tag.name,
-    created_at: tag.created_at,
-    updated_at: tag.updated_at,
+    created_at: new Date(tag.created_at),
+    updated_at: new Date(tag.updated_at),
   };
 };
 
 export const remove = async (id: string): Promise<void> => {
-  await prisma.tag.delete({
-    where: { id },
-  });
+  await db.delete(tags).where(eq(tags.id, id));
 };
