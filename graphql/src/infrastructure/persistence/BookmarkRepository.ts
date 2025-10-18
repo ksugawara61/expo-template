@@ -226,5 +226,12 @@ export const update = async (
 };
 
 export const deleteBookmark = async (id: string): Promise<void> => {
-  await db.delete(bookmarks).where(eq(bookmarks.id, id));
+  const result = await db
+    .delete(bookmarks)
+    .where(eq(bookmarks.id, id))
+    .returning();
+
+  if (result.length === 0) {
+    throw new Error("No record was found");
+  }
 };

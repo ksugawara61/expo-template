@@ -12,5 +12,6 @@ export default defineConfig({
         singleFork: true,
       },
     },
+    fileParallelism: false,
   },
 });

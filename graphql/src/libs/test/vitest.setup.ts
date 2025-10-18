@@ -4,9 +4,22 @@ import { bookmarks, bookmarkTags, tags } from "../drizzle/schema";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  await db.delete(bookmarkTags);
-  await db.delete(bookmarks);
-  await db.delete(tags);
+  // Clear in reverse order of dependency to avoid foreign key constraint issues
+  try {
+    await db.delete(bookmarkTags);
+  } catch (e) {
+    // Ignore if table doesn't exist
+  }
+  try {
+    await db.delete(bookmarks);
+  } catch (e) {
+    // Ignore if table doesn't exist
+  }
+  try {
+    await db.delete(tags);
+  } catch (e) {
+    // Ignore if table doesn't exist
+  }
 };
 
 beforeAll(async () => {
