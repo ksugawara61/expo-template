@@ -8,13 +8,15 @@ export default defineConfig({
     pool: "forks",
     poolOptions: {
       forks: {
-        singleFork: false,
+        singleFork: true,
       },
     },
-    fileParallelism: true,
-    maxConcurrency: 4,
+    fileParallelism: false,
     sequence: {
-      concurrent: true,
+      concurrent: false,
+    },
+    env: {
+      NODE_ENV: "test",
     },
   },
 });

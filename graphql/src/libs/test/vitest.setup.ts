@@ -31,28 +31,51 @@ const clearAllTables = async () => {
 };
 
 beforeAll(async () => {
-  // Set up unique database for this worker to avoid locking issues
-  const timestamp = Date.now();
-  const pid = process.pid;
-  const workerId = process.env.VITEST_WORKER_ID || "main";
-  const random = Math.random().toString(36).substring(2);
-  process.env.TURSO_DATABASE_URL = `file:./test-${timestamp}-${pid}-${workerId}-${random}.db`;
+  // Set up in-memory database for tests
+  process.env.TURSO_DATABASE_URL = ":memory:";
   process.env.TURSO_AUTH_TOKEN = "";
 
-  console.log(
-    `Setting up database for worker ${workerId}: ${process.env.TURSO_DATABASE_URL}`,
-  );
-
-  // Initialize database schema for this worker
-  try {
-    execSync("pnpm db:generate", { stdio: "pipe" });
-    execSync("pnpm db:push", { stdio: "pipe" });
-  } catch (error) {
-    console.warn("Database setup warning:", error);
-  }
+  console.log("Setting up in-memory database for tests");
 
   // Reset the test database client to use the new environment variables
   resetTestDb();
+
+  // Create tables manually (since drizzle commands are problematic in tests)
+  const db = getTestDb();
+  try {
+    // Create tables using SQL
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS tags (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        created_at TEXT DEFAULT (datetime('now')) NOT NULL,
+        updated_at TEXT DEFAULT (datetime('now')) NOT NULL
+      )
+    `);
+
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS bookmarks (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        url TEXT NOT NULL,
+        description TEXT,
+        created_at TEXT DEFAULT (datetime('now')) NOT NULL,
+        updated_at TEXT DEFAULT (datetime('now')) NOT NULL
+      )
+    `);
+
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS bookmark_tags (
+        bookmark_id TEXT NOT NULL,
+        tag_id TEXT NOT NULL,
+        PRIMARY KEY (bookmark_id, tag_id),
+        FOREIGN KEY (bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE,
+        FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+      )
+    `);
+  } catch (error) {
+    console.warn("Database table creation warning:", error);
+  }
 
   mockServer.listen();
 });
