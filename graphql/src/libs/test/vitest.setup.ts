@@ -1,4 +1,3 @@
-import { execSync } from "node:child_process";
 import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll } from "vitest";
 import { getTestDb, resetTestDb } from "../drizzle/testClient";
