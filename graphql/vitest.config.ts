@@ -12,7 +12,6 @@ export default defineConfig({
         singleFork: true,
       },
     },
-    fileParallelism: false,
     sequence: {
       concurrent: false,
     },
