@@ -17,6 +17,7 @@ export default defineConfig({
     },
     env: {
       NODE_ENV: "test",
+      PYLON_TELEMETRY_DISABLED: "1",
     },
   },
 });
