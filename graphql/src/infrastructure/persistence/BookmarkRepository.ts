@@ -116,12 +116,16 @@ export const findById = async (id: string): Promise<Bookmark | null> => {
 export const create = async (input: CreateBookmarkInput): Promise<Bookmark> => {
   const db = createDb();
   return await db.transaction(async (tx) => {
-    // First create or find tags
-    const tagEntities = input.tagNames
-      ? await Promise.all(
-          input.tagNames.map((tagName) => tagRepository.findOrCreate(tagName)),
-        )
-      : [];
+    // First create or find tags (deduplicate tag names)
+    const uniqueTagNames = input.tagNames ? [...new Set(input.tagNames)] : [];
+    const tagEntities =
+      uniqueTagNames.length > 0
+        ? await Promise.all(
+            uniqueTagNames.map((tagName) =>
+              tagRepository.findOrCreateWithTx(tagName, tx),
+            ),
+          )
+        : [];
 
     // Insert bookmark
     const [bookmark] = await tx
@@ -183,12 +187,16 @@ export const update = async (
     }
 
     // Handle tags if provided
-    let tagEntities: Awaited<ReturnType<typeof tagRepository.findOrCreate>>[] =
-      [];
+    let tagEntities: Awaited<
+      ReturnType<typeof tagRepository.findOrCreateWithTx>
+    >[] = [];
     if (input.tagNames !== undefined) {
-      // First create or find tags
+      // First create or find tags (deduplicate tag names)
+      const uniqueTagNames = [...new Set(input.tagNames)];
       tagEntities = await Promise.all(
-        input.tagNames.map((tagName) => tagRepository.findOrCreate(tagName)),
+        uniqueTagNames.map((tagName) =>
+          tagRepository.findOrCreateWithTx(tagName, tx),
+        ),
       );
 
       // Remove existing relationships
