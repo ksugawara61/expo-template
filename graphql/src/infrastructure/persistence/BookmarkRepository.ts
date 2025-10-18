@@ -175,6 +175,10 @@ export const update = async (
       .where(eq(bookmarks.id, id))
       .returning();
 
+    if (!updatedBookmark) {
+      throw new Error("No record was found");
+    }
+
     // Handle tags if provided
     let tagEntities: Awaited<ReturnType<typeof tagRepository.findOrCreate>>[] =
       [];

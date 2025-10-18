@@ -5,18 +5,17 @@ import { fetchBookmarksUseCase } from "./FetchBookmarksUseCase";
 describe("FetchBookmarksUseCase", () => {
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
-      await Promise.all([
-        bookmarkRepository.create({
-          title: "Test Bookmark 1",
-          url: "https://example1.com",
-          description: "First test bookmark",
-        }),
-        bookmarkRepository.create({
-          title: "Test Bookmark 2",
-          url: "https://example2.com",
-          description: undefined,
-        }),
-      ]);
+      await bookmarkRepository.create({
+        title: "Test Bookmark 1",
+        url: "https://example1.com",
+        description: "First test bookmark",
+      });
+
+      await bookmarkRepository.create({
+        title: "Test Bookmark 2",
+        url: "https://example2.com",
+        description: undefined,
+      });
 
       const result = await fetchBookmarksUseCase();
 
