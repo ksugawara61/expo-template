@@ -46,13 +46,16 @@ export const findMany = async (): Promise<Bookmark[]> => {
     }
 
     if (row.tag_id) {
-      const bookmark = bookmarkMap.get(row.id)!;
+      const bookmark = bookmarkMap.get(row.id);
+      if (!bookmark) {
+        throw new Error(`Bookmark with id ${row.id} not found in map`);
+      }
       bookmark.tags = bookmark.tags || [];
       bookmark.tags.push({
         id: row.tag_id,
-        name: row.tag_name!,
-        created_at: new Date(row.tag_created_at!),
-        updated_at: new Date(row.tag_updated_at!),
+        name: row.tag_name ?? "",
+        created_at: new Date(row.tag_created_at ?? 0),
+        updated_at: new Date(row.tag_updated_at ?? 0),
       });
     }
   }
@@ -100,9 +103,9 @@ export const findById = async (id: string): Promise<Bookmark | null> => {
       bookmark.tags = bookmark.tags || [];
       bookmark.tags.push({
         id: row.tag_id,
-        name: row.tag_name!,
-        created_at: new Date(row.tag_created_at!),
-        updated_at: new Date(row.tag_updated_at!),
+        name: row.tag_name ?? "",
+        created_at: new Date(row.tag_created_at ?? 0),
+        updated_at: new Date(row.tag_updated_at ?? 0),
       });
     }
   }
