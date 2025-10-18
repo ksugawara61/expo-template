@@ -1,10 +1,9 @@
 import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { getTestDb } from "../drizzle/testClient";
+import { db } from "../drizzle/client";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  const db = getTestDb();
   // Clear tables with foreign key constraints disabled
   try {
     await db.run(sql`PRAGMA foreign_keys = OFF`);

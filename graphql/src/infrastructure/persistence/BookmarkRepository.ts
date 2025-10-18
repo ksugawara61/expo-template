@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
-import { getDb } from "../../libs/drizzle/client";
+import { db } from "../../libs/drizzle/client";
 import { bookmarks, bookmarkTags, tags } from "../../libs/drizzle/schema";
 import type {
   Bookmark,
@@ -10,7 +10,6 @@ import type {
 import * as tagRepository from "./TagRepository";
 
 export const findMany = async (): Promise<Bookmark[]> => {
-  const db = getDb();
   const result = await db
     .select({
       id: bookmarks.id,
@@ -61,7 +60,6 @@ export const findMany = async (): Promise<Bookmark[]> => {
 };
 
 export const findById = async (id: string): Promise<Bookmark | null> => {
-  const db = getDb();
   const result = await db
     .select({
       id: bookmarks.id,
@@ -111,7 +109,6 @@ export const findById = async (id: string): Promise<Bookmark | null> => {
 };
 
 export const create = async (input: CreateBookmarkInput): Promise<Bookmark> => {
-  const db = getDb();
   return await db.transaction(async (tx) => {
     // First create or find tags
     const tagEntities = input.tagNames
@@ -157,7 +154,6 @@ export const update = async (
   id: string,
   input: UpdateBookmarkInput,
 ): Promise<Bookmark> => {
-  const db = getDb();
   return await db.transaction(async (tx) => {
     // Update bookmark data
     const updateData: Partial<typeof bookmarks.$inferInsert> = {};
@@ -234,7 +230,6 @@ export const update = async (
 };
 
 export const deleteBookmark = async (id: string): Promise<void> => {
-  const db = getDb();
   const result = await db
     .delete(bookmarks)
     .where(eq(bookmarks.id, id))
