@@ -1,24 +1,30 @@
+import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll } from "vitest";
 import { db } from "../drizzle/client";
-import { bookmarks, bookmarkTags, tags } from "../drizzle/schema";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  // Clear in reverse order of dependency to avoid foreign key constraint issues
-  try {
-    await db.delete(bookmarkTags);
-  } catch (e) {
-    // Ignore if table doesn't exist
-  }
-  try {
-    await db.delete(bookmarks);
-  } catch (e) {
-    // Ignore if table doesn't exist
-  }
-  try {
-    await db.delete(tags);
-  } catch (e) {
-    // Ignore if table doesn't exist
+  // Get all table names from the database
+  const tables = await db.all<{ name: string }>(
+    sql`SELECT name FROM sqlite_master WHERE type='table'`,
+  );
+
+  const tableNames = tables
+    .filter((table) => table.name !== "__drizzle_migrations")
+    .map((table) => table.name);
+
+  // Clear tables in reverse order to avoid foreign key constraint issues
+  // We know the dependency order: bookmark_tags -> bookmarks, tags
+  const orderedTables = ["bookmark_tags", "bookmarks", "tags"].filter((name) =>
+    tableNames.includes(name),
+  );
+
+  for (const tableName of orderedTables) {
+    try {
+      await db.run(sql.raw(`DELETE FROM ${tableName}`));
+    } catch (e) {
+      // Ignore if table doesn't exist or other errors
+    }
   }
 };
 
