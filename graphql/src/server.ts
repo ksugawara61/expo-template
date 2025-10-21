@@ -15,21 +15,33 @@ import {
   createTagUseCase,
 } from "./application/tags/CreateTagUseCase";
 import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
+import { requireAuth } from "./middleware/auth";
 
 export const server = {
   Query: {
-    articles: async (offset?: number, limit?: number) =>
-      await fetchArticlesUseCase(offset, limit),
-    bookmarks: async () => await fetchBookmarksUseCase(),
-    bookmark: async (id: string) => await fetchBookmarkByIdUseCase(id),
-    tags: async () => await fetchTagsUseCase(),
+    articles: requireAuth(
+      async (offset?: number, limit?: number) =>
+        await fetchArticlesUseCase(offset, limit),
+    ),
+    bookmarks: requireAuth(async () => await fetchBookmarksUseCase()),
+    bookmark: requireAuth(
+      async (id: string) => await fetchBookmarkByIdUseCase(id),
+    ),
+    tags: requireAuth(async () => await fetchTagsUseCase()),
   },
   Mutation: {
-    createBookmark: async (input: CreateBookmarkInput) =>
-      await createBookmarkUseCase(input),
-    updateBookmark: async (id: string, input: UpdateBookmarkInput) =>
-      await updateBookmarkUseCase(id, input),
-    deleteBookmark: async (id: string) => await deleteBookmarkUseCase(id),
-    createTag: async (input: CreateTagInput) => await createTagUseCase(input),
+    createBookmark: requireAuth(
+      async (input: CreateBookmarkInput) => await createBookmarkUseCase(input),
+    ),
+    updateBookmark: requireAuth(
+      async (id: string, input: UpdateBookmarkInput) =>
+        await updateBookmarkUseCase(id, input),
+    ),
+    deleteBookmark: requireAuth(
+      async (id: string) => await deleteBookmarkUseCase(id),
+    ),
+    createTag: requireAuth(
+      async (input: CreateTagInput) => await createTagUseCase(input),
+    ),
   },
 };
