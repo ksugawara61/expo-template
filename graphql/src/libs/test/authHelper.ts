@@ -2,6 +2,14 @@ import type { Context } from "@getcronit/pylon";
 import { getContext } from "@getcronit/pylon";
 import { vi } from "vitest";
 
+vi.mock("@getcronit/pylon", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@getcronit/pylon")>();
+  return {
+    ...actual,
+    getContext: vi.fn(),
+  };
+});
+
 type MockAuthContextOptions = {
   userId?: string;
   testKey?: string;
@@ -35,11 +43,4 @@ export const mockAuthContext = (options?: MockAuthContextOptions): void => {
     },
     set: vi.fn(),
   } as unknown as Context);
-};
-
-/**
- * 認証モックをクリア
- */
-export const clearAuthMock = (): void => {
-  vi.restoreAllMocks();
 };

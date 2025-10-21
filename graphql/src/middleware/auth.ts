@@ -1,17 +1,13 @@
 import { verifyToken } from "@clerk/backend";
 import { getContext } from "@getcronit/pylon";
 
-type AuthResult = {
-  userId: string;
-};
-
 /**
  * Clerk認証ミドルウェア
  * リクエストのAuthorizationヘッダーからトークンを検証し、認証されたユーザー情報をコンテキストに設定する
  *
  * 開発/テスト環境では、X-Test-User-IdヘッダーとX-Test-Keyヘッダーでバイパス可能
  */
-export const verifyAuth = async (): Promise<AuthResult> => {
+const verifyAuth = async () => {
   const ctx = getContext();
 
   // 開発/テスト環境でのバイパス機能
@@ -26,7 +22,7 @@ export const verifyAuth = async (): Promise<AuthResult> => {
     if (testKey && ctx.env.TEST_AUTH_KEY && testKey === ctx.env.TEST_AUTH_KEY) {
       const userId = testUserId || "test-user";
       ctx.set("userId", userId);
-      return { userId };
+      return;
     }
   }
 
@@ -57,7 +53,7 @@ export const verifyAuth = async (): Promise<AuthResult> => {
     // 認証されたユーザーIDをコンテキストに設定
     ctx.set("userId", payload.sub);
 
-    return { userId: payload.sub };
+    return;
   } catch (error) {
     throw new Error(
       `Unauthorized: ${error instanceof Error ? error.message : "Token verification failed"}`,
@@ -66,15 +62,14 @@ export const verifyAuth = async (): Promise<AuthResult> => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// biome-ignore lint/suspicious/noExplicitAny: Generic function type requires any
 type AnyFunction = (...args: any[]) => any;
 
 /**
  * 認証が必要なリゾルバーをラップするヘルパー関数
  */
-export const requireAuth = <T extends AnyFunction>(resolver: T): T => {
-  return (async (...args: Parameters<T>) => {
+export const requireAuth = <T extends AnyFunction>(resolver: T) => {
+  return async (...args: Parameters<T>) => {
     await verifyAuth();
     return resolver(...args);
-  }) as T;
+  };
 };

@@ -4,15 +4,6 @@ import { createDb } from "../drizzle/client";
 import { mockAuthContext } from "./authHelper";
 import { mockServer } from "./mockServer";
 
-// getContextをモック（他のエクスポートは元のまま）
-vi.mock("@getcronit/pylon", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@getcronit/pylon")>();
-  return {
-    ...actual,
-    getContext: vi.fn(),
-  };
-});
-
 const clearAllTables = async () => {
   const db = createDb();
   const tables = await db.all<{ name: string }>(
@@ -34,16 +25,12 @@ const clearAllTables = async () => {
 
 beforeAll(async () => {
   mockServer.listen();
-
-  // デフォルトの認証コンテキストを設定
   mockAuthContext();
 });
 
 afterEach(async () => {
   mockServer.resetHandlers();
   await clearAllTables();
-  // 各テスト後に認証モックをリセット
-  mockAuthContext();
 });
 
 afterAll(async () => {
