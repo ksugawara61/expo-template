@@ -1,14 +1,17 @@
+import type { Context } from "@getcronit/pylon";
 import { getContext } from "@getcronit/pylon";
 import { vi } from "vitest";
+
+type MockAuthContextOptions = {
+  userId?: string;
+  testKey?: string;
+  nodeEnv?: string;
+};
 
 /**
  * テスト環境で認証をモックするためのヘルパー関数
  */
-export function mockAuthContext(options?: {
-  userId?: string;
-  testKey?: string;
-  nodeEnv?: string;
-}) {
+export const mockAuthContext = (options?: MockAuthContextOptions): void => {
   const userId = options?.userId || "test-user";
   const testKey = options?.testKey || "test-key";
   const nodeEnv = options?.nodeEnv || "test";
@@ -21,7 +24,7 @@ export function mockAuthContext(options?: {
         if (name === "X-Test-Key") return testKey;
         return undefined;
       },
-    } as any,
+    },
     env: {
       NODE_ENV: nodeEnv,
       TEST_AUTH_KEY: testKey,
@@ -31,12 +34,12 @@ export function mockAuthContext(options?: {
       TURSO_AUTH_TOKEN: "test-token",
     },
     set: vi.fn(),
-  } as any);
-}
+  } as unknown as Context);
+};
 
 /**
  * 認証モックをクリア
  */
-export function clearAuthMock() {
+export const clearAuthMock = (): void => {
   vi.restoreAllMocks();
-}
+};

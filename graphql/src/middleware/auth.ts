@@ -1,13 +1,17 @@
 import { verifyToken } from "@clerk/backend";
 import { getContext } from "@getcronit/pylon";
 
+type AuthResult = {
+  userId: string;
+};
+
 /**
  * Clerk認証ミドルウェア
  * リクエストのAuthorizationヘッダーからトークンを検証し、認証されたユーザー情報をコンテキストに設定する
  *
  * 開発/テスト環境では、X-Test-User-IdヘッダーとX-Test-Keyヘッダーでバイパス可能
  */
-export async function verifyAuth() {
+export const verifyAuth = async (): Promise<AuthResult> => {
   const ctx = getContext();
 
   // 開発/テスト環境でのバイパス機能
@@ -37,9 +41,7 @@ export async function verifyAuth() {
   // Clerk Secret Keyを環境変数から取得
   const clerkSecretKey = ctx.env.CLERK_SECRET_KEY;
   if (!clerkSecretKey) {
-    throw new Error(
-      "Server configuration error: CLERK_SECRET_KEY is not set",
-    );
+    throw new Error("Server configuration error: CLERK_SECRET_KEY is not set");
   }
 
   try {
@@ -61,16 +63,18 @@ export async function verifyAuth() {
       `Unauthorized: ${error instanceof Error ? error.message : "Token verification failed"}`,
     );
   }
-}
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: Generic function type requires any
+type AnyFunction = (...args: any[]) => any;
 
 /**
  * 認証が必要なリゾルバーをラップするヘルパー関数
  */
-export function requireAuth<T extends (...args: any[]) => any>(
-  resolver: T,
-): T {
+export const requireAuth = <T extends AnyFunction>(resolver: T): T => {
   return (async (...args: Parameters<T>) => {
     await verifyAuth();
     return resolver(...args);
   }) as T;
-}
+};
