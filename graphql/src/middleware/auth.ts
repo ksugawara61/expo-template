@@ -4,9 +4,27 @@ import { getContext } from "@getcronit/pylon";
 /**
  * Clerk認証ミドルウェア
  * リクエストのAuthorizationヘッダーからトークンを検証し、認証されたユーザー情報をコンテキストに設定する
+ *
+ * 開発/テスト環境では、X-Test-User-IdヘッダーとX-Test-Keyヘッダーでバイパス可能
  */
 export async function verifyAuth() {
   const ctx = getContext();
+
+  // 開発/テスト環境でのバイパス機能
+  const isDevelopmentOrTest =
+    ctx.env.NODE_ENV === "development" || ctx.env.NODE_ENV === "test";
+
+  if (isDevelopmentOrTest) {
+    const testUserId = ctx.req.header("X-Test-User-Id");
+    const testKey = ctx.req.header("X-Test-Key");
+
+    // テストキーが設定されている場合、テストユーザーIDを検証
+    if (testKey && ctx.env.TEST_AUTH_KEY && testKey === ctx.env.TEST_AUTH_KEY) {
+      const userId = testUserId || "test-user";
+      ctx.set("userId", userId);
+      return { userId };
+    }
+  }
 
   // Authorizationヘッダーからトークンを取得
   const authHeader = ctx.req.header("Authorization");
