@@ -6,18 +6,19 @@ import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUse
 import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
 import { createTagUseCase } from "./application/tags/CreateTagUseCase";
 import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
+import { withAuth } from "./middleware/auth";
 
 export const server = {
   Query: {
-    articles: fetchArticlesUseCase,
-    bookmarks: fetchBookmarksUseCase,
-    bookmark: fetchBookmarkByIdUseCase,
-    tags: fetchTagsUseCase,
+    articles: withAuth(fetchArticlesUseCase),
+    bookmarks: withAuth(fetchBookmarksUseCase),
+    bookmark: withAuth(fetchBookmarkByIdUseCase),
+    tags: withAuth(fetchTagsUseCase),
   },
   Mutation: {
-    createBookmark: createBookmarkUseCase,
-    updateBookmark: updateBookmarkUseCase,
-    deleteBookmark: deleteBookmarkUseCase,
-    createTag: createTagUseCase,
+    createBookmark: withAuth(createBookmarkUseCase),
+    updateBookmark: withAuth(updateBookmarkUseCase),
+    deleteBookmark: withAuth(deleteBookmarkUseCase),
+    createTag: withAuth(createTagUseCase),
   },
 };

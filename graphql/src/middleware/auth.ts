@@ -62,14 +62,11 @@ const verifyAuth = async () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyFunction = (...args: any[]) => any;
+type AnyFunction = (...args: any) => Promise<any>;
 
-/**
- * 認証が必要なリゾルバーをラップするヘルパー関数
- */
-export const requireAuth = <T extends AnyFunction>(resolver: T) => {
-  return async (...args: Parameters<T>) => {
+export const withAuth =
+  <F extends AnyFunction>(fn: F) =>
+  async (...args: Parameters<F>): Promise<Awaited<ReturnType<F>>> => {
     await verifyAuth();
-    return resolver(...args);
+    return fn(...args);
   };
-};
