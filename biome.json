@@ -47,6 +47,9 @@
         "noInferrableTypes": "error",
         "noUselessElse": "error",
         "noNonNullAssertion": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error"
       }
     }
   },

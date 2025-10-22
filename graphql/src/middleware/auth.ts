@@ -61,7 +61,7 @@ const verifyAuth = async () => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: 抽象化のためanyを許容
 type AnyFunction = (...args: any) => Promise<any>;
 
 export const withAuth =
