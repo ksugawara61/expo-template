@@ -83,6 +83,8 @@ export const baseIgnores = [
   "**/dist/**",
   "**/*.config.{ts,js}",
   "**/preprocessing.js",
+  "**/.wrangler/**",
+  "**/tmp/**",
 ];
 
 export const baseTypeScriptConfig = {
