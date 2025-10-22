@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /** biome-ignore-all lint/suspicious/noExplicitAny: for urql wrapper */
 import { useCallback, useMemo, useState } from "react";
 import * as Urql from "urql";

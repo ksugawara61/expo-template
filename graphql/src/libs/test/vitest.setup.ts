@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
-import { afterAll, afterEach, beforeAll } from "vitest";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { createDb } from "../drizzle/client";
+import { mockAuthContext } from "./authHelper";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
@@ -24,6 +25,7 @@ const clearAllTables = async () => {
 
 beforeAll(async () => {
   mockServer.listen();
+  mockAuthContext();
 });
 
 afterEach(async () => {
@@ -33,4 +35,5 @@ afterEach(async () => {
 
 afterAll(async () => {
   mockServer.close();
+  vi.restoreAllMocks();
 });

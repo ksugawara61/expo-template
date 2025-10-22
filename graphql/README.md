@@ -24,11 +24,47 @@ pnpm db:migrate
 ```
 
 
+### Authentication
+
+このAPIは Clerk による認証を使用しています。すべてのGraphQLクエリとミューテーションには、有効な認証トークンが必要です。
+
+#### 本番環境
+
+本番環境では、`Authorization` ヘッダーに有効な Clerk JWT トークンを含める必要があります：
+
+```
+Authorization: Bearer <clerk-jwt-token>
+```
+
+#### 開発/テスト環境
+
+開発環境（`NODE_ENV=development`）またはテスト環境（`NODE_ENV=test`）では、認証をバイパスできます。以下のヘッダーを含めることで、Clerk認証なしでAPIを使用できます：
+
+```
+X-Test-Key: <TEST_AUTH_KEY環境変数の値>
+X-Test-User-Id: <任意のユーザーID>  # オプション（デフォルト: "test-user"）
+```
+
+**環境変数の設定例：**
+
+```bash
+# .env.local
+NODE_ENV=development
+TEST_AUTH_KEY=your-test-key
+CLERK_SECRET_KEY=your-clerk-secret-key
+```
+
+**セキュリティ上の注意：**
+- `TEST_AUTH_KEY` は本番環境では設定しないでください
+- テストキー機能は `NODE_ENV=production` では動作しません
+
 ### Running Tests
 
 ```bash
 pnpm test
 ```
+
+テストでは、自動的に認証モックが適用されるため、個別に認証ヘッダーを設定する必要はありません。
 
 ### Available Scripts
 
