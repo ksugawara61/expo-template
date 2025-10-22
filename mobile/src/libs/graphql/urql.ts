@@ -9,6 +9,21 @@ export const urqlClient = new Urql.Client({
   url: "http://127.0.0.1:3000/graphql",
   exchanges: [Urql.cacheExchange, Urql.fetchExchange],
   suspense: true,
+  fetchOptions: () => {
+    // テスト環境または開発環境でテスト用ヘッダーを追加
+    const isDevelopmentOrTest = __DEV__ || process.env.NODE_ENV === "test";
+
+    if (isDevelopmentOrTest) {
+      return {
+        headers: {
+          "X-Test-User-Id": "test-user",
+          "X-Test-Key": "test-key",
+        },
+      };
+    }
+
+    return {};
+  },
 });
 
 /**
