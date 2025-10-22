@@ -17,6 +17,12 @@ const createUrqlClient = () =>
     exchanges: [cacheExchange, fetchExchange],
     requestPolicy: "network-only", // テストでは常に最新のデータを取得するため
     suspense: true, // Suspenseモードを有効化
+    fetchOptions: {
+      headers: {
+        "X-Test-User-Id": "test-user",
+        "X-Test-Key": process.env.TEST_AUTH_KEY || "test-key",
+      },
+    },
   });
 
 /** テストでSafeAreaViewが消えてしまうことを防ぐために設定 */
