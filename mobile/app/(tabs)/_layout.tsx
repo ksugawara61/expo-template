@@ -52,6 +52,15 @@ const TabLayout = () => {
           ),
         }}
       />
+      {__DEV__ && (
+        <Tabs.Screen
+          name="login"
+          options={{
+            title: "Login",
+            tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          }}
+        />
+      )}
     </Tabs>
   );
 };
