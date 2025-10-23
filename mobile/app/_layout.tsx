@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { AuthenticatedContent } from "@/components/auth/AuthenticatedContent";
 import { AppProvider } from "@/libs/AppProvider";
 
 export {
@@ -22,10 +23,12 @@ void SplashScreen.preventAutoHideAsync();
 const RootLayoutNav = () => {
   return (
     <AppProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-      </Stack>
+      <AuthenticatedContent>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        </Stack>
+      </AuthenticatedContent>
     </AppProvider>
   );
 };

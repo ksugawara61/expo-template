@@ -1,4 +1,5 @@
 import { createContext, type ReactNode, useContext, useState } from "react";
+import { updateAuthHeaders } from "@/libs/graphql/urql";
 
 interface AuthState {
   userId: string | null;
@@ -10,6 +11,7 @@ interface AuthContextType {
   authState: AuthState;
   login: (userId: string, testKey: string) => void;
   logout: () => void;
+  testLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +33,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       testKey,
       isLoggedIn: true,
     });
+    // GraphQLクライアントのヘッダーを更新
+    updateAuthHeaders(userId, testKey);
   };
 
   const logout = () => {
@@ -39,10 +43,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       testKey: null,
       isLoggedIn: false,
     });
+    // GraphQLクライアントのヘッダーをクリア
+    updateAuthHeaders(null, null);
+  };
+
+  const testLogin = () => {
+    login("test-user", "test-key");
   };
 
   return (
-    <AuthContext.Provider value={{ authState, login, logout }}>
+    <AuthContext.Provider value={{ authState, login, logout, testLogin }}>
       {children}
     </AuthContext.Provider>
   );

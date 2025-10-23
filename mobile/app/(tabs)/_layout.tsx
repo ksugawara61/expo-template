@@ -1,7 +1,8 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import type React from "react";
-import { Pressable } from "react-native";
+import { Alert, Pressable } from "react-native";
+import { useAuth } from "@/libs/auth/AuthContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 const TabBarIcon = (props: {
@@ -12,6 +13,22 @@ const TabBarIcon = (props: {
 };
 
 const TabLayout = () => {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert("ログアウト", "ログアウトしますか？", [
+      {
+        text: "キャンセル",
+        style: "cancel",
+      },
+      {
+        text: "ログアウト",
+        style: "destructive",
+        onPress: logout,
+      },
+    ]);
+  };
+
   return (
     <Tabs screenOptions={{}}>
       <Tabs.Screen
@@ -50,17 +67,19 @@ const TabLayout = () => {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="file-text" color={color} />
           ),
+          headerRight: () => (
+            <Pressable onPress={handleLogout}>
+              {({ pressed }) => (
+                <FontAwesome
+                  name="sign-out"
+                  size={25}
+                  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                />
+              )}
+            </Pressable>
+          ),
         }}
       />
-      {__DEV__ && (
-        <Tabs.Screen
-          name="login"
-          options={{
-            title: "Login",
-            tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-          }}
-        />
-      )}
     </Tabs>
   );
 };
