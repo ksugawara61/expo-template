@@ -5,6 +5,29 @@ import { OPERATION_TYPENAMES } from "@/libs/graphql/operationTypenames.generated
 
 export * from "urql";
 
+// グローバルな認証状態を管理する変数
+let globalAuthState: {
+  userId: string | null;
+  testKey: string | null;
+  isLoggedIn: boolean;
+} = {
+  userId: null,
+  testKey: null,
+  isLoggedIn: false,
+};
+
+// 認証状態を更新する関数
+export const updateAuthHeaders = (
+  userId: string | null,
+  testKey: string | null,
+) => {
+  globalAuthState = {
+    userId,
+    testKey,
+    isLoggedIn: !!(userId && testKey),
+  };
+};
+
 export const urqlClient = new Urql.Client({
   url: "http://127.0.0.1:3000/graphql",
   exchanges: [Urql.cacheExchange, Urql.fetchExchange],
@@ -14,10 +37,18 @@ export const urqlClient = new Urql.Client({
     const isDevelopmentOrTest = __DEV__ || process.env.NODE_ENV === "test";
 
     if (isDevelopmentOrTest) {
+      // グローバルな認証状態が設定されている場合はそれを使用、そうでなければデフォルト値
+      const userId = globalAuthState.isLoggedIn
+        ? (globalAuthState.userId ?? "test-user")
+        : "test-user";
+      const testKey = globalAuthState.isLoggedIn
+        ? (globalAuthState.testKey ?? "test-key")
+        : "test-key";
+
       return {
         headers: {
-          "X-Test-User-Id": "test-user",
-          "X-Test-Key": "test-key",
+          "X-Test-User-Id": userId,
+          "X-Test-Key": testKey,
         },
       };
     }
