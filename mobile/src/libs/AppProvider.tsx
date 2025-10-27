@@ -1,3 +1,4 @@
+import { Provider as JotaiProvider } from "jotai";
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
@@ -20,13 +21,15 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         console.log("ErrorBoundary reset");
       }}
     >
-      <ClerkProvider>
-        <AuthProvider>
-          <Provider value={urqlClient}>
-            <PaperProvider>{children}</PaperProvider>
-          </Provider>
-        </AuthProvider>
-      </ClerkProvider>
+      <JotaiProvider>
+        <ClerkProvider>
+          <AuthProvider>
+            <Provider value={urqlClient}>
+              <PaperProvider>{children}</PaperProvider>
+            </Provider>
+          </AuthProvider>
+        </ClerkProvider>
+      </JotaiProvider>
     </ErrorBoundary>
   );
 };

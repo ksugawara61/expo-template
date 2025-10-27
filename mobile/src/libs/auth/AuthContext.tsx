@@ -3,26 +3,21 @@ import {
   useSignIn,
   useSignUp,
 } from "@clerk/clerk-expo";
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { createContext, type ReactNode, useContext, useEffect } from "react";
 import { updateAuthHeaders } from "@/libs/graphql/urql";
-
-interface AuthState {
-  userId: string | null;
-  testKey: string | null;
-  isLoggedIn: boolean;
-  clerkToken: string | null;
-}
+import {
+  type AuthState,
+  authStateAtom,
+  clerkLoginAtom,
+  loginAtom,
+  logoutAtom,
+} from "./authAtoms";
 
 interface AuthContextType {
   authState: AuthState;
   login: (userId: string, testKey: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   testLogin: () => void;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
@@ -38,12 +33,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { signOut, getToken, isSignedIn, userId } = useClerkAuth();
   const { signIn, isLoaded: signInLoaded } = useSignIn();
   const { signUp, isLoaded: signUpLoaded } = useSignUp();
-  const [authState, setAuthState] = useState<AuthState>({
-    userId: null,
-    testKey: null,
-    isLoggedIn: false,
-    clerkToken: null,
-  });
+
+  // Jotai atoms
+  const authState = useAtomValue(authStateAtom);
+  const setLogin = useSetAtom(loginAtom);
+  const setClerkLogin = useSetAtom(clerkLoginAtom);
+  const setLogout = useSetAtom(logoutAtom);
 
   // Clerk認証状態の変更を監視
   useEffect(() => {
@@ -51,51 +46,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (isSignedIn && userId) {
         try {
           const token = await getToken();
-          setAuthState({
-            userId,
-            testKey: null,
-            isLoggedIn: true,
-            clerkToken: token,
-          });
+          setClerkLogin({ userId, clerkToken: token });
           // GraphQLクライアントのヘッダーを更新（Clerk認証の場合）
           updateAuthHeaders(null, null, token);
         } catch (error) {
           console.error("Failed to get token:", error);
         }
       } else {
-        setAuthState({
-          userId: null,
-          testKey: null,
-          isLoggedIn: false,
-          clerkToken: null,
-        });
+        setLogout();
         // GraphQLクライアントのヘッダーをクリア
         updateAuthHeaders(null, null);
       }
     };
 
     void updateAuthState();
-  }, [isSignedIn, userId, getToken]);
+  }, [isSignedIn, userId, getToken, setClerkLogin, setLogout]);
 
   const login = (userId: string, testKey: string) => {
-    setAuthState({
-      userId,
-      testKey,
-      isLoggedIn: true,
-      clerkToken: null,
-    });
+    setLogin({ userId, testKey });
     // GraphQLクライアントのヘッダーを更新（テスト認証の場合）
     updateAuthHeaders(userId, testKey);
   };
 
   const logout = async () => {
     await signOut();
-    setAuthState({
-      userId: null,
-      testKey: null,
-      isLoggedIn: false,
-      clerkToken: null,
-    });
+    setLogout();
     // GraphQLクライアントのヘッダーをクリア
     updateAuthHeaders(null, null);
   };

@@ -39,6 +39,7 @@
     "expo-web-browser": "~14.2.0",
     "gql.tada": "^1.8.13",
     "graphql": "^16.11.0",
+    "jotai": "^2.15.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-error-boundary": "^6.0.0",
