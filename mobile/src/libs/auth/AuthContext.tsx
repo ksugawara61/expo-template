@@ -46,9 +46,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (isSignedIn && userId) {
         try {
           const token = await getToken();
-          setClerkLogin({ userId, clerkToken: token });
-          // GraphQLクライアントのヘッダーを更新（Clerk認証の場合）
-          updateAuthHeaders(null, null, token);
+          if (token) {
+            setClerkLogin({ userId, clerkToken: token });
+            // GraphQLクライアントのヘッダーを更新（Clerk認証の場合）
+            updateAuthHeaders(null, null, token);
+          }
         } catch (error) {
           console.error("Failed to get token:", error);
         }

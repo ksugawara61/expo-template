@@ -1,3 +1,4 @@
+import { Provider as JotaiProvider } from "jotai";
 import { Alert } from "react-native";
 import { AuthProvider } from "@/libs/auth/AuthContext";
 import { ClerkProvider } from "@/libs/auth/ClerkProvider";
@@ -35,10 +36,19 @@ jest.mock("@clerk/clerk-expo", () => ({
 // 環境変数をモック
 process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY = "pk_test_mock_key";
 
+// ClerkProvider を直接モック
+jest.mock("@/libs/auth/ClerkProvider", () => ({
+  ClerkProvider: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+}));
+
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <ClerkProvider>
-    <AuthProvider>{children}</AuthProvider>
-  </ClerkProvider>
+  <JotaiProvider>
+    <ClerkProvider>
+      <AuthProvider>{children}</AuthProvider>
+    </ClerkProvider>
+  </JotaiProvider>
 );
 
 describe("LoginScreen", () => {
