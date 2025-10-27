@@ -9,10 +9,12 @@ export * from "urql";
 let globalAuthState: {
   userId: string | null;
   testKey: string | null;
+  clerkToken: string | null;
   isLoggedIn: boolean;
 } = {
   userId: null,
   testKey: null,
+  clerkToken: null,
   isLoggedIn: false,
 };
 
@@ -20,11 +22,13 @@ let globalAuthState: {
 export const updateAuthHeaders = (
   userId: string | null,
   testKey: string | null,
+  clerkToken?: string | null,
 ) => {
   globalAuthState = {
     userId,
     testKey,
-    isLoggedIn: !!(userId && testKey),
+    clerkToken: clerkToken ?? null,
+    isLoggedIn: !!(clerkToken || (userId && testKey)),
   };
 };
 
@@ -33,27 +37,24 @@ export const urqlClient = new Urql.Client({
   exchanges: [Urql.cacheExchange, Urql.fetchExchange],
   suspense: true,
   fetchOptions: () => {
-    // テスト環境または開発環境でテスト用ヘッダーを追加
-    const isDevelopmentOrTest = __DEV__ || process.env.NODE_ENV === "test";
+    const headers: Record<string, string> = {};
 
-    if (isDevelopmentOrTest) {
-      // グローバルな認証状態が設定されている場合はそれを使用、そうでなければデフォルト値
-      const userId = globalAuthState.isLoggedIn
-        ? (globalAuthState.userId ?? "test-user")
-        : "test-user";
-      const testKey = globalAuthState.isLoggedIn
-        ? (globalAuthState.testKey ?? "test-key")
-        : "test-key";
-
-      return {
-        headers: {
-          "X-Test-User-Id": userId,
-          "X-Test-Key": testKey,
-        },
-      };
+    // Clerk認証の場合
+    if (globalAuthState.clerkToken) {
+      headers.Authorization = `Bearer ${globalAuthState.clerkToken}`;
+    }
+    // テスト認証の場合（開発環境）
+    else if (globalAuthState.userId && globalAuthState.testKey) {
+      headers["X-Test-User-Id"] = globalAuthState.userId;
+      headers["X-Test-Key"] = globalAuthState.testKey;
+    }
+    // デフォルトのテスト認証（開発環境）
+    else if (__DEV__ || process.env.NODE_ENV === "test") {
+      headers["X-Test-User-Id"] = "test-user";
+      headers["X-Test-Key"] = "test-key";
     }
 
-    return {};
+    return { headers };
   },
 });
 
