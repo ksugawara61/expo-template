@@ -1,6 +1,7 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
+import { AuthProvider } from "./auth/AuthContext";
 import { Provider, urqlClient } from "./graphql/urql";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
 
@@ -18,9 +19,11 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         console.log("ErrorBoundary reset");
       }}
     >
-      <Provider value={urqlClient}>
-        <PaperProvider>{children}</PaperProvider>
-      </Provider>
+      <AuthProvider>
+        <Provider value={urqlClient}>
+          <PaperProvider>{children}</PaperProvider>
+        </Provider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 };
