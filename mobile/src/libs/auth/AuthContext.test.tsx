@@ -10,10 +10,6 @@ jest.mock("@/libs/graphql/urql", () => ({
 import { updateAuthHeaders } from "@/libs/graphql/urql";
 
 describe("AuthContext", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <AuthProvider>{children}</AuthProvider>
   );
@@ -29,12 +25,10 @@ describe("AuthContext", () => {
       });
     });
 
-    it("login関数が正しく動作する", () => {
+    it("login関数が正しく動作する", async () => {
       const { result } = renderHook(() => useAuth(), { wrapper });
 
-      act(() => {
-        result.current.login("user123", "key456");
-      });
+      await act(() => result.current.login("user123", "key456"));
 
       expect(result.current.authState).toEqual({
         userId: "user123",
@@ -45,18 +39,14 @@ describe("AuthContext", () => {
       expect(updateAuthHeaders).toHaveBeenCalledWith("user123", "key456");
     });
 
-    it("logout関数が正しく動作する", () => {
+    it("logout関数が正しく動作する", async () => {
       const { result } = renderHook(() => useAuth(), { wrapper });
 
       // 最初にログイン
-      act(() => {
-        result.current.login("user123", "key456");
-      });
+      await act(() => result.current.login("user123", "key456"));
 
       // ログアウト
-      act(() => {
-        result.current.logout();
-      });
+      await act(() => result.current.logout());
 
       expect(result.current.authState).toEqual({
         userId: null,
@@ -67,12 +57,10 @@ describe("AuthContext", () => {
       expect(updateAuthHeaders).toHaveBeenCalledWith(null, null);
     });
 
-    it("testLogin関数が正しく動作する", () => {
+    it("testLogin関数が正しく動作する", async () => {
       const { result } = renderHook(() => useAuth(), { wrapper });
 
-      act(() => {
-        result.current.testLogin();
-      });
+      await act(() => result.current.testLogin());
 
       expect(result.current.authState).toEqual({
         userId: "test-user",
@@ -83,25 +71,19 @@ describe("AuthContext", () => {
       expect(updateAuthHeaders).toHaveBeenCalledWith("test-user", "test-key");
     });
 
-    it("複数回のログイン/ログアウトが正しく動作する", () => {
+    it("複数回のログイン/ログアウトが正しく動作する", async () => {
       const { result } = renderHook(() => useAuth(), { wrapper });
 
       // 1回目のログイン
-      act(() => {
-        result.current.login("user1", "key1");
-      });
+      await act(() => result.current.login("user1", "key1"));
       expect(result.current.authState.userId).toBe("user1");
 
       // ログアウト
-      act(() => {
-        result.current.logout();
-      });
+      await act(() => result.current.logout());
       expect(result.current.authState.isLoggedIn).toBe(false);
 
       // 2回目のログイン
-      act(() => {
-        result.current.login("user2", "key2");
-      });
+      await act(() => result.current.login("user2", "key2"));
       expect(result.current.authState.userId).toBe("user2");
       expect(result.current.authState.isLoggedIn).toBe(true);
     });

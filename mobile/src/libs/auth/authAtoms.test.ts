@@ -1,6 +1,5 @@
 import { createStore } from "jotai";
 import {
-  type AuthState,
   authStateAtom,
   isLoggedInAtom,
   loginAtom,
@@ -23,8 +22,6 @@ describe("authAtoms", () => {
   beforeEach(() => {
     // 各テストの前に新しいストアを作成
     store = createStore();
-    // モックをクリア
-    jest.clearAllMocks();
   });
 
   describe("authStateAtom", () => {

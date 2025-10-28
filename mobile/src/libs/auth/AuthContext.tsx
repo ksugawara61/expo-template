@@ -1,5 +1,5 @@
+import { Provider, useAtomValue, useSetAtom } from "jotai";
 import { type ReactNode, useCallback } from "react";
-import { Provider, useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   type AuthState,
   authStateAtom,

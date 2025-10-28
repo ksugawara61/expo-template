@@ -19,7 +19,7 @@ export const authStateAtom = atom<AuthState>(initialAuthState);
 // ログイン処理を行うwrite-only atom
 export const loginAtom = atom(
   null,
-  (get, set, { userId, testKey }: { userId: string; testKey: string }) => {
+  (_get, set, { userId, testKey }: { userId: string; testKey: string }) => {
     const newState: AuthState = {
       userId,
       testKey,
@@ -32,14 +32,14 @@ export const loginAtom = atom(
 );
 
 // ログアウト処理を行うwrite-only atom
-export const logoutAtom = atom(null, (get, set) => {
+export const logoutAtom = atom(null, (_get, set) => {
   set(authStateAtom, initialAuthState);
   // GraphQLクライアントのヘッダーをクリア
   updateAuthHeaders(null, null);
 });
 
 // テストログイン処理を行うwrite-only atom
-export const testLoginAtom = atom(null, (get, set) => {
+export const testLoginAtom = atom(null, (_get, set) => {
   set(loginAtom, { userId: "test-user", testKey: "test-key" });
 });
 
