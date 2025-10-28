@@ -1,11 +1,12 @@
-import { createContext, type ReactNode, useContext, useState } from "react";
-import { updateAuthHeaders } from "@/libs/graphql/urql";
-
-interface AuthState {
-  userId: string | null;
-  testKey: string | null;
-  isLoggedIn: boolean;
-}
+import { Provider, useAtomValue, useSetAtom } from "jotai";
+import { type ReactNode, useCallback } from "react";
+import {
+  type AuthState,
+  authStateAtom,
+  loginAtom,
+  logoutAtom,
+  testLoginAtom,
+} from "./authAtoms";
 
 interface AuthContextType {
   authState: AuthState;
@@ -14,54 +15,34 @@ interface AuthContextType {
   testLogin: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [authState, setAuthState] = useState<AuthState>({
-    userId: null,
-    testKey: null,
-    isLoggedIn: false,
-  });
-
-  const login = (userId: string, testKey: string) => {
-    setAuthState({
-      userId,
-      testKey,
-      isLoggedIn: true,
-    });
-    // GraphQLクライアントのヘッダーを更新
-    updateAuthHeaders(userId, testKey);
-  };
-
-  const logout = () => {
-    setAuthState({
-      userId: null,
-      testKey: null,
-      isLoggedIn: false,
-    });
-    // GraphQLクライアントのヘッダーをクリア
-    updateAuthHeaders(null, null);
-  };
-
-  const testLogin = () => {
-    login("test-user", "test-key");
-  };
-
-  return (
-    <AuthContext.Provider value={{ authState, login, logout, testLogin }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <Provider>{children}</Provider>;
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+export const useAuth = (): AuthContextType => {
+  const authState = useAtomValue(authStateAtom);
+  const setLogin = useSetAtom(loginAtom);
+  const setLogout = useSetAtom(logoutAtom);
+  const setTestLogin = useSetAtom(testLoginAtom);
+
+  const login = useCallback(
+    (userId: string, testKey: string) => {
+      setLogin({ userId, testKey });
+    },
+    [setLogin],
+  );
+
+  const logout = useCallback(() => {
+    setLogout();
+  }, [setLogout]);
+
+  const testLogin = useCallback(() => {
+    setTestLogin();
+  }, [setTestLogin]);
+
+  return { authState, login, logout, testLogin };
 };
