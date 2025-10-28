@@ -53,7 +53,7 @@
     "zod": "^4.1.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.28.4",
     "@repo/eslint-config": "workspace:*",
     "@storybook/addon-a11y": "^9.1.10",
     "@storybook/react-native-web-vite": "^9.1.10",
