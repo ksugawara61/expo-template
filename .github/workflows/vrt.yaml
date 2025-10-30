@@ -14,6 +14,7 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
+      pages: write
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -56,6 +57,8 @@ jobs:
           body: |
             VRTが完了しました
             差分はありません
+
+            📊 **VRTレポート**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.pull_request.number }}/
           edit-mode: replace
 
       - name: comments to PR
@@ -67,7 +70,48 @@ jobs:
           body: |
             VRTが完了しました
             :warning: **VRT に差分があります**
+
+            📊 **VRTレポート**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.pull_request.number }}/
           edit-mode: replace
+
+      - name: Prepare VRT Report for GitHub Pages
+        if: always()
+        run: |
+          mkdir -p ./vrt-pages/pr-${{ github.event.pull_request.number }}
+          cp -r ./mobile/vrt/public/report/* ./vrt-pages/pr-${{ github.event.pull_request.number }}/
+
+          # Create index page for all PRs
+          cat > ./vrt-pages/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>VRT Reports</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 40px; }
+              h1 { color: #333; }
+              ul { list-style-type: none; padding: 0; }
+              li { margin: 10px 0; }
+              a { color: #0066cc; text-decoration: none; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>VRT Reports</h1>
+            <p>Visual Regression Test reports by Pull Request</p>
+            <ul>
+              <li><a href="pr-${{ github.event.pull_request.number }}/">PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./vrt-pages
+          keep_files: true
 
       - name: Save VRT Report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
