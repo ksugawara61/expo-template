@@ -55,7 +55,7 @@ importers:
         version: 16.11.0
       jotai:
         specifier: ^2.15.0
-        version: 2.15.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.0.14)(react@19.0.0)
+        version: 2.15.0(@babel/core@7.28.4)(@babel/template@7.27.2)(@types/react@19.0.14)(react@19.0.0)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -10298,9 +10298,9 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
-  jotai@2.15.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.0.14)(react@19.0.0):
+  jotai@2.15.0(@babel/core@7.28.4)(@babel/template@7.27.2)(@types/react@19.0.14)(react@19.0.0):
     optionalDependencies:
-      '@babel/core': 7.28.0
+      '@babel/core': 7.28.4
       '@babel/template': 7.27.2
       '@types/react': 19.0.14
       react: 19.0.0
