@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@clerk/backend": "^2.18.3",
-    "@getcronit/pylon": "^2.0.0",
+    "@getcronit/pylon": "^2.9.6",
     "@libsql/client": "^0.15.15",
     "@paralleldrive/cuid2": "^2.2.2",
     "drizzle-orm": "^0.44.6",
