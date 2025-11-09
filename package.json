@@ -20,7 +20,7 @@
     "lefthook": "^2.0.1",
     "textlint": "^15.2.3",
     "textlint-rule-preset-ja-technical-writing": "^12.0.2",
-    "turbo": "^2.5.8"
+    "turbo": "^2.6.0"
   },
   "packageManager": "pnpm@10.17.0+sha256.bd9ec5417641391e0acb3912b2912bd5b0385407a82da94744a7407b567fdb4f"
 }
