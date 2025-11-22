@@ -4,12 +4,17 @@
 
 ## テストフレームワーク
 
-### Vitestを使用する
+### プロジェクトに応じたフレームワークを使用する
 
-テストフレームワークには`vitest`を使用してください。
+このプロジェクトでは、ディレクトリに応じて以下のテストフレームワークを使用します：
+
+- **Vitest**: `graphql/` ディレクトリ
+- **Jest**: `mobile/` ディレクトリ
+
+#### Vitestの場合
 
 ```typescript
-// ✅ 推奨: vitest を使用
+// ✅ 推奨: Vitest を使用
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('UserService', () => {
@@ -20,6 +25,21 @@ describe('UserService', () => {
 ```
 
 **理由**: VitestはViteとの統合が優れており、高速で現代的なテスト環境を提供します。
+
+#### Jestの場合
+
+```typescript
+// ✅ 推奨: Jest を使用
+import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+
+describe('UserService', () => {
+  it('should create a user successfully', () => {
+    // テスト実装
+  });
+});
+```
+
+**理由**: JestはReact Nativeとの統合が優れており、豊富なエコシステムを持つ成熟したテストフレームワークです。
 
 ## テスト構造
 
@@ -83,8 +103,10 @@ describe('UserValidator', () => {
 
 MCPツールのテストでは、以下のパターンに従ってください。
 
+#### Vitestの場合
+
 ```typescript
-// ✅ 推奨: MCPツールの包括的テスト
+// ✅ 推奨: MCPツールの包括的テスト (Vitest)
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createUserTool } from '../tools/createUser.js';
 import * as userService from '../services/userService.js';
@@ -152,14 +174,87 @@ describe('createUserTool', () => {
 });
 ```
 
+#### Jestの場合
+
+```typescript
+// ✅ 推奨: MCPツールの包括的テスト (Jest)
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { createUserTool } from '../tools/createUser';
+import * as userService from '../services/userService';
+
+// サービスのモック化
+jest.mock('../services/userService');
+
+describe('createUserTool', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('正常系', () => {
+    it('有効なパラメータでユーザーを作成する', async () => {
+      // Arrange
+      const mockUser = { id: 'user-1', name: 'テストユーザー', email: 'test@example.com' };
+      (userService.createUser as jest.Mock).mockResolvedValue(mockUser);
+
+      // Act
+      const result = await createUserTool.handler({
+        name: 'テストユーザー',
+        email: 'test@example.com',
+      });
+
+      // Assert
+      expect(result.content[0].text).toContain('ユーザーが作成されました');
+      expect(result.isError).toBeUndefined();
+      expect(userService.createUser).toHaveBeenCalledWith({
+        name: 'テストユーザー',
+        email: 'test@example.com',
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it('必須パラメータが不足している場合はエラーを返す', async () => {
+      // Act
+      const result = await createUserTool.handler({
+        name: '', // 空文字
+        email: 'test@example.com',
+      });
+
+      // Assert
+      expect(result.isError).toBe(true);
+      expect(result.content[0].text).toContain('エラー');
+    });
+
+    it('サービスエラー時は適切なエラーメッセージを返す', async () => {
+      // Arrange
+      (userService.createUser as jest.Mock).mockRejectedValue(
+        new Error('データベース接続エラー')
+      );
+
+      // Act
+      const result = await createUserTool.handler({
+        name: 'テストユーザー',
+        email: 'test@example.com',
+      });
+
+      // Assert
+      expect(result.isError).toBe(true);
+      expect(result.content[0].text).toContain('データベース接続エラー');
+    });
+  });
+});
+```
+
 ## モック戦略
 
 ### 外部依存関係のモック化
 
 外部API、データベース、ファイルシステムなどの依存関係は必ずモック化してください。
 
+#### Vitestの場合
+
 ```typescript
-// ✅ 推奨: 外部依存関係のモック化
+// ✅ 推奨: 外部依存関係のモック化 (Vitest)
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchUserData } from '../services/apiService.js';
 import { saveToDatabase } from '../services/dbService.js';
@@ -189,10 +284,45 @@ describe('UserProcessor', () => {
 });
 ```
 
-### モック関数の型安全性
+#### Jestの場合
 
 ```typescript
-// ✅ 推奨: 型安全なモック
+// ✅ 推奨: 外部依存関係のモック化 (Jest)
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { fetchUserData } from '../services/apiService';
+import { saveToDatabase } from '../services/dbService';
+
+// 外部依存関係をモック化
+jest.mock('../services/apiService');
+jest.mock('../services/dbService');
+
+describe('UserProcessor', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('API からデータを取得してデータベースに保存する', async () => {
+    // Arrange
+    const mockApiData = { id: '1', name: 'テストユーザー' };
+    (fetchUserData as jest.Mock).mockResolvedValue(mockApiData);
+    (saveToDatabase as jest.Mock).mockResolvedValue(undefined);
+
+    // Act
+    await processUser('1');
+
+    // Assert
+    expect(fetchUserData).toHaveBeenCalledWith('1');
+    expect(saveToDatabase).toHaveBeenCalledWith(mockApiData);
+  });
+});
+```
+
+### モック関数の型安全性
+
+#### Vitestの場合
+
+```typescript
+// ✅ 推奨: 型安全なモック (Vitest)
 import { vi } from 'vitest';
 import type { UserService } from '../services/userService.js';
 
@@ -205,6 +335,28 @@ const mockUserService: UserService = {
 
 // 型安全にモック関数を設定
 mockUserService.createUser.mockResolvedValue({
+  id: 'user-1',
+  name: 'テストユーザー',
+  email: 'test@example.com',
+});
+```
+
+#### Jestの場合
+
+```typescript
+// ✅ 推奨: 型安全なモック (Jest)
+import { jest } from '@jest/globals';
+import type { UserService } from '../services/userService';
+
+const mockUserService: UserService = {
+  createUser: jest.fn(),
+  updateUser: jest.fn(),
+  deleteUser: jest.fn(),
+  findUser: jest.fn(),
+};
+
+// 型安全にモック関数を設定
+(mockUserService.createUser as jest.Mock).mockResolvedValue({
   id: 'user-1',
   name: 'テストユーザー',
   email: 'test@example.com',
@@ -267,8 +419,12 @@ describe('UserRepository', () => {
 
 非同期処理のテストでは、`async/await`を使用してください。
 
+#### Vitestの場合
+
 ```typescript
-// ✅ 推奨: async/await を使用
+// ✅ 推奨: async/await を使用 (Vitest)
+import { describe, it, expect, vi } from 'vitest';
+
 describe('AsyncService', () => {
   it('非同期処理が正常に完了する', async () => {
     // Arrange
@@ -293,7 +449,39 @@ describe('AsyncService', () => {
 });
 ```
 
+#### Jestの場合
+
+```typescript
+// ✅ 推奨: async/await を使用 (Jest)
+import { describe, it, expect, jest } from '@jest/globals';
+
+describe('AsyncService', () => {
+  it('非同期処理が正常に完了する', async () => {
+    // Arrange
+    const expectedResult = { data: 'test' };
+    (apiService.fetchData as jest.Mock).mockResolvedValue(expectedResult);
+
+    // Act
+    const result = await processData('test-id');
+
+    // Assert
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('非同期処理でエラーが発生した場合の処理', async () => {
+    // Arrange
+    const error = new Error('API Error');
+    (apiService.fetchData as jest.Mock).mockRejectedValue(error);
+
+    // Act & Assert
+    await expect(processData('test-id')).rejects.toThrow('API Error');
+  });
+});
+```
+
 ### タイムアウトのテスト
+
+タイムアウトの設定方法は、VitestとJestで同じです。
 
 ```typescript
 // ✅ 推奨: タイムアウト処理のテスト
@@ -301,7 +489,8 @@ describe('TimeoutService', () => {
   it('指定時間内に処理が完了しない場合はタイムアウトエラーを発生させる', async () => {
     // Arrange
     const slowPromise = new Promise(resolve => setTimeout(resolve, 2000));
-    vi.mocked(slowService.process).mockReturnValue(slowPromise);
+    // Vitest: vi.mocked() / Jest: as jest.Mock
+    mockSlowService.process.mockReturnValue(slowPromise);
 
     // Act & Assert
     await expect(processWithTimeout('data', 1000)).rejects.toThrow('Timeout');
@@ -399,6 +588,8 @@ describe('PerformanceTest', () => {
 
 ### カバレッジ設定
 
+#### Vitestの場合
+
 ```typescript
 // vitest.config.ts
 import { defineConfig } from 'vitest/config';
@@ -426,6 +617,30 @@ export default defineConfig({
     },
   },
 });
+```
+
+#### Jestの場合
+
+```javascript
+// jest.config.js
+module.exports = {
+  preset: 'react-native',
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/*.stories.{ts,tsx}',
+    '!src/**/index.{ts,tsx}',
+  ],
+  coverageThresholds: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
+  coverageReporters: ['text', 'json', 'html', 'lcov'],
+};
 ```
 
 ## CI/CDでのテスト実行
@@ -464,26 +679,52 @@ jobs:
 
 ### 開発時のテスト実行
 
+#### Vitest (graphql/)
+
 ```bash
-# ✅ 推奨: 開発時のテストコマンド
+# ✅ 推奨: 開発時のテストコマンド (Vitest)
 
 # 全テスト実行
-pnpm test
+cd graphql && pnpm test
 
 # ウォッチモードでテスト実行
-pnpm test --watch
+cd graphql && pnpm test:watch
 
 # 特定のテストファイルのみ実行
-pnpm test userService.test.ts
+cd graphql && pnpm test userService.test.ts
 
 # 特定のテストケースのみ実行
-pnpm test --grep "ユーザーを作成"
+cd graphql && pnpm test --grep "ユーザーを作成"
 
 # カバレッジ付きでテスト実行
-pnpm test:coverage
+cd graphql && pnpm test --coverage
 
 # デバッグモードでテスト実行
-pnpm test --inspect-brk
+cd graphql && pnpm test --inspect-brk
+```
+
+#### Jest (mobile/)
+
+```bash
+# ✅ 推奨: 開発時のテストコマンド (Jest)
+
+# 全テスト実行
+cd mobile && pnpm test
+
+# ウォッチモードでテスト実行
+cd mobile && pnpm test:watch
+
+# 特定のテストファイルのみ実行
+cd mobile && pnpm test userService.test.ts
+
+# 特定のテストケースのみ実行
+cd mobile && pnpm test -t "ユーザーを作成"
+
+# カバレッジ付きでテスト実行
+cd mobile && pnpm test --coverage
+
+# デバッグモードでテスト実行
+cd mobile && pnpm test --inspect-brk
 ```
 
 ## まとめ
