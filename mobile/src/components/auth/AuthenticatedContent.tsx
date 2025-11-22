@@ -1,4 +1,4 @@
-import { useAuth } from "@/libs/auth/AuthContext";
+import { useAuth } from "@clerk/clerk-expo";
 import LoginScreen from "../../../app/login";
 
 interface AuthenticatedContentProps {
@@ -8,9 +8,9 @@ interface AuthenticatedContentProps {
 export const AuthenticatedContent = ({
   children,
 }: AuthenticatedContentProps) => {
-  const { authState } = useAuth();
+  const { isSignedIn } = useAuth();
 
-  if (!authState.isLoggedIn) {
+  if (!isSignedIn) {
     return <LoginScreen />;
   }
 

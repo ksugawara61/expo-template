@@ -1,11 +1,11 @@
+import { useAuth } from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { Alert, ScrollView } from "react-native";
 import { Button, Card, List } from "react-native-paper";
-import { useAuth } from "@/libs/auth/AuthContext";
 
 export const Settings: FC = () => {
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
 
   const handleLogout = () => {
     Alert.alert("ログアウト", "ログアウトしますか？", [
@@ -16,7 +16,10 @@ export const Settings: FC = () => {
       {
         text: "ログアウト",
         style: "destructive",
-        onPress: logout,
+        onPress: async () => {
+          await signOut();
+          router.replace("/login");
+        },
       },
     ]);
   };

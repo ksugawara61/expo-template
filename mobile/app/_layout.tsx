@@ -4,7 +4,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { AuthenticatedContent } from "@/components/auth/AuthenticatedContent";
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { AppProvider } from "@/libs/AppProvider";
 
 export {
@@ -20,16 +21,20 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 void SplashScreen.preventAutoHideAsync();
 
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
+
 const RootLayoutNav = () => {
   return (
-    <AppProvider>
-      <AuthenticatedContent>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <AppProvider>
         <Stack>
+          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="signup" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         </Stack>
-      </AuthenticatedContent>
-    </AppProvider>
+      </AppProvider>
+    </ClerkProvider>
   );
 };
 
