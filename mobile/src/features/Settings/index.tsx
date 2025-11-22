@@ -33,7 +33,9 @@ export const Settings: FC = () => {
           <List.Item
             title="ライセンス一覧"
             description="オープンソースライセンス情報"
-            left={(props) => <List.Icon {...props} icon="file-text" />}
+            left={(props) => (
+              <List.Icon {...props} icon="file-document-outline" />
+            )}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             onPress={handleNavigateToLicense}
           />
