@@ -1,5 +1,6 @@
+import { useAuth } from "@clerk/clerk-expo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
+import { Link, Redirect, Tabs } from "expo-router";
 import type React from "react";
 import { Pressable } from "react-native";
 
@@ -12,6 +13,12 @@ const TabBarIcon = (props: {
 };
 
 const TabLayout = () => {
+  const { isSignedIn } = useAuth();
+
+  if (!isSignedIn) {
+    return <Redirect href="/login" />;
+  }
+
   return (
     <Tabs screenOptions={{}}>
       <Tabs.Screen

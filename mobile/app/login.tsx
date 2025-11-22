@@ -72,6 +72,7 @@ const LoginScreen = () => {
         });
         router.replace("/(tabs)");
       } else {
+        console.error(JSON.stringify(signInAttempt, null, 2));
         Alert.alert(
           "エラー",
           "ログインに失敗しました。認証情報を確認してください。",

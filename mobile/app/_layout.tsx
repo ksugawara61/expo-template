@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { ClerkProvider } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { AuthenticatedContent } from "@/components/auth/AuthenticatedContent";
 import { AppProvider } from "@/libs/AppProvider";
 
 export {
@@ -28,12 +27,12 @@ const RootLayoutNav = () => {
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <AppProvider>
-        <AuthenticatedContent>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack>
-        </AuthenticatedContent>
+        <Stack>
+          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="signup" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        </Stack>
       </AppProvider>
     </ClerkProvider>
   );
