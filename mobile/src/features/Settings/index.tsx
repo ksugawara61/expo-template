@@ -28,10 +28,6 @@ export const Settings: FC = () => {
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-      <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
-        設定
-      </Text>
-
       <Card style={{ marginBottom: 16 }}>
         <Card.Content>
           <List.Item
