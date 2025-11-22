@@ -1,7 +1,9 @@
+import { useSignIn } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { useAuth } from "@/libs/auth/AuthContext";
+import { Button, Divider, TextInput } from "react-native-paper";
+import { OAuthButton } from "@/components/auth/OAuthButton";
 
 const styles = StyleSheet.create({
   container: {
@@ -30,84 +32,102 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
   },
-  testButtonContainer: {
+  linkButton: {
     marginTop: 20,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
   },
-  testButtonDescription: {
+  linkButtonLabel: {
     fontSize: 14,
-    textAlign: "center",
-    marginBottom: 10,
-    color: "#999",
+  },
+  divider: {
+    marginVertical: 20,
+  },
+  oauthContainer: {
+    marginBottom: 20,
   },
 });
 
 const LoginScreen = () => {
-  const [userId, setUserId] = useState("");
-  const [testKey, setTestKey] = useState("");
-  const { login, testLogin } = useAuth();
+  const router = useRouter();
+  const { signIn, isLoaded, setActive } = useSignIn();
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (!userId.trim() || !testKey.trim()) {
-      Alert.alert("エラー", "ユーザーIDとテストキーを入力してください");
+  const onSignInPress = async () => {
+    if (!isLoaded || !setActive) return;
+
+    if (!emailAddress.trim() || !password.trim()) {
+      Alert.alert("エラー", "メールアドレスとパスワードを入力してください");
       return;
     }
 
-    login(userId.trim(), testKey.trim());
-    Alert.alert("ログイン成功", "ログインが完了しました");
-  };
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: emailAddress,
+        password,
+      });
 
-  const handleTestLogin = () => {
-    testLogin();
-    Alert.alert("テストログイン成功", "開発用ログインが完了しました");
+      if (signInAttempt.status === "complete") {
+        await setActive({
+          session: signInAttempt.createdSessionId,
+        });
+        router.replace("/(tabs)");
+      } else {
+        Alert.alert(
+          "エラー",
+          "ログインに失敗しました。認証情報を確認してください。",
+        );
+      }
+    } catch (err: unknown) {
+      console.error(JSON.stringify(err, null, 2));
+      Alert.alert("エラー", "ログインに失敗しました");
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>ログイン</Text>
-      <Text style={styles.description}>
-        GraphQL APIの認証情報を入力してください
-      </Text>
+      <Text style={styles.description}>アカウントにログインしてください</Text>
 
       <View style={styles.form}>
+        <View style={styles.oauthContainer}>
+          <OAuthButton strategy="oauth_google">
+            <Text>Googleでログイン</Text>
+          </OAuthButton>
+        </View>
+
+        <Divider style={styles.divider} />
+
         <TextInput
-          label="ユーザーID"
-          value={userId}
-          onChangeText={setUserId}
+          label="メールアドレス"
+          value={emailAddress}
+          onChangeText={setEmailAddress}
           mode="outlined"
           style={styles.input}
           autoCapitalize="none"
+          keyboardType="email-address"
         />
         <TextInput
-          label="認証キー"
-          value={testKey}
-          onChangeText={setTestKey}
+          label="パスワード"
+          value={password}
+          onChangeText={setPassword}
           mode="outlined"
           style={styles.input}
           secureTextEntry
           autoCapitalize="none"
         />
-        <Button mode="contained" onPress={handleLogin} style={styles.button}>
+        <Button mode="contained" onPress={onSignInPress} style={styles.button}>
           ログイン
         </Button>
-      </View>
 
-      {__DEV__ && (
-        <View style={styles.testButtonContainer}>
-          <Text style={styles.testButtonDescription}>
-            開発環境用（テスト用の認証情報でログイン）
-          </Text>
-          <Button
-            mode="outlined"
-            onPress={handleTestLogin}
-            style={styles.button}
-          >
-            テストログイン
-          </Button>
-        </View>
-      )}
+        <Button
+          mode="text"
+          onPress={() => router.push("/signup")}
+          style={styles.linkButton}
+          labelStyle={styles.linkButtonLabel}
+        >
+          アカウントをお持ちでない方はこちら
+        </Button>
+      </View>
     </View>
   );
 };
