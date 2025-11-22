@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## コーディング規約
+
+このプロジェクトでは一貫したコーディングスタイルを維持するため、詳細なガイドラインを定義しています。
+
+参照ガイドライン: @docs/guidelines
+
 ## プロジェクト構成
 
 このリポジトリは以下のワークスペースから構成されています：
