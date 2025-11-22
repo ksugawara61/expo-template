@@ -13,6 +13,34 @@ jest.mock("expo-font", () => {
   return module;
 });
 
+jest.mock("@clerk/clerk-expo", () => ({
+  useAuth: jest.fn(() => ({
+    isSignedIn: true,
+    signOut: jest.fn(),
+  })),
+  useSignIn: jest.fn(() => ({
+    isLoaded: true,
+    signIn: {
+      create: jest.fn(),
+    },
+    setActive: jest.fn(),
+  })),
+  useSignUp: jest.fn(() => ({
+    isLoaded: true,
+    signUp: {
+      create: jest.fn(),
+      prepareEmailAddressVerification: jest.fn(),
+      attemptEmailAddressVerification: jest.fn(),
+    },
+    setActive: jest.fn(),
+  })),
+  useOAuth: jest.fn(() => ({
+    startOAuthFlow: jest.fn(),
+  })),
+  ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
+  tokenCache: {},
+}));
+
 beforeAll(() => {
   server.listen();
 });
