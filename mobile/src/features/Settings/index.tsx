@@ -1,8 +1,7 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import type { FC } from "react";
-import { Alert, ScrollView, View } from "react-native";
-import { Button, Card, Divider, List, Text } from "react-native-paper";
+import { Alert, ScrollView } from "react-native";
+import { Button, Card, List } from "react-native-paper";
 import { useAuth } from "@/libs/auth/AuthContext";
 
 export const Settings: FC = () => {
@@ -44,30 +43,15 @@ export const Settings: FC = () => {
 
       <Card>
         <Card.Content>
-          <View style={{ alignItems: "center", paddingVertical: 16 }}>
-            <FontAwesome name="sign-out" size={48} color="#ef4444" />
-            <Text
-              variant="titleMedium"
-              style={{ marginTop: 16, marginBottom: 8 }}
-            >
-              ログアウト
-            </Text>
-            <Text
-              variant="bodyMedium"
-              style={{ marginBottom: 16, opacity: 0.7, textAlign: "center" }}
-            >
-              アカウントからログアウトします
-            </Text>
-            <Divider style={{ width: "100%", marginBottom: 16 }} />
-            <Button
-              mode="contained"
-              onPress={handleLogout}
-              buttonColor="#ef4444"
-              style={{ width: "100%" }}
-            >
-              ログアウト
-            </Button>
-          </View>
+          <Button
+            mode="contained"
+            onPress={handleLogout}
+            buttonColor="#ef4444"
+            icon="logout"
+            style={{ width: "100%" }}
+          >
+            ログアウト
+          </Button>
         </Card.Content>
       </Card>
     </ScrollView>
