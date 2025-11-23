@@ -43,9 +43,7 @@ export const suspenseLoadingTestId = "suspenseLoading";
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
   // Use a valid Clerk test key format
-  const testClerkKey =
-    process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ||
-    "pk_test_Y2xlcmstdGVzdC1rZXktZm9yLXRlc3Rpbmc=";
+  const testClerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
 
   return (
     <ClerkProvider publishableKey={testClerkKey} tokenCache={mockTokenCache}>

@@ -13,9 +13,7 @@ const mockTokenCache = {
 
 describe("AuthContext", () => {
   // Use a valid Clerk test key format
-  const testClerkKey =
-    process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ||
-    "pk_test_Y2xlcmstdGVzdC1rZXktZm9yLXRlc3Rpbmc=";
+  const testClerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <ClerkProvider publishableKey={testClerkKey} tokenCache={mockTokenCache}>
