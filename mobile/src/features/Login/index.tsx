@@ -1,6 +1,9 @@
-import { type FC, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { Button, HelperText, TextInput } from "react-native-paper";
+import z from "zod";
 import { useAuth } from "@/libs/auth/AuthContext";
 
 const styles = StyleSheet.create({
@@ -44,20 +47,34 @@ const styles = StyleSheet.create({
   },
 });
 
+const formSchema = z.object({
+  userId: z.string().trim().min(1, "ユーザーIDは必須です"),
+  testKey: z.string().trim().min(1, "認証キーは必須です"),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
+
+const defaultValues: FormSchema = {
+  userId: "",
+  testKey: "",
+};
+
 export const Login: FC = () => {
-  const [userId, setUserId] = useState("");
-  const [testKey, setTestKey] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<FormSchema>({
+    mode: "onSubmit",
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
   const { login, testLogin } = useAuth();
 
-  const handleLogin = () => {
-    if (!userId.trim() || !testKey.trim()) {
-      Alert.alert("エラー", "ユーザーIDとテストキーを入力してください");
-      return;
-    }
-
-    login(userId.trim(), testKey.trim());
+  const handleLogin = handleSubmit((data) => {
+    login(data.userId, data.testKey);
     Alert.alert("ログイン成功", "ログインが完了しました");
-  };
+  });
 
   const handleTestLogin = () => {
     testLogin();
@@ -72,24 +89,55 @@ export const Login: FC = () => {
       </Text>
 
       <View style={styles.form}>
-        <TextInput
-          label="ユーザーID"
-          value={userId}
-          onChangeText={setUserId}
-          mode="outlined"
-          style={styles.input}
-          autoCapitalize="none"
+        <Controller
+          control={control}
+          name="userId"
+          render={({
+            field: { onChange, onBlur, value },
+            fieldState: { error },
+          }) => (
+            <View>
+              <TextInput
+                label="ユーザーID"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                mode="outlined"
+                style={styles.input}
+                autoCapitalize="none"
+              />
+              {error && <HelperText type="error">{error.message}</HelperText>}
+            </View>
+          )}
         />
-        <TextInput
-          label="認証キー"
-          value={testKey}
-          onChangeText={setTestKey}
-          mode="outlined"
-          style={styles.input}
-          secureTextEntry
-          autoCapitalize="none"
+        <Controller
+          control={control}
+          name="testKey"
+          render={({
+            field: { onChange, onBlur, value },
+            fieldState: { error },
+          }) => (
+            <View>
+              <TextInput
+                label="認証キー"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                mode="outlined"
+                style={styles.input}
+                secureTextEntry
+                autoCapitalize="none"
+              />
+              {error && <HelperText type="error">{error.message}</HelperText>}
+            </View>
+          )}
         />
-        <Button mode="contained" onPress={handleLogin} style={styles.button}>
+        <Button
+          mode="contained"
+          loading={isSubmitting}
+          onPress={handleLogin}
+          style={styles.button}
+        >
           ログイン
         </Button>
       </View>
@@ -101,6 +149,7 @@ export const Login: FC = () => {
           </Text>
           <Button
             mode="outlined"
+            loading={isSubmitting}
             onPress={handleTestLogin}
             style={styles.button}
           >
