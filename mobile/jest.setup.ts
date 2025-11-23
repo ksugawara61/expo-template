@@ -5,6 +5,8 @@ import { server } from "@/libs/test/server";
 // @ts-ignore
 global.window.navigator = {};
 
+jest.mock("expo-secure-store");
+
 jest.mock("expo-font", () => {
   const module: typeof import("expo-font") = {
     ...jest.requireActual("expo-font"),
