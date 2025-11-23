@@ -1,5 +1,5 @@
+import path from "node:path";
 import type { StorybookConfig } from "@storybook/react-native-web-vite";
-import path from "path";
 import { mergeConfig } from "vite";
 
 const config: StorybookConfig = {
