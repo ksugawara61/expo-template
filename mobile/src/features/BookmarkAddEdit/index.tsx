@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import {
   Button,
@@ -74,9 +74,6 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
 
   const schema = isEditing ? updateBookmarkSchema : createBookmarkSchema;
 
-  const [tags, setTags] = useState<string[]>(
-    bookmark?.tags?.map((tag) => tag.name) || [],
-  );
   const [tagInput, setTagInput] = useState("");
 
   const {
@@ -84,6 +81,7 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm<CreateBookmarkInput | UpdateBookmarkInput>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -93,6 +91,8 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
       tagNames: bookmark?.tags?.map((tag) => tag.name) || [],
     },
   });
+
+  const tagNames = useWatch({ control, name: "tagNames" }) || [];
 
   const handleSuccess = () => {
     router.back();
@@ -104,14 +104,18 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
 
   const addTag = () => {
     const trimmedTag = tagInput.trim();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
-      setTags([...tags, trimmedTag]);
+    if (trimmedTag && !tagNames.includes(trimmedTag)) {
+      setValue("tagNames", [...tagNames, trimmedTag], { shouldDirty: true });
       setTagInput("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+    setValue(
+      "tagNames",
+      tagNames.filter((tag) => tag !== tagToRemove),
+      { shouldDirty: true },
+    );
   };
 
   const [, updateBookmark] = useMutation(UPDATE_BOOKMARK);
@@ -123,7 +127,7 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
           title: data.title?.trim(),
           url: data.url?.trim(),
           description: data.description?.trim() || undefined,
-          tagNames: tags,
+          tagNames: data.tagNames,
         };
 
         await updateBookmark({ id: bookmark.id, input });
@@ -134,14 +138,14 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
           title: data.title as string,
           url: data.url as string,
           description: data.description?.trim() || undefined,
-          tagNames: tags,
+          tagNames: data.tagNames,
         };
 
         await createBookmark({ input });
 
         Alert.alert("成功", "ブックマークを作成しました");
         reset();
-        setTags([]);
+        setTagInput("");
       }
 
       handleSuccess();
@@ -246,11 +250,11 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
                   追加
                 </Button>
               </View>
-              {tags.length > 0 && (
+              {tagNames.length > 0 && (
                 <View
                   style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}
                 >
-                  {tags.map((tag) => (
+                  {tagNames.map((tag) => (
                     <Chip
                       key={tag}
                       onClose={() => removeTag(tag)}
