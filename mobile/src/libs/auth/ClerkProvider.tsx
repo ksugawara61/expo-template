@@ -1,5 +1,5 @@
 import { ClerkProvider as ClerkProviderOriginal } from "@clerk/clerk-expo";
-import { tokenCache } from "@clerk/clerk-expo/token-cache";
+// import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import type { FC, PropsWithChildren } from "react";
 
 /**
@@ -20,7 +20,7 @@ export const ClerkProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ClerkProviderOriginal
       publishableKey={publishableKey}
-      tokenCache={tokenCache}
+      tokenCache={undefined}
     >
       {children}
     </ClerkProviderOriginal>

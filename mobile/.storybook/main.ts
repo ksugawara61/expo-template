@@ -1,4 +1,6 @@
 import type { StorybookConfig } from "@storybook/react-native-web-vite";
+import path from "path";
+import { mergeConfig } from "vite";
 
 const config: StorybookConfig = {
   stories: [
@@ -24,6 +26,18 @@ const config: StorybookConfig = {
         },
       },
     },
+  },
+  viteFinal: async (config) => {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          "@clerk/clerk-expo": path.resolve(__dirname, "./mocks/clerk-expo.js"),
+        },
+      },
+      optimizeDeps: {
+        include: ["@clerk/clerk-expo"],
+      },
+    });
   },
 };
 

@@ -4,6 +4,21 @@ import * as stories from "./stories";
 
 const { Default } = composeStories(stories);
 
+jest.mock("@clerk/clerk-expo", () => {
+  const originalModule = jest.requireActual("@clerk/clerk-expo");
+  return {
+    ...originalModule,
+    useSignIn: () => ({
+      signIn: jest.fn().mockResolvedValue(undefined),
+      setActive: jest.fn().mockResolvedValue(undefined),
+    }),
+    useSignUp: () => ({
+      signUp: jest.fn().mockResolvedValue(undefined),
+      setActive: jest.fn().mockResolvedValue(undefined),
+    }),
+  };
+});
+
 describe("Settings", () => {
   it("should render license list item", async () => {
     await render(<Default />);

@@ -1,24 +1,26 @@
-import { ClerkProvider } from "@clerk/clerk-expo";
 import { act, renderHook } from "@testing-library/react-native";
 import type React from "react";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { resetAuthStore } from "./authStore";
 
-// Mock tokenCache for tests
-const mockTokenCache = {
-  getToken: jest.fn(),
-  saveToken: jest.fn(),
-  clearToken: jest.fn(),
-};
+jest.mock("@clerk/clerk-expo", () => {
+  const originalModule = jest.requireActual("@clerk/clerk-expo");
+  return {
+    ...originalModule,
+    useSignIn: () => ({
+      signIn: jest.fn().mockResolvedValue(undefined),
+      setActive: jest.fn().mockResolvedValue(undefined),
+    }),
+    useSignUp: () => ({
+      signUp: jest.fn().mockResolvedValue(undefined),
+      setActive: jest.fn().mockResolvedValue(undefined),
+    }),
+  };
+});
 
 describe("AuthContext", () => {
-  // Use a valid Clerk test key format
-  const testClerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
-
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <ClerkProvider publishableKey={testClerkKey} tokenCache={mockTokenCache}>
-      <AuthProvider>{children}</AuthProvider>
-    </ClerkProvider>
+    <AuthProvider>{children}</AuthProvider>
   );
 
   beforeEach(() => {
