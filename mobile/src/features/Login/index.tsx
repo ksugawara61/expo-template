@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import z from "zod";
-import { useAuth as useAuthOld } from "@/libs/auth/AuthContext";
 import { useLogin } from "@/libs/store/authToken";
 
 const styles = StyleSheet.create({
@@ -70,11 +69,10 @@ export const Login: FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
-  const { login: oldLogin } = useAuthOld();
   const { testLogin } = useLogin();
 
-  const handleLogin = handleSubmit((data) => {
-    oldLogin(data.userId, data.testKey);
+  const handleLogin = handleSubmit(({ userId, testKey }) => {
+    testLogin({ userId, testKey });
     Alert.alert("ログイン成功", "ログインが完了しました");
   });
 

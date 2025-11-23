@@ -2,7 +2,20 @@ import { router } from "expo-router";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
-const authTokenAtom = atom<string | null>(null);
+type TestAuthToken = {
+  __typename: "test";
+  userId: string;
+  testKey: string;
+};
+
+type AuthToken =
+  | {
+      __typename: "production";
+      token: string;
+    }
+  | TestAuthToken;
+
+const authTokenAtom = atom<AuthToken | null>(null);
 
 export const useAuthToken = () => {
   const authToken = useAtomValue(authTokenAtom);
@@ -19,14 +32,21 @@ export const useLogin = () => {
 
   const login = useCallback(
     (token: string) => {
-      setAuthToken(token);
+      setAuthToken({ __typename: "production", token });
     },
     [setAuthToken],
   );
 
-  const testLogin = useCallback(() => {
-    setAuthToken("test-token");
-  }, [setAuthToken]);
+  const testLogin = useCallback(
+    (param?: Omit<TestAuthToken, "__typename">) => {
+      setAuthToken({
+        __typename: "test",
+        userId: param?.userId ?? "test-user",
+        testKey: param?.testKey ?? "test-key",
+      });
+    },
+    [setAuthToken],
+  );
 
   return {
     login,
