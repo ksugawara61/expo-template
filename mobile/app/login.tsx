@@ -122,7 +122,7 @@ const LoginScreen = () => {
 
         <Button
           mode="text"
-          onPress={() => router.push("/signup")}
+          onPress={() => router.push("/signup" as never)}
           style={styles.linkButton}
           labelStyle={styles.linkButtonLabel}
         >
