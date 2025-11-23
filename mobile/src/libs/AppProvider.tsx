@@ -1,19 +1,10 @@
-import { ClerkProvider } from "@clerk/clerk-expo";
-import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
 import { AuthProvider } from "./auth/AuthContext";
+import { ClerkProvider } from "./auth/ClerkProvider";
 import { Provider, urqlClient } from "./graphql/urql";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
-
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-if (!publishableKey) {
-  throw new Error(
-    "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env",
-  );
-}
 
 const handleError = (error: Error, errorInfo: ErrorInfo) => {
   console.error("Error caught by ErrorBoundary:", error, errorInfo);
@@ -21,7 +12,7 @@ const handleError = (error: Error, errorInfo: ErrorInfo) => {
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+    <ClerkProvider>
       <ErrorBoundary
         FallbackComponent={ErrorFallback}
         onError={handleError}
