@@ -1,18 +1,17 @@
 import { act, renderHook } from "@testing-library/react-native";
 import type React from "react";
 import { AuthProvider, useAuth } from "./AuthContext";
-
-// updateAuthHeaders関数のモック
-jest.mock("@/libs/graphql/urql", () => ({
-  updateAuthHeaders: jest.fn(),
-}));
-
-import { updateAuthHeaders } from "@/libs/graphql/urql";
+import { resetAuthStore } from "./authStore";
 
 describe("AuthContext", () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <AuthProvider>{children}</AuthProvider>
   );
+
+  beforeEach(() => {
+    // 各テストの前にストアをリセット
+    resetAuthStore();
+  });
 
   describe("useAuth", () => {
     it("初期状態が正しく設定されている", () => {
@@ -35,8 +34,6 @@ describe("AuthContext", () => {
         testKey: "key456",
         isLoggedIn: true,
       });
-
-      expect(updateAuthHeaders).toHaveBeenCalledWith("user123", "key456");
     });
 
     it("logout関数が正しく動作する", async () => {
@@ -53,8 +50,6 @@ describe("AuthContext", () => {
         testKey: null,
         isLoggedIn: false,
       });
-
-      expect(updateAuthHeaders).toHaveBeenCalledWith(null, null);
     });
 
     it("testLogin関数が正しく動作する", async () => {
@@ -67,8 +62,6 @@ describe("AuthContext", () => {
         testKey: "test-key",
         isLoggedIn: true,
       });
-
-      expect(updateAuthHeaders).toHaveBeenCalledWith("test-user", "test-key");
     });
 
     it("複数回のログイン/ログアウトが正しく動作する", async () => {

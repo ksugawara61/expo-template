@@ -1,5 +1,4 @@
 import { atom } from "jotai";
-import { updateAuthHeaders } from "@/libs/graphql/urql";
 
 export interface AuthState {
   userId: string | null;
@@ -26,16 +25,12 @@ export const loginAtom = atom(
       isLoggedIn: true,
     };
     set(authStateAtom, newState);
-    // GraphQLクライアントのヘッダーを更新
-    updateAuthHeaders(userId, testKey);
   },
 );
 
 // ログアウト処理を行うwrite-only atom
 export const logoutAtom = atom(null, (_get, set) => {
   set(authStateAtom, initialAuthState);
-  // GraphQLクライアントのヘッダーをクリア
-  updateAuthHeaders(null, null);
 });
 
 // テストログイン処理を行うwrite-only atom

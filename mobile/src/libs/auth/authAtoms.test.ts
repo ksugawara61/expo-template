@@ -9,13 +9,6 @@ import {
   userIdAtom,
 } from "./authAtoms";
 
-// updateAuthHeaders関数のモック
-jest.mock("@/libs/graphql/urql", () => ({
-  updateAuthHeaders: jest.fn(),
-}));
-
-import { updateAuthHeaders } from "@/libs/graphql/urql";
-
 describe("authAtoms", () => {
   let store: ReturnType<typeof createStore>;
 
@@ -48,8 +41,6 @@ describe("authAtoms", () => {
         testKey,
         isLoggedIn: true,
       });
-
-      expect(updateAuthHeaders).toHaveBeenCalledWith(userId, testKey);
     });
   });
 
@@ -67,8 +58,6 @@ describe("authAtoms", () => {
         testKey: null,
         isLoggedIn: false,
       });
-
-      expect(updateAuthHeaders).toHaveBeenCalledWith(null, null);
     });
   });
 
@@ -82,8 +71,6 @@ describe("authAtoms", () => {
         testKey: "test-key",
         isLoggedIn: true,
       });
-
-      expect(updateAuthHeaders).toHaveBeenCalledWith("test-user", "test-key");
     });
   });
 
