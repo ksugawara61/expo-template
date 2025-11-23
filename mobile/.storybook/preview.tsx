@@ -2,6 +2,7 @@ import type { Preview } from "@storybook/react-native-web-vite";
 import { initialize, mswLoader } from "msw-storybook-addon";
 import { useEffect } from "react";
 import { View } from "react-native";
+import type { PartialStoryFn } from "storybook/internal/types";
 import { MINIMAL_VIEWPORTS } from "storybook/viewport";
 import { withScreenshot } from "storycap";
 import { AppProvider } from "../src/libs/AppProvider";
@@ -10,7 +11,7 @@ import { ScreenWrapper } from "../src/libs/ScreenWrapper";
 initialize();
 
 export const decorators = [
-  (Story) => {
+  (Story: PartialStoryFn) => {
     useEffect(() => {
       // Story 切り替え後に msw のレスポンスを更新するためリロードする
       return () => window.location.reload();

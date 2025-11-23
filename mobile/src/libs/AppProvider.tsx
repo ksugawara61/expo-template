@@ -1,9 +1,9 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
-import { AuthProvider } from "./auth/AuthContext";
-import { Provider, urqlClient } from "./graphql/urql";
+import { UrqlProvider } from "./graphql/urql";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
+import { JotaiProvider } from "./store/JotaiProvider";
 
 const handleError = (error: Error, errorInfo: ErrorInfo) => {
   console.error("Error caught by ErrorBoundary:", error, errorInfo);
@@ -19,11 +19,11 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
         console.log("ErrorBoundary reset");
       }}
     >
-      <AuthProvider>
-        <Provider value={urqlClient}>
+      <JotaiProvider>
+        <UrqlProvider>
           <PaperProvider>{children}</PaperProvider>
-        </Provider>
-      </AuthProvider>
+        </UrqlProvider>
+      </JotaiProvider>
     </ErrorBoundary>
   );
 };

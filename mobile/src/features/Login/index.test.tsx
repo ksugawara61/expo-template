@@ -1,16 +1,17 @@
-import { useAuth } from "@/libs/auth/AuthContext";
+import { useLogin } from "@/libs/store/authToken";
 import { render, screen, userEvent } from "@/libs/test/testing-library";
 import { Login } from ".";
 
-jest.mock("@/libs/auth/AuthContext");
+jest.mock("@/libs/store/authToken");
 
 describe("Login", () => {
   it("ログインフォームが正しく表示されてログインできること", async () => {
-    const mockUseAuth = useAuth as jest.Mock<ReturnType<typeof useAuth>>;
-    const mockLogin = jest.fn();
-    mockUseAuth.mockReturnValue({ login: mockLogin } as unknown as ReturnType<
-      typeof useAuth
-    >);
+    const mockUseLogin = useLogin as jest.Mock<ReturnType<typeof useLogin>>;
+    const mockTestLogin = jest.fn();
+    mockUseLogin.mockReturnValue({
+      login: jest.fn(),
+      testLogin: mockTestLogin,
+    });
     await render(<Login />);
 
     expect(
@@ -38,6 +39,9 @@ describe("Login", () => {
     ).not.toBeOnTheScreen();
 
     await user.press(screen.getByRole("button", { name: "ログイン" }));
-    expect(mockLogin).toHaveBeenCalledWith("testuser", "testkey");
+    expect(mockTestLogin).toHaveBeenCalledWith({
+      userId: "testuser",
+      testKey: "testkey",
+    });
   });
 });
