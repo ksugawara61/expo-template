@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/clerk-expo";
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -7,6 +8,13 @@ import {
   fetchExchange,
   Provider,
 } from "../graphql/urql";
+
+// Mock tokenCache for tests
+const mockTokenCache = {
+  getToken: jest.fn(),
+  saveToken: jest.fn(),
+  clearToken: jest.fn(),
+};
 
 /**
  * テスト間でキャッシュを共有しないようにするため createUrqlClientを使用
@@ -34,19 +42,26 @@ const testInitialMetrics = {
 export const suspenseLoadingTestId = "suspenseLoading";
 
 export const TestProvider: FC<PropsWithChildren> = ({ children }) => {
+  // Use a valid Clerk test key format
+  const testClerkKey =
+    process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+    "pk_test_Y2xlcmstdGVzdC1rZXktZm9yLXRlc3Rpbmc=";
+
   return (
-    <Provider value={createUrqlClient()}>
-      <SafeAreaProvider initialMetrics={testInitialMetrics}>
-        <Suspense
-          fallback={
-            <View testID={suspenseLoadingTestId}>
-              <ActivityIndicator />
-            </View>
-          }
-        >
-          {children}
-        </Suspense>
-      </SafeAreaProvider>
-    </Provider>
+    <ClerkProvider publishableKey={testClerkKey} tokenCache={mockTokenCache}>
+      <Provider value={createUrqlClient()}>
+        <SafeAreaProvider initialMetrics={testInitialMetrics}>
+          <Suspense
+            fallback={
+              <View testID={suspenseLoadingTestId}>
+                <ActivityIndicator />
+              </View>
+            }
+          >
+            {children}
+          </Suspense>
+        </SafeAreaProvider>
+      </Provider>
+    </ClerkProvider>
   );
 };
