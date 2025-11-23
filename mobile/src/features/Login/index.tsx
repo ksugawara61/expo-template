@@ -4,7 +4,8 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import z from "zod";
-import { useAuth } from "@/libs/auth/AuthContext";
+import { useAuth as useAuthOld } from "@/libs/auth/AuthContext";
+import { useLogin } from "@/libs/store/authToken";
 
 const styles = StyleSheet.create({
   container: {
@@ -69,10 +70,11 @@ export const Login: FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
-  const { login, testLogin } = useAuth();
+  const { login: oldLogin } = useAuthOld();
+  const { testLogin } = useLogin();
 
   const handleLogin = handleSubmit((data) => {
-    login(data.userId, data.testKey);
+    oldLogin(data.userId, data.testKey);
     Alert.alert("ログイン成功", "ログインが完了しました");
   });
 
