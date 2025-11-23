@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-export const atomWithSecureStore = <T>(key: string, initialValue: T) => {
+export const atomWithSecureStore = <T>(_key: string, initialValue: T) => {
   const baseAtom = atom(initialValue);
   const derivedAtom = atom(
     (get) => get(baseAtom),
