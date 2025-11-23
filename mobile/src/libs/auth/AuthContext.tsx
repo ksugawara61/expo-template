@@ -9,6 +9,7 @@ import {
   testLoginAtom,
 } from "./authAtoms";
 import { initAuthStore } from "./authStore";
+import { ClerkProvider } from "./ClerkProvider";
 
 interface AuthContextType {
   authState: AuthState;
@@ -35,7 +36,11 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   // グローバルストアを初期化してProviderに渡す
   const store = initAuthStore();
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <ClerkProvider>
+      <Provider store={store}>{children}</Provider>
+    </ClerkProvider>
+  );
 };
 
 export const useAuth = (): AuthContextType => {
