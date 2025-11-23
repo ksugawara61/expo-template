@@ -10,6 +10,13 @@ jest.mock("expo-router", () => ({
     replace: jest.fn(),
   }),
 }));
+jest.mock("expo-secure-store", () => ({
+  getItem: jest.fn(() => null),
+  setItem: jest.fn(),
+  deleteItemAsync: jest.fn(),
+  getItemAsync: jest.fn(() => Promise.resolve(null)),
+  setItemAsync: jest.fn(() => Promise.resolve()),
+}));
 
 describe("Login", () => {
   beforeEach(() => {
