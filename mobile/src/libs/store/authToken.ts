@@ -1,6 +1,7 @@
 import { router } from "expo-router";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
+import { atomWithSecureStore } from "./jotai";
 
 type TestAuthToken = {
   __typename: "test";
@@ -16,7 +17,7 @@ export type AuthToken =
   | TestAuthToken
   | null;
 
-const authTokenAtom = atom<AuthToken>(null);
+const authTokenAtom = atomWithSecureStore<AuthToken>("authToken", null);
 
 export const useAuthToken = () => {
   const authToken = useAtomValue(authTokenAtom);

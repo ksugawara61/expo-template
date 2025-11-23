@@ -37,8 +37,6 @@ export const createUrqlClient = (token: AuthToken) =>
 export const UrqlProvider: FC<PropsWithChildren> = ({ children }) => {
   const token = useAuthToken();
 
-  console.log("UrqlProvider render with token:", token);
-
   return (
     <Urql.Provider value={createUrqlClient(token)}>{children}</Urql.Provider>
   );
