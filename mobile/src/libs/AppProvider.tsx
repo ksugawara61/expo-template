@@ -1,7 +1,7 @@
 import type { ErrorInfo, FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
-import { Provider, urqlClient } from "./graphql/urql";
+import { UrqlProvider } from "./graphql/urql";
 import { PaperProvider } from "./react-native-paper/PaperProvider";
 import { JotaiProvider } from "./store/JotaiProvider";
 
@@ -20,9 +20,9 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       <JotaiProvider>
-        <Provider value={urqlClient}>
+        <UrqlProvider>
           <PaperProvider>{children}</PaperProvider>
-        </Provider>
+        </UrqlProvider>
       </JotaiProvider>
     </ErrorBoundary>
   );

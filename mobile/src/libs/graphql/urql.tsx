@@ -1,44 +1,48 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: for urql wrapper */
-import { useCallback, useMemo, useState } from "react";
+import {
+  type FC,
+  type PropsWithChildren,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import * as Urql from "urql";
-import { authStateAtom } from "@/libs/auth/authAtoms";
-import { getAuthStore } from "@/libs/auth/authStore";
 import { OPERATION_TYPENAMES } from "@/libs/graphql/operationTypenames.generated";
+import { type AuthToken, useAuthToken } from "../store/authToken";
 
 export * from "urql";
 
-export const urqlClient = new Urql.Client({
-  url: "http://127.0.0.1:3000/graphql",
-  exchanges: [Urql.cacheExchange, Urql.fetchExchange],
-  suspense: true,
-  fetchOptions: () => {
-    // テスト環境または開発環境でテスト用ヘッダーを追加
-    const isDevelopmentOrTest = __DEV__ || process.env.NODE_ENV === "test";
+export const createUrqlClient = (token: AuthToken) =>
+  new Urql.Client({
+    url: "http://127.0.0.1:3000/graphql",
+    exchanges: [Urql.cacheExchange, Urql.fetchExchange],
+    suspense: true,
+    fetchOptions: () => {
+      // テスト環境または開発環境でテスト用ヘッダーを追加
+      const isDevelopmentOrTest = __DEV__ || process.env.NODE_ENV === "test";
 
-    if (isDevelopmentOrTest) {
-      // jotaiストアから認証状態を取得
-      const store = getAuthStore();
-      const authState = store.get(authStateAtom);
+      if (isDevelopmentOrTest && token?.__typename === "test") {
+        return {
+          headers: {
+            "X-Test-User-Id": token.userId,
+            "X-Test-Key": token.testKey,
+          },
+        };
+      }
 
-      // 認証状態が設定されている場合はそれを使用、そうでなければデフォルト値
-      const userId = authState.isLoggedIn
-        ? (authState.userId ?? "test-user")
-        : "test-user";
-      const testKey = authState.isLoggedIn
-        ? (authState.testKey ?? "test-key")
-        : "test-key";
+      return {};
+    },
+  });
 
-      return {
-        headers: {
-          "X-Test-User-Id": userId,
-          "X-Test-Key": testKey,
-        },
-      };
-    }
+export const UrqlProvider: FC<PropsWithChildren> = ({ children }) => {
+  const token = useAuthToken();
 
-    return {};
-  },
-});
+  console.log("UrqlProvider render with token:", token);
+
+  return (
+    <Urql.Provider value={createUrqlClient(token)}>{children}</Urql.Provider>
+  );
+};
 
 /**
  * OperationDefinition の name から operation 名を抽出

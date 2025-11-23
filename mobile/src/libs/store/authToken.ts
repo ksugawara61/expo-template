@@ -8,14 +8,15 @@ type TestAuthToken = {
   testKey: string;
 };
 
-type AuthToken =
+export type AuthToken =
   | {
       __typename: "production";
       token: string;
     }
-  | TestAuthToken;
+  | TestAuthToken
+  | null;
 
-const authTokenAtom = atom<AuthToken | null>(null);
+const authTokenAtom = atom<AuthToken>(null);
 
 export const useAuthToken = () => {
   const authToken = useAtomValue(authTokenAtom);
