@@ -4,3 +4,5 @@ node_modules/
 lefthook-local.yml
 
 .turbo
+.env
+.env.local
