@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import type { FC } from "react";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Alert, ScrollView, View } from "react-native";
 import {
   Button,
@@ -81,7 +81,6 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    watch,
     setValue,
   } = useForm<CreateBookmarkInput | UpdateBookmarkInput>({
     resolver: zodResolver(schema),
@@ -93,7 +92,7 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
     },
   });
 
-  const tagNames = watch("tagNames") || [];
+  const tagNames = useWatch({ control, name: "tagNames" }) || [];
 
   const handleSuccess = () => {
     router.back();
@@ -106,7 +105,7 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
   const addTag = () => {
     const trimmedTag = tagInput.trim();
     if (trimmedTag && !tagNames.includes(trimmedTag)) {
-      setValue("tagNames", [...tagNames, trimmedTag]);
+      setValue("tagNames", [...tagNames, trimmedTag], { shouldDirty: true });
       setTagInput("");
     }
   };
@@ -115,6 +114,7 @@ export const BookmarkAddEdit: FC<Props> = (props) => {
     setValue(
       "tagNames",
       tagNames.filter((tag) => tag !== tagToRemove),
+      { shouldDirty: true },
     );
   };
 
