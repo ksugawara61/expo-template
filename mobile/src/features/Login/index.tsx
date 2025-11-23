@@ -99,6 +99,7 @@ export const Login: FC = () => {
             <View>
               <TextInput
                 label="ユーザーID"
+                aria-label="ユーザーID"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -120,6 +121,7 @@ export const Login: FC = () => {
             <View>
               <TextInput
                 label="認証キー"
+                aria-label="認証キー"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
