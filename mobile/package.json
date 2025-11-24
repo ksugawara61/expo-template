@@ -25,10 +25,12 @@
     "licenses:generate": "node scripts/generate-licenses.mjs"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^2.19.3",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@react-navigation/native": "^7.1.6",
     "expo": "~53.0.22",
+    "expo-auth-session": "^7.0.9",
     "expo-font": "~13.3.2",
     "expo-linking": "~7.1.7",
     "expo-router": "~5.1.6",
@@ -49,6 +51,7 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-url-polyfill": "^3.0.0",
     "react-native-web": "~0.20.0",
     "urql": "^5.0.1",
     "zod": "^4.1.12"

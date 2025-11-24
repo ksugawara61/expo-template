@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/clerk-expo";
 import { composeStories } from "@storybook/react-native-web-vite";
 import { render, screen } from "@/libs/test/testing-library";
 import * as stories from "./stories";
@@ -5,6 +6,12 @@ import * as stories from "./stories";
 const { Default } = composeStories(stories);
 
 describe("Settings", () => {
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      signOut: jest.fn().mockResolvedValue(undefined),
+    });
+  });
+
   it("should render license list item", async () => {
     await render(<Default />);
 

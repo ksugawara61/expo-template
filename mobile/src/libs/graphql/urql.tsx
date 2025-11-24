@@ -17,7 +17,7 @@ export const createUrqlClient = (token: AuthToken) =>
     url: "http://127.0.0.1:3000/graphql",
     exchanges: [Urql.cacheExchange, Urql.fetchExchange],
     suspense: true,
-    fetchOptions: () => {
+    fetchOptions: (): RequestInit => {
       // テスト環境または開発環境でテスト用ヘッダーを追加
       const isDevelopmentOrTest = __DEV__ || process.env.NODE_ENV === "test";
 
@@ -26,6 +26,14 @@ export const createUrqlClient = (token: AuthToken) =>
           headers: {
             "X-Test-User-Id": token.userId,
             "X-Test-Key": token.testKey,
+          },
+        };
+      }
+
+      if (token?.__typename === "session") {
+        return {
+          headers: {
+            Authorization: `Bearer ${token.token}`,
           },
         };
       }
