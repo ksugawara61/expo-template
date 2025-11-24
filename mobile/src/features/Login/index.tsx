@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
 import { type FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
@@ -52,6 +53,13 @@ const styles = StyleSheet.create({
   },
   segmentedButtons: {
     marginBottom: 20,
+  },
+  linkButton: {
+    marginTop: 20,
+  },
+  linkText: {
+    textAlign: "center",
+    color: "#666",
   },
 });
 
@@ -132,6 +140,10 @@ export const Login: FC = () => {
     }
   });
 
+  const handleNavigateToSignUp = () => {
+    router.push("/signup");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>ログイン</Text>
@@ -206,6 +218,15 @@ export const Login: FC = () => {
             style={styles.button}
           >
             ログイン
+          </Button>
+          <Button
+            mode="text"
+            onPress={handleNavigateToSignUp}
+            style={styles.linkButton}
+          >
+            <Text style={styles.linkText}>
+              アカウントをお持ちでないですか? サインアップ
+            </Text>
           </Button>
         </View>
       ) : (
