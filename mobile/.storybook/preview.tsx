@@ -5,8 +5,8 @@ import { View } from "react-native";
 import type { PartialStoryFn } from "storybook/internal/types";
 import { MINIMAL_VIEWPORTS } from "storybook/viewport";
 import { withScreenshot } from "storycap";
-import { AppProvider } from "../src/libs/AppProvider";
 import { ScreenWrapper } from "../src/libs/ScreenWrapper";
+import { StorybookProvider } from "../src/libs/test/StorybookProvider";
 
 initialize();
 
@@ -18,7 +18,7 @@ export const decorators = [
     }, []);
 
     return (
-      <AppProvider>
+      <StorybookProvider>
         <View
           style={{
             width: 414,
@@ -32,7 +32,7 @@ export const decorators = [
             <Story />
           </ScreenWrapper>
         </View>
-      </AppProvider>
+      </StorybookProvider>
     );
   },
   withScreenshot,

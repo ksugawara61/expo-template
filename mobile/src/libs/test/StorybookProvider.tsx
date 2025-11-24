@@ -1,0 +1,29 @@
+import type { ErrorInfo, FC, PropsWithChildren } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
+import { UrqlProvider } from "../graphql/urql";
+import { PaperProvider } from "../react-native-paper/PaperProvider";
+import { JotaiProvider } from "../store/JotaiProvider";
+
+const handleError = (error: Error, errorInfo: ErrorInfo) => {
+  console.error("Error caught by ErrorBoundary:", error, errorInfo);
+};
+
+export const StorybookProvider: FC<PropsWithChildren> = ({ children }) => {
+  return (
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onError={handleError}
+      onReset={() => {
+        // アプリの状態をリセットする場合はここに実装
+        console.log("ErrorBoundary reset");
+      }}
+    >
+      <JotaiProvider>
+        <UrqlProvider>
+          <PaperProvider>{children}</PaperProvider>
+        </UrqlProvider>
+      </JotaiProvider>
+    </ErrorBoundary>
+  );
+};
