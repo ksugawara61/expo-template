@@ -1,10 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignIn } from "@clerk/clerk-expo";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import { useState, type FC } from "react";
+import { type FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { Button, HelperText, SegmentedButtons, TextInput } from "react-native-paper";
+import {
+  Button,
+  HelperText,
+  SegmentedButtons,
+  TextInput,
+} from "react-native-paper";
 import z from "zod";
 import { useLogin } from "@/libs/store/authToken";
 
@@ -138,14 +143,14 @@ export const Login: FC = () => {
       } else {
         Alert.alert(
           "ログイン失敗",
-          "ログインに失敗しました。メールアドレスとパスワードを確認してください"
+          "ログインに失敗しました。メールアドレスとパスワードを確認してください",
         );
       }
     } catch (err: unknown) {
       console.error("Email login error:", JSON.stringify(err, null, 2));
       Alert.alert(
         "ログインエラー",
-        "ログインに失敗しました。メールアドレスとパスワードを確認してください"
+        "ログインに失敗しました。メールアドレスとパスワードを確認してください",
       );
     }
   });
