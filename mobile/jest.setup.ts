@@ -6,6 +6,7 @@ import { server } from "@/libs/test/server";
 global.window.navigator = {};
 
 jest.mock("expo-secure-store");
+jest.mock("@clerk/clerk-expo");
 
 jest.mock("expo-font", () => {
   const module: typeof import("expo-font") = {

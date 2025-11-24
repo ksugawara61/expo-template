@@ -3,8 +3,6 @@ import { render, screen, userEvent } from "@/libs/test/testing-library";
 import { Login } from ".";
 
 jest.mock("@/libs/store/authToken");
-jest.mock("@clerk/clerk-expo");
-jest.mock("expo-router");
 
 describe("Login", () => {
   beforeEach(() => {
@@ -17,11 +15,11 @@ describe("Login", () => {
       isLoaded: true,
       setActive: jest.fn(),
     });
-
-    // Router モック
-    const { useRouter } = require("expo-router");
-    useRouter.mockReturnValue({
-      replace: jest.fn(),
+    const { useAuth } = require("@clerk/clerk-expo");
+    useAuth.mockReturnValue({
+      isSignedIn: false,
+      getToken: jest.fn().mockResolvedValue("mock-session-token"),
+      signOut: jest.fn().mockResolvedValue(undefined),
     });
   });
 
