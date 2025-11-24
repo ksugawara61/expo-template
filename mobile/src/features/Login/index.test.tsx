@@ -1,3 +1,4 @@
+import { useAuth, useSignIn } from "@clerk/clerk-expo";
 import { useLogin } from "@/libs/store/authToken";
 import { render, screen, userEvent } from "@/libs/test/testing-library";
 import { Login } from ".";
@@ -6,17 +7,14 @@ jest.mock("@/libs/store/authToken");
 
 describe("Login", () => {
   beforeEach(() => {
-    // Clerk モック
-    const { useSignIn } = require("@clerk/clerk-expo");
-    useSignIn.mockReturnValue({
+    (useSignIn as jest.Mock).mockReturnValue({
       signIn: {
         create: jest.fn(),
       },
       isLoaded: true,
       setActive: jest.fn(),
     });
-    const { useAuth } = require("@clerk/clerk-expo");
-    useAuth.mockReturnValue({
+    (useAuth as jest.Mock).mockReturnValue({
       isSignedIn: false,
       getToken: jest.fn().mockResolvedValue("mock-session-token"),
       signOut: jest.fn().mockResolvedValue(undefined),
