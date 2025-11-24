@@ -1,6 +1,7 @@
+import { useAuth, useSignIn } from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { atomWithSecureStore } from "./jotai";
 
 type TestAuthToken = {
@@ -11,7 +12,7 @@ type TestAuthToken = {
 
 export type AuthToken =
   | {
-      __typename: "production";
+      __typename: "session";
       token: string;
     }
   | TestAuthToken
@@ -32,12 +33,35 @@ export const useIsLoggedIn = () => {
 export const useLogin = () => {
   const setAuthToken = useSetAtom(authTokenAtom);
 
+  const { signIn, isLoaded, setActive } = useSignIn();
+  const { isSignedIn, getToken } = useAuth();
   const login = useCallback(
-    (token: string) => {
-      setAuthToken({ __typename: "production", token });
+    async (identifier: string, password: string) => {
+      if (!isLoaded || !setActive) {
+        return;
+      }
+
+      const signInAttempt = await signIn.create({
+        identifier,
+        password,
+      });
+
+      if (signInAttempt.status !== "complete") {
+        throw new Error("Sign-in not complete");
+      }
+
+      const sessionToken = signInAttempt.createdSessionId;
+      await setActive({ session: sessionToken });
     },
-    [setAuthToken],
+    [signIn, isLoaded, setActive],
   );
+  useEffect(() => {
+    if (isSignedIn) {
+      void getToken().then((token) => {
+        setAuthToken({ __typename: "session", token });
+      });
+    }
+  }, [isSignedIn, getToken, setAuthToken]);
 
   const testLogin = useCallback(
     (param?: Omit<TestAuthToken, "__typename">) => {
@@ -57,12 +81,14 @@ export const useLogin = () => {
 };
 
 export const useLogout = () => {
+  const { signOut } = useAuth();
   const setAuthToken = useSetAtom(authTokenAtom);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     setAuthToken(null);
+    await signOut();
     router.replace("/login");
-  }, [setAuthToken]);
+  }, [setAuthToken, signOut]);
 
   return logout;
 };

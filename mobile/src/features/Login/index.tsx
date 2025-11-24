@@ -1,6 +1,4 @@
-import { useSignIn } from "@clerk/clerk-expo";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
 import { type FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
@@ -85,8 +83,6 @@ const emailDefaultValues: EmailFormSchema = {
 };
 
 export const Login: FC = () => {
-  const router = useRouter();
-  const { signIn, isLoaded, setActive } = useSignIn();
   const [loginMode, setLoginMode] = useState<"email" | "test">("email");
 
   // テストログイン用のフォーム
@@ -111,7 +107,7 @@ export const Login: FC = () => {
     defaultValues: emailDefaultValues,
   });
 
-  const { testLogin } = useLogin();
+  const { login, testLogin } = useLogin();
 
   const handleTestLogin = handleTestSubmit(({ userId, testKey }) => {
     testLogin({ userId, testKey });
@@ -124,28 +120,9 @@ export const Login: FC = () => {
   };
 
   const handleEmailLogin = handleEmailSubmit(async ({ email, password }) => {
-    if (!isLoaded || !setActive) {
-      return;
-    }
-
     try {
-      const signInAttempt = await signIn.create({
-        identifier: email,
-        password,
-      });
-
-      if (signInAttempt.status === "complete") {
-        await setActive({
-          session: signInAttempt.createdSessionId,
-        });
-        router.replace("/");
-        Alert.alert("ログイン成功", "ログインが完了しました");
-      } else {
-        Alert.alert(
-          "ログイン失敗",
-          "ログインに失敗しました。メールアドレスとパスワードを確認してください",
-        );
-      }
+      await login(email, password);
+      Alert.alert("ログイン成功", "ログインが完了しました");
     } catch (err: unknown) {
       console.error("Email login error:", JSON.stringify(err, null, 2));
       Alert.alert(
