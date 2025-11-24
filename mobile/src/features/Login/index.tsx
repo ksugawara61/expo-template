@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { FC } from "react";
+import { useSignIn } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
+import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { Button, HelperText, TextInput } from "react-native-paper";
+import { Button, HelperText, SegmentedButtons, TextInput } from "react-native-paper";
 import z from "zod";
 import { useLogin } from "@/libs/store/authToken";
 
@@ -45,118 +47,256 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "#999",
   },
+  segmentedButtons: {
+    marginBottom: 20,
+  },
 });
 
-const formSchema = z.object({
+const testFormSchema = z.object({
   userId: z.string().trim().min(1, "ユーザーIDは必須です"),
   testKey: z.string().trim().min(1, "認証キーは必須です"),
 });
 
-type FormSchema = z.infer<typeof formSchema>;
+const emailFormSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "メールアドレスは必須です")
+    .email("有効なメールアドレスを入力してください"),
+  password: z.string().trim().min(1, "パスワードは必須です"),
+});
 
-const defaultValues: FormSchema = {
+type TestFormSchema = z.infer<typeof testFormSchema>;
+type EmailFormSchema = z.infer<typeof emailFormSchema>;
+
+const testDefaultValues: TestFormSchema = {
   userId: "",
   testKey: "",
 };
 
+const emailDefaultValues: EmailFormSchema = {
+  email: "",
+  password: "",
+};
+
 export const Login: FC = () => {
+  const router = useRouter();
+  const { signIn, isLoaded, setActive } = useSignIn();
+  const [loginMode, setLoginMode] = useState<"email" | "test">("email");
+
+  // テストログイン用のフォーム
   const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<FormSchema>({
+    control: testControl,
+    handleSubmit: handleTestSubmit,
+    formState: { isSubmitting: isTestSubmitting },
+  } = useForm<TestFormSchema>({
     mode: "onSubmit",
-    resolver: zodResolver(formSchema),
-    defaultValues,
+    resolver: zodResolver(testFormSchema),
+    defaultValues: testDefaultValues,
   });
+
+  // Emailログイン用のフォーム
+  const {
+    control: emailControl,
+    handleSubmit: handleEmailSubmit,
+    formState: { isSubmitting: isEmailSubmitting },
+  } = useForm<EmailFormSchema>({
+    mode: "onSubmit",
+    resolver: zodResolver(emailFormSchema),
+    defaultValues: emailDefaultValues,
+  });
+
   const { testLogin } = useLogin();
 
-  const handleLogin = handleSubmit(({ userId, testKey }) => {
+  const handleTestLogin = handleTestSubmit(({ userId, testKey }) => {
     testLogin({ userId, testKey });
     Alert.alert("ログイン成功", "ログインが完了しました");
   });
 
-  const handleTestLogin = () => {
+  const handleQuickTestLogin = () => {
     testLogin();
     Alert.alert("テストログイン成功", "開発用ログインが完了しました");
   };
+
+  const handleEmailLogin = handleEmailSubmit(async ({ email, password }) => {
+    if (!isLoaded || !setActive) {
+      return;
+    }
+
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: email,
+        password,
+      });
+
+      if (signInAttempt.status === "complete") {
+        await setActive({
+          session: signInAttempt.createdSessionId,
+        });
+        router.replace("/");
+        Alert.alert("ログイン成功", "ログインが完了しました");
+      } else {
+        Alert.alert(
+          "ログイン失敗",
+          "ログインに失敗しました。メールアドレスとパスワードを確認してください"
+        );
+      }
+    } catch (err: unknown) {
+      console.error("Email login error:", JSON.stringify(err, null, 2));
+      Alert.alert(
+        "ログインエラー",
+        "ログインに失敗しました。メールアドレスとパスワードを確認してください"
+      );
+    }
+  });
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>ログイン</Text>
       <Text style={styles.description}>
-        GraphQL APIの認証情報を入力してください
+        {loginMode === "email"
+          ? "メールアドレスとパスワードを入力してログイン"
+          : "GraphQL APIの認証情報を入力してください"}
       </Text>
 
-      <View style={styles.form}>
-        <Controller
-          control={control}
-          name="userId"
-          render={({
-            field: { onChange, onBlur, value },
-            fieldState: { error },
-          }) => (
-            <View>
-              <TextInput
-                label="ユーザーID"
-                aria-label="ユーザーID"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                mode="outlined"
-                style={styles.input}
-                autoCapitalize="none"
-              />
-              {error && <HelperText type="error">{error.message}</HelperText>}
-            </View>
-          )}
-        />
-        <Controller
-          control={control}
-          name="testKey"
-          render={({
-            field: { onChange, onBlur, value },
-            fieldState: { error },
-          }) => (
-            <View>
-              <TextInput
-                label="認証キー"
-                aria-label="認証キー"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                mode="outlined"
-                style={styles.input}
-                secureTextEntry
-                autoCapitalize="none"
-              />
-              {error && <HelperText type="error">{error.message}</HelperText>}
-            </View>
-          )}
-        />
-        <Button
-          mode="contained"
-          loading={isSubmitting}
-          onPress={handleLogin}
-          style={styles.button}
-        >
-          ログイン
-        </Button>
-      </View>
+      <SegmentedButtons
+        value={loginMode}
+        onValueChange={(value) => setLoginMode(value as "email" | "test")}
+        buttons={[
+          { value: "email", label: "Emailログイン" },
+          { value: "test", label: "テストログイン" },
+        ]}
+        style={styles.segmentedButtons}
+      />
 
-      {__DEV__ && (
-        <View style={styles.testButtonContainer}>
-          <Text style={styles.testButtonDescription}>
-            開発環境用（テスト用の認証情報でログイン）
-          </Text>
+      {loginMode === "email" ? (
+        <View style={styles.form}>
+          <Controller
+            control={emailControl}
+            name="email"
+            render={({
+              field: { onChange, onBlur, value },
+              fieldState: { error },
+            }) => (
+              <View>
+                <TextInput
+                  label="メールアドレス"
+                  aria-label="メールアドレス"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  mode="outlined"
+                  style={styles.input}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+                {error && <HelperText type="error">{error.message}</HelperText>}
+              </View>
+            )}
+          />
+          <Controller
+            control={emailControl}
+            name="password"
+            render={({
+              field: { onChange, onBlur, value },
+              fieldState: { error },
+            }) => (
+              <View>
+                <TextInput
+                  label="パスワード"
+                  aria-label="パスワード"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  mode="outlined"
+                  style={styles.input}
+                  secureTextEntry
+                  autoCapitalize="none"
+                />
+                {error && <HelperText type="error">{error.message}</HelperText>}
+              </View>
+            )}
+          />
           <Button
-            mode="outlined"
-            loading={isSubmitting}
+            mode="contained"
+            loading={isEmailSubmitting}
+            onPress={handleEmailLogin}
+            style={styles.button}
+          >
+            ログイン
+          </Button>
+        </View>
+      ) : (
+        <View style={styles.form}>
+          <Controller
+            control={testControl}
+            name="userId"
+            render={({
+              field: { onChange, onBlur, value },
+              fieldState: { error },
+            }) => (
+              <View>
+                <TextInput
+                  label="ユーザーID"
+                  aria-label="ユーザーID"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  mode="outlined"
+                  style={styles.input}
+                  autoCapitalize="none"
+                />
+                {error && <HelperText type="error">{error.message}</HelperText>}
+              </View>
+            )}
+          />
+          <Controller
+            control={testControl}
+            name="testKey"
+            render={({
+              field: { onChange, onBlur, value },
+              fieldState: { error },
+            }) => (
+              <View>
+                <TextInput
+                  label="認証キー"
+                  aria-label="認証キー"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  mode="outlined"
+                  style={styles.input}
+                  secureTextEntry
+                  autoCapitalize="none"
+                />
+                {error && <HelperText type="error">{error.message}</HelperText>}
+              </View>
+            )}
+          />
+          <Button
+            mode="contained"
+            loading={isTestSubmitting}
             onPress={handleTestLogin}
             style={styles.button}
           >
-            テストログイン
+            ログイン
           </Button>
+
+          {__DEV__ && (
+            <View style={styles.testButtonContainer}>
+              <Text style={styles.testButtonDescription}>
+                開発環境用（テスト用の認証情報でログイン）
+              </Text>
+              <Button
+                mode="outlined"
+                loading={isTestSubmitting}
+                onPress={handleQuickTestLogin}
+                style={styles.button}
+              >
+                テストログイン
+              </Button>
+            </View>
+          )}
         </View>
       )}
     </View>
