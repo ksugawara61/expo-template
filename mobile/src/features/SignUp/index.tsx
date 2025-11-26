@@ -49,10 +49,7 @@ const signUpFormSchema = z.object({
     .trim()
     .min(1, "メールアドレスは必須です")
     .email("有効なメールアドレスを入力してください"),
-  password: z
-    .string()
-    .trim()
-    .min(8, "パスワードは8文字以上で入力してください"),
+  password: z.string().trim().min(8, "パスワードは8文字以上で入力してください"),
 });
 
 type SignUpFormSchema = z.infer<typeof signUpFormSchema>;

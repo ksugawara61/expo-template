@@ -1,4 +1,8 @@
-import { useAuth, useSignIn, useSignUp as useClerkSignUp } from "@clerk/clerk-expo";
+import {
+  useAuth,
+  useSignUp as useClerkSignUp,
+  useSignIn,
+} from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect } from "react";

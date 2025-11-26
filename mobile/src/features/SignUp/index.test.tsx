@@ -55,7 +55,9 @@ describe("SignUp", () => {
       screen.getByRole("text", { name: "メールアドレスは必須です" }),
     ).toBeOnTheScreen();
     expect(
-      screen.getByRole("text", { name: "パスワードは8文字以上で入力してください" }),
+      screen.getByRole("text", {
+        name: "パスワードは8文字以上で入力してください",
+      }),
     ).toBeOnTheScreen();
   });
 
