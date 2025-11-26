@@ -4,6 +4,12 @@ export const useSignIn = () => ({
   setActive: () => Promise.resolve(),
 });
 
+export const useSignUp = () => ({
+  isLoaded: true,
+  signUp: () => Promise.resolve(),
+  setActive: () => Promise.resolve(),
+});
+
 export const useAuth = () => ({
   signOut: () => void 0,
 });
